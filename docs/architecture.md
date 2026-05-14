@@ -509,6 +509,16 @@ challenge 类贡献要拿满权重必须附带对被挑战节点的最强复述�
 - Healing Days (ρ-H2)
 - Pool Age-Aware Calibration (ρ-D3)
 
+**新增（战锤暗流对策，由 Part XIV §6 派生）：**
+- **Bond Half-Life**：连续多次 Bond 失败的 actor 下次 Bond 上限自动减半，3 次失败禁用 6 个月（防"职业审判官"，对冲战锤暗流 6.1）
+- **Frenzy 季度上限**：同季度内 Frenzy Watch 触发 ≤ 3 次，否则走 Self-Critique 紧急议题（防"永恒戒严"，对冲战锤暗流 6.2）
+- **Protection Saturation 红线**：sanctuary + Hardship + Chronic Mode 占总活跃 actor > 30% → Self-Critique 紧急议题；问"为什么这么多人在受伤"，**不降低保护**（防 Eldar 路径，对冲战锤暗流 6.3）
+- **Fork Reunion Path**：双方 ≥ 70% actor 支持可发起合并提案；保留双侧完整 hash chain，节点级冲突进入 tension_pair（防"永恒分裂"，对冲战锤暗流 6.4）
+
+**新增（沙盒生态启动准备）：**
+- 创建 `crystal-fugue/` 仓库（v0.0 初版）；详见 [`fugue-vision.md`](fugue-vision.md)
+- 起步包含：本愿景文档、Pool 宪法副本、time-compressor + scenario-loader 骨架、Bond Inquisition + Eldar Path 两个起步场景、replay recorder
+
 ### v1.0 — 变得自我审视
 > 目标：池子有完整的元层、文化层、深度。
 
@@ -881,9 +891,9 @@ Pool ν       (整池脆弱性)
 | ν-B3 | Witness Without Judgment | v0.2 | judgment-free 节点（不能 support/challenge/verify，只能 Witness 和非评价 review） |
 | ν-B4 | The Steward Role | v0.3 | 预先指定的代理人，在 Hardship/Heartbreak 期内代为应答 challenge |
 | ν-B5 | **Asymmetric Undo** ⭐ | v0.1 | challenge 30 天免费撤回；support 24h；judgment-free 永久可改；sanctuary 期反对追溯免疫 |
-| ν-B6 | The "Do No Harm" Check | v0.1 | 9 问 deterministic 检查表，所有新机制提案必过 |
+| ν-B6 | The "Do No Harm" Check | v0.1 | 10 问 deterministic 检查表，所有新机制提案必过 |
 
-### "Do No Harm" Check（9 问）
+### "Do No Harm" Check（10 问）
 
 每个新机制提案在进入 Self-Critique Cycle 之前必过：
 
@@ -896,8 +906,9 @@ Pool ν       (整池脆弱性)
 7. 这个机制有 re-entry buffer 吗？
 8. 这个机制能被攻击者武器化吗？
 9. 这个机制对 judgment-free 内容尊重吗？
+10. **群星-战锤光谱测试**：这个机制鼓励"赢"还是"共存"？它能在系统中区分"敌人"吗？它有没有 happy ending 路径？它的失败模式是慢慢消解还是突然崩坏？如果它在群星-战锤光谱上偏向战锤，它如何对冲？（详见 Part XIV §6）
 
-任何一题答"是问题"，提案被退回修改。
+任何一题答"是问题"，提案被退回修改。第 10 问是 v0.2 加入，由 Part XIV 精神坐标支撑。
 
 ### ν 的 5 条危险线
 
@@ -1060,7 +1071,284 @@ Frenzy Watch 解除时一起松开。
 
 ---
 
-## Part XIV — 一句话定义
+## Part XIV — 精神坐标（Spiritual Compass）
+
+> 前面 14 部分回答"做什么、怎么做、什么时候做"。这一部分回答**为什么**。
+>
+> 它不是机制清单。它是一个**精神免疫系统**——让 Crystal Pool 在每次架构决策时知道自己属于哪条线、不属于哪条线、走偏时怎么校准。
+
+### 1. 总章：Crystal Pool 是 Hopepunk 的工程化
+
+2017 年 Alexandra Rowland 提出三种文学姿态的对立：
+
+- **Grimdark（暗黑/战锤）**：世界是坏的，所以战斗是唯一选项。
+- **Noblebright（光明史诗）**：世界是好的，英雄会拯救它。
+- **Hopepunk（希望朋克）**：世界很复杂，**温柔本身是反抗**。
+
+Hopepunk 的核心姿态：
+- 不天真——知道世界有恶
+- 不犬儒——但拒绝把恶当成借口
+- 不英雄——拯救来自集体而不是个人
+- 不暴力——温柔、修复、重建是核心动作
+- 不必然——失败可能，但仍然尝试
+
+代表作品：Becky Chambers《Wayfarers》系列、《Schitt's Creek》、《Steven Universe》、宫崎骏《风之谷》《幽灵公主》。
+
+**Crystal Pool 是 hopepunk 的工程化。** 这不是审美选择——是设计哲学的归属。
+
+它的姊妹运动 **Solarpunk** 同样反对暗黑必然论，但更聚焦在**与生态共存**的具体技术形式（社区花园、可修复硬件、合作社、本地优先）。Crystal Pool 的"本地优先"正是 solarpunk 精神延伸到意义生产。
+
+### 2. 群星 vs 战锤光谱
+
+战锤 40K 和群星 (Stellaris) 是两种科幻设计哲学的极端。
+
+| 维度 | 战锤 40K | 群星 |
+|---|---|---|
+| 核心命题 | "未来只有战争" | "多文明共存的银河" |
+| 冲突模式 | 零和 | 联邦 + 退出 |
+| 道德设定 | 没有绝对善 | 多种伦理共存 |
+| 衰败观 | 必然腐朽 | 可被避免 |
+| Happy ending | 不存在 | 存在路径 |
+| 失败模式 | 末日狂欢 | 慢慢消解 |
+| 对待异见 | 净化 | 容纳 |
+
+**Crystal Pool 全部站队群星**：
+- 三货币不互兑 → 拒绝零和
+- tension_pair → 容纳对立
+- Decay & Bequest → 衰败是代谢不是腐败
+- Self-Critique → 自审不是末世
+- Fork Right → 退出而非战争
+
+宪法第零条第三句"意义不是流量"——直接反对战锤式的零和注意力争夺。
+宪法 5.5「不优化正确」——直接反对战锤式"我方为善对方为恶"。
+宪法 8.5「不让脆弱武器化」——直接反对战锤式"用受害者身份合理化攻击"。
+宪法 7.4「不做阶段决定论」——直接反对战锤式必然衰败的宿命论。
+
+### 3. 近亲谱系（5 条）
+
+Crystal Pool 在文学/产品/历史上的最近邻居：
+
+#### 3.1 Iain M. Banks — Culture 系列
+
+最强结构相似度。后稀缺、跨星系、AI 与人类共存的乌托邦。Minds（超级 AI）做后台运维但**绝不替人决定意义**。
+
+| Culture | Crystal Pool |
+|---|---|
+| 物质后稀缺，已解决分配 | 注意力稀缺，必须设计分配（Tide / Vesting / Anti-Whale） |
+| Minds 做大部分判断 | 人做大部分判断（宪法 5.4） |
+| 任何文明可选择不加入 | Three-Tier Departure + Fork Right |
+
+Culture 是 Crystal Pool 的**理想终点**。Crystal Pool 是 Culture 的"前传"——还在通往后稀缺的过程中。推荐读《Look to Windward》——其中对集体哀悼的工程化描写几乎一一对应 ν 系统。
+
+#### 3.2 Ursula K. Le Guin —《一无所有》
+
+Anarres 是真正运转起来的无政府工团主义月球社会。没有钱、没有政府、没有所有权——但有 syndicate（工团）、roster（轮值）、Computer（资源调度）。
+
+- 不承认私有意义 ↔ α 公开评分（不承认私有评分）
+- 轮值 ↔ 反鲸鱼边际衰减
+- "True journey is return" ↔ Re-entry Ritual (ν-B1)
+- 对内部腐败的警惕 ↔ Self-Critique Cycle
+
+Le Guin 的诚实：**它运转，但不完美**。这是 Crystal Pool 必须保持的清醒。
+
+#### 3.3 集合啦动森 / 星露谷物语
+
+少数把"福利兜底而不依赖竞争"做成商业成功的产品。
+
+| 共鸣 | 动森 / 星露谷 | Crystal Pool |
+|---|---|---|
+| 没有 PvP | 默认无"打败别人" | challenge 必须 steel-man |
+| 季节循环 | 钓鱼/虫子按季节 | Solstice + Season Theme |
+| 真正的死亡 | 树会死、村民会搬走 | Decay & Bequest |
+| 慢就是设计 | 一年 365 天等下个春天 | Vesting 72h 释放 |
+
+最大启示：动森证明"非零和游戏"可商业成功。Crystal Pool 试图把这种精神扩展到**多人协作的意义生产**——这是真正没人做过的实验。
+
+#### 3.4 Mastodon / ActivityPub 联邦
+
+Crystal Pool 的 **Fork Right + Federated Tempo Awareness** 几乎就是 Mastodon 精神延伸到意义池子。
+
+差别：
+- Mastodon 联邦是**社交关系**的；Crystal Pool 联邦是**节奏感知 + hash chain 共享**的
+- Mastodon 互信靠管理员 vouching；Crystal Pool 互信靠**可验证 anchor digest**
+
+如果想看 Crystal Pool 5 年后的样子，看 Mastodon 现在。然后**把它的所有失败模式**（实例倒闭、管理员暴政、moderation 不一致）反过来做对策——你就有了 Crystal Pool 的下半部分路线图。
+
+#### 3.5 维基百科
+
+最强的开源治理现实参照。维基的 **edit war 解决机制 + RFC + ArbCom（仲裁委员会）** 几乎一比一对应 Crystal Pool 的 **Pair Bonding + Self-Critique Cycle + Dispute Resolution**。
+
+但维基有 Crystal Pool 想避免的两个问题：
+- 删除主义 vs 包容主义内战 → Crystal Pool 用 Decay & Bequest 避开（节点不删除，自然衰减）
+- 管理员阶层化 → Crystal Pool 用宪法 2.1（不设管理员）+ 6.6（Fork Right）避开
+
+最重要的经验：维基用 25 年证明了"开放协作能产生质量内容"——但**只在一个非常窄的内容类型上**（百科条目）。Crystal Pool 想扩展到更广的"意义类型"——这是巨大的赌注。
+
+### 4. 远亲谱系（4 条）
+
+精神共鸣，结构差异较大但血脉相通：
+
+| 线 | 共鸣点 |
+|---|---|
+| **道家**（《老子》36 章 + 41 章） | "将欲歙之，必固张之" = Vesting / Defuse / Tempo Brakes 的中文版。"反者道之动" = ha 退火。"上善若水" = Tide。 |
+| **Stafford Beer 的 Viable System Model（控制论）** | 任何"可生存系统"必须有 5 个子系统：操作 / 协调 / 控制 / 智能 / 政策。Crystal Pool 的 7 层栈一比一对应。Beer 在智利 Allende 政府试过，被政变中断——血泪教训。 |
+| **罗伯特议事规则**（Robert's Rules of Order） | 美国国会 150 年用的议事规则。核心：少数派权利不可压制、议程透明、发言时间公平。Crystal Pool 治理层（Self-Critique / Dispute Resolution）的祖师爷。 |
+| **怀特海过程哲学** | "一切都是过程，不是实体（substance）"。节点不是"东西"，是**事件流的当前快照**。Phase System + Decay & Bequest 的形而上学。 |
+
+### 5. 反例清单（必须避免变成谁）
+
+每条都是 Crystal Pool 必须**避免像它**的：
+
+| 反例 | 失败模式 | 我们的对策 |
+|---|---|---|
+| **Westworld 西部世界** | AI 觉醒成新主体 | 宪法 2.2 AI 永远是工具不是公民 |
+| **Black Mirror 黑镜** | 每个技术放大人性最坏 → 必然 dystopia | Do No Harm Check 10 问 |
+| **Brave New World 美丽新世界** | 用幸福药 + 娱乐消除痛苦 → 强制开心 | 宪法 4.5 伴侣不是治疗师；不诊断不开药 |
+| **1984** | 用监视 + 真理部强制统一 → 强制正确 | 宪法 5.5 不优化"正确"；7.1 不监视个人节奏 |
+| **Snow Crash / 头号玩家** | VR 变成新一层资本主义 → 元宇宙陷阱 | 宪法 1.1-1.7 七条关于金钱的禁令 |
+| **Idiocracy** | 没有摩擦 + 短期奖励 → 整个文明降级 | 摩擦哲学是核心原则 |
+
+这 6 条反例**全部覆盖了"科技乌托邦"项目最常见的腐败路径**。能完整避开它们的项目至今几乎没有。Crystal Pool 想做第一个。
+
+### 6. 4 条战锤暗流 + 对策
+
+虽然主线是群星，但有 4 条战锤暗流必须警惕：
+
+#### 6.1 Bond + 押注式反对 → "审判庭"
+
+**风险**：Bond 让"押声誉发起 challenge"成为可能。文化偏移会让社区变成**互相审判的法庭**。
+
+**已有对策**：Steel-man Tax + Asymmetric Undo + Apology Edge + 宪法 8.5。
+
+**新增对策（v0.3 加入）**：
+- **Bond Half-Life**：连续多次 Bond 失败的 actor，下一次 Bond 上限自动减半，连续 3 次失败 → 6 个月禁止再用 Bond。防止形成"职业审判官"。
+
+#### 6.2 Defuse / Tempo Brakes → "戒严"
+
+**风险**：自动熔断 + 自动减速反复触发 → 形成"集体进入戒严"的习惯感。慢慢变成"任何活力都会被怀疑"。
+
+**已有对策**：Counter-Cyclical Tide 在 Activation 期主动鼓励 high-velocity；Pool Age-Aware Calibration。
+
+**新增对策（v0.3 加入）**：
+- **Frenzy 季度上限**：同一季度内 Frenzy Watch 不能触发超过 3 次。否则池子已生病，要走 Self-Critique 紧急议题，而不是机械减速。
+
+#### 6.3 Sanctuary / Hardship 常态化 → "永恒哀悼"
+
+**风险**：如果一个池子里大部分活跃节点都在 Sanctuary 或大部分 actor 都在 Chronic Mode——它在精神上就死了。这是 Eldar 的命运：**为了不再受伤而拒绝活着**。
+
+**已有对策**：Hardship Fund 60 天上限 / 每年 2 次；Sanctuary 14 天上限。
+
+**新增对策（v0.2 加入 Ambient Health 时）**：
+- **Protection Saturation 红线**：sanctuary + Hardship + Chronic Mode 占总活跃 actor 比例 > 30% → 自动触发 Self-Critique 紧急议题。**不是降低保护**，是问"为什么这么多人在受伤"。
+
+#### 6.4 Fork Right + Federated ρ → "永恒分裂"
+
+**风险**：Fork Right 是宪法级权利绝对不能动。但用得太频繁会让 Crystal Pool 变成战锤里"分裂的人类亚种"——每个亚种觉得自己是真正的"人类"，互相鄙视，永不合并。
+
+**已有对策**：`forked_to` 边永久保留。
+
+**新增对策（v0.3 加入）**：
+- **Fork Reunion Path**：两个 forked 池子可以通过双方 ≥ 70% actor 的支持发起合并提案，合并保留两侧完整 hash chain，节点级冲突进入 tension_pair。这是群星里"重新组建联邦"的精神，反战锤"分裂即永恒"。
+
+### 7. Crystal Fugue：战锤的合法位置
+
+战锤思维不是要从 Crystal Pool 中清除——是要**给它一个隔离的演练场**。
+
+> **真实的人不只活在群星里。人也需要演练战锤——演练冲突、演练失败、演练腐败、演练"不温柔"的代价。但那些演练不该在真实的池子里发生。那些应该发生在沙盒里。**
+
+这个沙盒叫 **Crystal Fugue**。完整愿景见 [`docs/fugue-vision.md`](fugue-vision.md)。简列：
+
+#### 7.1 三角生态（用赋格术语重组）
+
+```
+                    Pool
+                  (Subject)
+                     ▲
+                    ╱ ╲
+                   ╱   ╲
+                  ╱     ╲
+              Fugue    Hosted
+            (Answer)  (Concert Hall)
+            counterpoint  performance
+              variation     venue
+```
+
+- **Pool** 提出主题
+- **Fugue** 在所有可能变形下检验主题（增值 / 缩减 / 倒影 / 逆行）
+- **Hosted** 把主题演奏给世界听
+
+三者共享 `crystal-pool/lib/`，分别负责**真实性、教育性、商业性**。
+
+#### 7.2 Fugue 的 4 条设计原则
+
+1. **共享代码，独立部署**——Fugue 用 Pool 的 lib/ 加一层 `lib/forge/`
+2. **Fugue 数据永远不能流入 Pool**——`actor.id` 强制 `fugue:` 前缀；Pool 拒绝任何 `fugue:` 导入
+3. **永远开源 + 永远免费**——教育沙盒不能被卖给有钱人
+4. **"邪恶模式"必须明确标注**——红色横幅提醒"这是沙盒；这些行为在主线会被宪法拒绝"
+
+#### 7.3 5 个教育场景（v0.0 backlog）
+
+| 场景 | 演练什么 |
+|---|---|
+| The Bond Inquisition | 审判庭如何形成；Bond Half-Life 机制由此诞生 |
+| The Eldar Path | 过度保护 = 精神死亡 |
+| The Bubble | 社区如何被 viral 话题腐蚀；学生体验"想绕过 Tempo Brakes 的诱惑" |
+| The Heist | 红队演练：让一个 actor 试图把声誉转给自己 |
+| The Inquisition | 角色扮演 Imperium Inquisition；学生发现 Asymmetric Undo / Steel-man / Sanctuary 让审判几乎不可能 |
+
+每个场景结束自动生成**复盘节点**，可作为 build_intent 进入 Pool 主线。
+
+#### 7.4 Fugue 在离开光谱上的位置
+
+```
+Soft Disconnect    Pause       Withdraw   Erase    Fugue       Fork Right
+   30 min     ←  reversible →  30-day  ← 90-day → temp leave  permanent
+                                              entry to       split
+                                              sandbox
+```
+
+Fugue 是离开光谱中**唯一期待回归**的层级。Erase 是不回归（终极个人离场），Fork 是不回归（终极集体离场），Fugue 是**临时离场然后回来**——对应心理学 fugue state 的工程化。
+
+#### 7.5 Fugue 的存在意义
+
+> **每一个声称"我们要建一个好系统"的项目，最终都失败在创始团队没有亲历过坏的版本。**
+
+Yelp 没想到会被刷分。Twitter 没想到会被政治极化。Mastodon 没想到 instance admin 会暴政。维基没想到删除主义和包容主义会内战。
+
+它们都是**理想主义者从未见过自己的系统失败的样子**。
+
+Crystal Fugue 让创始人、维护者、研究者、社区**亲眼看见 Crystal Pool 失败的所有方式**——在沙盒里，反复，可控地。
+
+> **战锤不是 Pool 的反面。战锤是 Pool 的免疫训练。**
+
+这是 Crystal Pool 比所有前辈项目都可能更长寿的原因。
+
+### 8. 群星-战锤光谱测试（Do No Harm 第 10 问）
+
+每个新机制提案要过这 4 个子问：
+
+| 子问 | 群星答 | 战锤答 |
+|---|---|---|
+| 这个机制鼓励"赢"还是"共存"？ | 共存 | 赢 |
+| 这个机制能区分"敌人"吗？ | 不能/模糊 | 能/锐利 |
+| 这个机制有 happy ending 路径吗？ | 有 | 没有 |
+| 这个机制的失败模式是什么？ | 慢慢消解 | 突然崩坏 |
+
+**像群星答 → 加。像战锤答 → 退回 Do No Harm 重写或拒绝。**
+
+灰色地带（部分群星、部分战锤）：要求提案**显式说明对冲战锤面的方法**——例如："本机制的战锤面是 X，对冲方法是 Y。"
+
+这条测试不是审美裁决——它是**精神免疫系统的运行时检查**。
+
+### 9. 一句话收尾
+
+> **温柔不是软弱，温柔是工程。**
+>
+> Crystal Pool 是一首永远未完成的赋格——主题在被反复变形、检验、回归。Bach 的《赋格的艺术》在最后一首戛然而止，未完成本身就是作品。Crystal Pool 同样：没有 v1.0 的终点，只有 Self-Critique Cycle 永远在跑、Fugue 永远在变奏、主题永远在重新被理解。
+
+---
+
+## Part XV — 一句话定义
 
 > **Crystal Pool 是一个本地优先的意义结晶引擎，把碎片、对话残差、相变、关系、贡献、模拟盘口、福利分配、身体感知、退出权和分叉权组织成一个可观察、可审计、可解释、可修复、可逃离的意义市场。它不是笔记软件，不是交易系统，不是 AI 黑箱，不是社交平台。它是一个让思想从残差进入、通过摩擦结晶、在福利兜底中被看见、在身体节律中被尊重、在矛盾中被容纳、在集体节奏中被陪伴的池子。**
 
@@ -1096,4 +1384,5 @@ Frenzy Watch 解除时一起松开。
 
 - **v0.1**：本文档创建（与宪法配对）—— 5 层栈 + 6 货币 + 核心 12 条 + F2P/福利/身体感知/多样性/AI/退出/治理共 70+ 条机制
 - **v0.2**：加入希腊字母透镜（Part XI）+ ν 创伤敏感系统（Part XII）+ ρ 集体节奏系统（Part XIII）—— 共增加 41 条机制 + 9 条危险线 + 1 条元洞察（"池子是生命体" → 宪法零章 + "伴侣不是治疗师" → 宪法 4.5）
+- **v0.3**：加入 Part XIV 精神坐标（Hopepunk 总章 + 群星 vs 战锤光谱 + 5 条近亲谱系 + 4 条远亲谱系 + 6 条反例 + 4 条战锤暗流对策 + Crystal Fugue 沙盒生态指引 + 第 10 问光谱测试）；Do No Harm Check 从 9 问扩到 10 问；新增姊妹愿景文档 [`fugue-vision.md`](fugue-vision.md)。原 Part XIV 一句话定义顺移为 Part XV。
 - 修改历史以 PhaseEvent 进入 hash chain
