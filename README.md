@@ -131,8 +131,12 @@ The project is run **inside Crystal Pool itself once v0.1 ships**: every propose
 ## Status of the larger ecosystem
 
 - **`zhangyun520/open-hermes`** — Cognitive Jelly, the project from which Crystal Pool emerged. Different focus (gamified meaning pet); shares some primitives (residue, contribution attribution).
-- **`zhangyun520/crystal-pool`** — this repo. Open-core meaning engine.
-- **`zhangyun520/crystal-pool-hosted`** (future) — optional commercial hosting layer (themes, SLA, ops). Closed-source allowed; never replaces the engine.
+- **`zhangyun520/crystal-pool`** — this repo. Open-core meaning engine. The **subject** of the fugue.
+- **`zhangyun520/crystal-fugue`** (future) — counterpoint sandbox. Always open, always free. Where Pool's mechanisms are tested under augmentation, diminution, inversion, retrograde. See [`docs/fugue-vision.md`](docs/fugue-vision.md). The **answer** of the fugue.
+- **`zhangyun520/crystal-pool-hosted`** (future) — optional commercial hosting layer (themes, SLA, ops). Closed-source allowed; never replaces the engine. The **concert hall** of the fugue.
+
+In Bach's terms: **subject, counterpoint, performance**.
+In *fuga*'s deepest sense: **dwelling, exploration, return**.
 
 ---
 
