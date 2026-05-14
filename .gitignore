@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+build/
+out/
+.next/
+.turbo/
+.vercel/
+
+# Environments
+.env
+.env.local
+.env.*.local
+.envrc
+
+# Local data (Crystal Pool runtime artifacts — never commit)
+data/
+*.sqlite
+*.sqlite3
+*.db
+
+# Anchor bundles produced locally
+data/market/anchors/
+data/market/snapshots/
+data/market/logs/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional caches
+.cache/
+.eslintcache
