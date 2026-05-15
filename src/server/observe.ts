@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "./db";
+import { getConstitutionSnapshot } from "./constitution";
 import { getMarketOverview } from "./market";
 import { getJiInboxSnapshot } from "./ji";
 import {
@@ -243,6 +244,7 @@ export async function getObservationPoolSnapshot() {
     jiStatusGroups,
     latestEcosystemRun,
     responsibilityMaturity,
+    constitution,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -292,6 +294,7 @@ export async function getObservationPoolSnapshot() {
     }),
     getLatestEcosystemRunSummary(),
     getResponsibilityMaturitySnapshot(),
+    getConstitutionSnapshot(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -369,6 +372,7 @@ export async function getObservationPoolSnapshot() {
       proposals: latestEcosystemRun?.proposals.length ?? 0,
       hasReport: Boolean(latestEcosystemRun?.reportMarkdown),
     },
+    ethics: constitution,
     signals,
   };
 }

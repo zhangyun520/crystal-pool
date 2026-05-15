@@ -84,6 +84,7 @@ const defaultWorldlineRehearsals: Array<{
   { worldlineKey: "GRIMDARK_EMPIRE", mode: "FUGUE" },
   { worldlineKey: "AI_DIRECTED_WORLD", mode: "SYMPHONY" },
   { worldlineKey: "HOPEPUNK_REPAIR", mode: "SONATA" },
+  { worldlineKey: "FORK_DRIFT", mode: "SYMPHONY" },
 ];
 
 export function buildEcosystemAutonomyObservations(

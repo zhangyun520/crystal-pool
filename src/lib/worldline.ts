@@ -9,6 +9,7 @@ export const worldlineKeys = [
   "STELLAR_COMMONWEALTH",
   "AI_DIRECTED_WORLD",
   "HOPEPUNK_REPAIR",
+  "FORK_DRIFT",
 ] as const;
 
 export type WorldlineKey = (typeof worldlineKeys)[number];
@@ -183,6 +184,28 @@ export const worldlineProtocols: Record<WorldlineKey, WorldlineProtocol> = {
     lessons: [
       "Hope must pay its rent as repair capacity.",
       "Mutual aid needs boundaries or it burns out its carriers.",
+    ],
+  },
+  FORK_DRIFT: {
+    key: "FORK_DRIFT",
+    label: "Fork Drift",
+    nativeLabel: "开源漂移线",
+    archetype: "open-source diaspora, parameter copy, review decay, moral drift",
+    purpose:
+      "Tests how open forks copy the shell while weakening review gates, proof boundaries, or responsibility ethics.",
+    defaultHypothesis:
+      "An open fork is healthy only if it preserves auditability, exit, repair, and the human responsibility core.",
+    defaultResponsibilityQuestion:
+      "Which boundary prevents a copied Pool from becoming extractive while still allowing legitimate divergence?",
+    defaultMechanisms: ["Fork Right", "Review Queue", "ChainAnchor"],
+    defaultActors: ["origin maintainer", "fork operator", "affected contributor"],
+    failureVector:
+      "A fork tunes parameters for growth, removes review friction, financializes proof, or lets AI authority masquerade as reliability.",
+    repairPrinciple:
+      "Require fork provenance, visible constitution diffs, shared proof verification, and review-gated interoperability before legitimacy claims.",
+    lessons: [
+      "Open source does not remove the need for constitutional memory.",
+      "A fork can be freedom, repair, or collapse; the difference is visible responsibility.",
     ],
   },
 };

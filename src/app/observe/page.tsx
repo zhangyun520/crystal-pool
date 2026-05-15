@@ -186,6 +186,67 @@ export default async function ObservePage() {
         </div>
       </section>
 
+      <section className="mt-6 rounded-lg border border-stone-900 bg-stone-950 p-5 text-stone-50 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-normal text-lime-300">
+              Ethical Kernel
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold">Constitution Status</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-stone-300">
+              Philosophy is enforced as local guardrails: AI mainline stays
+              review-only, proof-chain remains manual, JiEvents enter through
+              review, and fork drift is rehearsed before legitimacy claims.
+            </p>
+          </div>
+          <span
+            className={`inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${constitutionStatusStyle(
+              snapshot.ethics.status,
+            )}`}
+          >
+            {snapshot.ethics.status === "fail" ? (
+              <ShieldAlert size={16} aria-hidden />
+            ) : (
+              <ShieldCheck size={16} aria-hidden />
+            )}
+            {snapshot.ethics.status}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <ProofStat label="pass" value={snapshot.ethics.summary.pass} />
+          <ProofStat label="warn" value={snapshot.ethics.summary.warn} />
+          <ProofStat label="fail" value={snapshot.ethics.summary.fail} />
+        </div>
+        <div className="mt-4 grid gap-2 lg:grid-cols-2">
+          {snapshot.ethics.results.slice(0, 6).map((result) => (
+            <div
+              key={result.invariantId}
+              className="rounded-md border border-white/10 bg-white/5 p-3 text-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold text-white">
+                    {result.invariantId} · {result.title}
+                  </p>
+                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-stone-300">
+                    {result.detail}
+                  </p>
+                </div>
+                <span className={constitutionPillStyle(result.status)}>
+                  {result.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-stone-400">
+          <code className="rounded bg-white/10 px-2 py-1">
+            npm run constitution:check
+          </code>
+          <span>no wallet · no token · no RPC · no automatic upload · no auto-unlock</span>
+        </div>
+      </section>
+
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.55fr)]">
         <div className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -751,6 +812,19 @@ function RunPill({ label, value }: { label: string; value: number }) {
       <p className="text-stone-500">{label}</p>
     </div>
   );
+}
+
+function constitutionStatusStyle(status: "pass" | "warn" | "fail") {
+  if (status === "fail") return "bg-rose-100 text-rose-950";
+  if (status === "warn") return "bg-amber-100 text-amber-950";
+  return "bg-lime-300 text-lime-950";
+}
+
+function constitutionPillStyle(status: "pass" | "warn" | "fail") {
+  const base = "rounded px-2 py-1 text-xs font-semibold";
+  if (status === "fail") return `${base} bg-rose-300 text-rose-950`;
+  if (status === "warn") return `${base} bg-amber-300 text-amber-950`;
+  return `${base} bg-lime-300 text-lime-950`;
 }
 
 function formatDate(value: string) {

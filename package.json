@@ -24,6 +24,7 @@
     "ecosystem:watch": "tsx scripts/ecosystem-watch.ts",
     "ecosystem:report": "tsx scripts/ecosystem-report.ts",
     "worldline:run": "tsx scripts/worldline-run.ts",
+    "constitution:check": "tsx scripts/constitution-check.ts",
     "prisma:generate": "DATABASE_URL=${DATABASE_URL:-file:./dev.db} prisma generate --schema=prisma/schema.prisma",
     "db:migrate": "DATABASE_URL=${DATABASE_URL:-file:./dev.db} RUST_LOG=trace RUST_BACKTRACE=full prisma migrate deploy --schema=prisma/schema.prisma",
     "db:seed": "tsx prisma/seed.ts",

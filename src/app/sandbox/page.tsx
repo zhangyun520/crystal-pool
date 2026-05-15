@@ -16,7 +16,7 @@ import {
   type SandboxOutput,
 } from "@/lib/sandbox";
 import { type SandboxRunRecord } from "@/lib/sandboxRun";
-import { worldlineKeys } from "@/lib/worldline";
+import { worldlineKeys, worldlineProtocols } from "@/lib/worldline";
 import {
   archiveSandboxRunAction,
   getSandboxDashboardFromSearchParams,
@@ -449,6 +449,8 @@ function RunDetail({ run }: { run?: SandboxRunRecord }) {
     );
   }
 
+  const worldline = run.worldlineKey ? worldlineProtocols[run.worldlineKey] : undefined;
+
   return (
     <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -500,6 +502,19 @@ function RunDetail({ run }: { run?: SandboxRunRecord }) {
               {run.responsibilityQuestion}
             </p>
           ) : null}
+        </div>
+      ) : null}
+
+      {worldline ? (
+        <div className="mt-3 rounded-md border border-cyan-100 bg-cyan-50 p-3 text-sm text-cyan-950">
+          <p className="font-semibold">
+            Ethics note: {worldline.nativeLabel} / {worldline.label}
+          </p>
+          <p className="mt-2 leading-6">{worldline.repairPrinciple}</p>
+          <p className="mt-2 text-xs text-cyan-900">
+            Worldline ethics shape the rehearsal hypothesis, but canonical
+            changes still require review.
+          </p>
         </div>
       ) : null}
 

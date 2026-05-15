@@ -26,6 +26,12 @@ Do not treat the project as a generic notes app.
 - WorldlineProtocol: horizontal Sandbox archetype. It may shape rehearsal
   hypothesis and responsibility questions, but it must not replace
   `FUGUE`/`SONATA`/`SYMPHONY` mode semantics.
+- EthicalInvariant: checkable ethics boundary for AI non-sovereignty, canonical
+  review, proof-chain locality, no real-money instruments, JiEvent intake, fork
+  right, soulful data, hopepunk repair, and reliability as ethics.
+- SoulfulDataAssessment: review-only signal for provenance, lived context,
+  consent boundary, traceability, repairability, non-extractive use, and human
+  responsibility. It must not auto-promote canonical state.
 
 ## Engineering principles
 
@@ -47,6 +53,9 @@ Do not treat the project as a generic notes app.
 - Any new mechanism must define mode semantics, validation rules, report
   templates, tests, and a migration or rollback note before it is considered
   complete.
+- Philosophy and ethics changes must be backed by an engineering boundary:
+  pure logic, observable UI, CLI/report, or tests. Do not leave core ethics as
+  decorative copy only.
 
 ## Testing
 
@@ -55,5 +64,6 @@ Before finishing a task, run:
 - `npm run lint`
 - `npm test`
 - `npm run build`
+- `npm run constitution:check`
 
 If a command is missing, add it or explain why it is not applicable.

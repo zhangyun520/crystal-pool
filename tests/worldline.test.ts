@@ -70,4 +70,21 @@ describe("worldline protocols", () => {
       expect(output.sections.coda.proposedRevision).toContain("repair");
     }
   });
+
+  it("models fork drift as an open-source legitimacy stress rehearsal", () => {
+    const input = buildWorldlineSandboxInput({
+      worldlineKey: "FORK_DRIFT",
+      mode: "SYMPHONY",
+    });
+    const [output] = buildSandboxOutputs(input);
+
+    expect(worldlineProtocols.FORK_DRIFT.nativeLabel).toBe("开源漂移线");
+    expect(input.inputMechanisms).toEqual(
+      expect.arrayContaining(["Fork Right", "Review Queue"]),
+    );
+    expect(output.kind).toBe("systemic_diagnosis");
+    if (output.kind === "systemic_diagnosis") {
+      expect(output.movements.constitutionalPatch).toContain("fork provenance");
+    }
+  });
 });

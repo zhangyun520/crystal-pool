@@ -42,6 +42,7 @@ npm run ecosystem:once
 npm run ecosystem:watch -- --interval-ms 60000 --max-cycles 100
 npm run ecosystem:report
 npm run worldline:run -- --worldline HOPEPUNK_REPAIR --mode SONATA
+npm run constitution:check
 ```
 
 ## Domain
@@ -69,9 +70,16 @@ npm run worldline:run -- --worldline HOPEPUNK_REPAIR --mode SONATA
   Symphony uses `SYMPHONY` for systemic rehearsal.
 - `WorldlineProtocol`: a horizontal sandbox archetype such as
   `OTHERNESS_MIRROR`, `RETURN_HOME`, `DAO_GOVERNANCE`, `GRIMDARK_EMPIRE`,
-  `STELLAR_COMMONWEALTH`, `AI_DIRECTED_WORLD`, or `HOPEPUNK_REPAIR`. It shapes
-  rehearsal hypothesis and responsibility questions without replacing
-  Fugue/Sonata/Symphony semantics.
+  `STELLAR_COMMONWEALTH`, `AI_DIRECTED_WORLD`, `HOPEPUNK_REPAIR`, or
+  `FORK_DRIFT`. It shapes rehearsal hypothesis and responsibility questions
+  without replacing Fugue/Sonata/Symphony semantics.
+- `EthicalInvariant`: a checkable ethics boundary for AI non-sovereignty,
+  canonical review, local proof-chain, no real-money instruments, JiEvent
+  intake, fork right, soulful data, hopepunk repair, open-core boundaries, and
+  reliability as ethics.
+- `SoulfulDataAssessment`: a review-only signal that checks provenance, lived
+  context, consent boundary, traceability, repairability, non-extractive use,
+  and human responsibility before data can be considered healthy pool input.
 - `Phase`: `gas`, `liquid`, `seed`, `crystal`, `fossil`, `dissolved`.
 - `ha`: anti-dogma annealing signal. It softens over-hard crystallization.
 - `Hakimi`: anti-fossilization UX assistant that suggests ha-softening.
@@ -109,6 +117,10 @@ npm run worldline:run -- --worldline HOPEPUNK_REPAIR --mode SONATA
 - Review cross-project JiEvents from `/ecosystem`, promote them into canonical
   nodes plus deterministic contribution-chain proof events, create sandbox
   rehearsals, draft RFC notes, or dismiss them.
+- Inspect the Ethical Kernel from `/observe` and run
+  `npm run constitution:check` to verify no wallet, token, RPC, automatic
+  upload, automatic AI unlock, or direct external canonical mutation boundary
+  has been crossed.
 - Run the local autonomy loop with `npm run ecosystem:once` or
   `npm run ecosystem:watch`. It imports JiEvent inbox records and writes
   observations, proposals, manifests, and reports under
@@ -192,10 +204,26 @@ npm run worldline:run -- --worldline OTHERNESS_MIRROR --mode SYMPHONY
 npm run worldline:run -- --worldline RETURN_HOME --mode SONATA
 npm run worldline:run -- --worldline GRIMDARK_EMPIRE --mode FUGUE
 npm run worldline:run -- --worldline HOPEPUNK_REPAIR --mode SONATA
+npm run worldline:run -- --worldline FORK_DRIFT --mode SYMPHONY
 ```
 
 `HOPEPUNK_REPAIR` treats hope as accountable repair infrastructure: mutual aid,
 bounded care, visible repair, and refusal to outsource responsibility.
+
+`FORK_DRIFT` rehearses what happens when a fork copies parameters but weakens
+review gates, proof boundaries, open-core commitments, or AI responsibility
+limits.
+
+## Philosophy and Ethics
+
+The public ethics statement lives in
+[`docs/philosophy/soulful-data-hopepunk-engineering.md`](docs/philosophy/soulful-data-hopepunk-engineering.md).
+It frames Crystal Pool as hopepunk engineering: not optimism, but repair
+capacity under pressure.
+
+For follow-up discussion with other AI systems, use
+[`docs/philosophy/ai-discussion-brief.md`](docs/philosophy/ai-discussion-brief.md).
+It maps the philosophy to code surfaces, hard boundaries, and review questions.
 
 The MV sibling projects include a lightweight local emitter:
 

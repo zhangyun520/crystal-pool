@@ -73,6 +73,12 @@ function sideForDaemonProposal(kind: string) {
   return "intake" as const;
 }
 
+function sideForConstitutionStatus(status: string) {
+  if (status === "fail") return "tension" as const;
+  if (status === "warn") return "neutral" as const;
+  return "crystallize" as const;
+}
+
 type FlowNodeForCluster = {
   id: string;
   title: string;
@@ -528,6 +534,34 @@ export async function getMeaningFlowSnapshot({
           : "ecosystem:daemon",
       ],
     })) ?? [];
+  const ethicsFlow: MeaningFlowEvent[] = observation.ethics.results
+    .filter((result) => result.status !== "pass")
+    .slice(0, 8)
+    .map((result) => ({
+      id: `constitution:${result.invariantId}`,
+      type: "ecosystem",
+      side: sideForConstitutionStatus(result.status),
+      at: observation.ethics.checkedAt,
+      title: `constitution · ${result.title}`,
+      detail: `${result.invariantId} ${result.status}: ${result.detail}`,
+      intensity: normalizeFlowIntensity(result.status === "fail" ? 84 : 38),
+      href: "/observe",
+      clusterIds: ["ethics:constitution"],
+    }));
+  if (ethicsFlow.length === 0) {
+    ethicsFlow.push({
+      id: "constitution:pass",
+      type: "ecosystem",
+      side: "crystallize",
+      at: observation.ethics.checkedAt,
+      title: "constitution · ethical kernel",
+      detail:
+        "Ethical kernel passed local guardrails: no wallet, token, RPC, automatic upload, auto-unlock, or direct external canonical mutation.",
+      intensity: normalizeFlowIntensity(34),
+      href: "/observe",
+      clusterIds: ["ethics:constitution"],
+    });
+  }
 
   const events = rankFlowEvents(
     [
@@ -539,6 +573,7 @@ export async function getMeaningFlowSnapshot({
       ...marketOrderFlow,
       ...ecosystemFlow,
       ...daemonProposalFlow,
+      ...ethicsFlow,
     ],
     120,
   );

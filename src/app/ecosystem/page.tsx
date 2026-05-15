@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
+import { assessJiEventSoulfulData } from "@/lib/ethicalKernel";
 import {
   jiEventKinds,
   jiKindLabels,
@@ -187,6 +188,17 @@ export default async function EcosystemPage() {
                   value={`${dimension.score}/100`}
                 />
               ))}
+            </div>
+            <div className="mt-4 rounded-md border border-lime-100 bg-lime-50 p-3">
+              <h3 className="text-sm font-semibold text-lime-950">
+                Soulful Data Review Signal
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-lime-900">
+                Pending JiEvents are assessed for provenance, lived context,
+                consent boundary, traceability, repairability, non-extractive
+                use, and human responsibility. The signal informs review only;
+                it cannot promote canonical truth.
+              </p>
             </div>
           </div>
         </section>
@@ -371,6 +383,7 @@ function SourceRow({
 
 function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
   const detail = describeJiEvent(event);
+  const soulful = assessJiEventSoulfulData(event);
 
   return (
     <article className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
@@ -409,6 +422,37 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
               ))}
             </div>
           ) : null}
+          <div className="mt-4 rounded-md border border-lime-100 bg-lime-50 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-normal text-lime-800">
+                  Soulful Data Review Signal
+                </p>
+                <p className="mt-1 text-sm text-lime-950">
+                  score {soulfulScore(soulful.totalScore)} ·{" "}
+                  {soulful.promotionPolicy.replace("_", " ")} · no auto-promote
+                </p>
+              </div>
+              <span className="rounded bg-white px-2 py-1 text-xs font-semibold text-lime-900">
+                {soulful.weakSignals.length} weak signals
+              </span>
+            </div>
+            <div className="mt-3 grid gap-2 md:grid-cols-3">
+              {soulful.dimensions.slice(0, 6).map((item) => (
+                <div
+                  key={item.key}
+                  className="rounded border border-lime-100 bg-white px-2 py-1.5 text-xs"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-stone-700">{item.label}</span>
+                    <span className={soulfulStatusStyle(item.status)}>
+                      {item.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -463,6 +507,17 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
       </div>
     </article>
   );
+}
+
+function soulfulScore(value: number) {
+  return `${value}/100`;
+}
+
+function soulfulStatusStyle(status: "pass" | "warn" | "fail") {
+  const base = "rounded px-1.5 py-0.5 font-semibold";
+  if (status === "fail") return `${base} bg-rose-100 text-rose-900`;
+  if (status === "warn") return `${base} bg-amber-100 text-amber-900`;
+  return `${base} bg-lime-100 text-lime-900`;
 }
 
 function RecentEventRow({ event }: { event: EcosystemJiEvent }) {

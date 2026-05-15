@@ -83,5 +83,6 @@ describe("ecosystem autonomy cycle planning", () => {
     expect(report).toContain("observe + propose only");
     expect(report).toContain("canAutoUnlock: false");
     expect(report).toContain("HOPEPUNK_REPAIR");
+    expect(report).toContain("FORK_DRIFT");
   });
 });
