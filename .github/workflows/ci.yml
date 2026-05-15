@@ -24,6 +24,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Prepare database
+        run: npm run db:migrate
+
       - name: Typecheck
         run: npx tsc --noEmit --incremental false
 
