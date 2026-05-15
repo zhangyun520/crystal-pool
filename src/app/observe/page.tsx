@@ -184,6 +184,38 @@ export default async function ObservePage() {
             />
           </div>
         </div>
+
+        <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-4 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-cyan-950">
+                Network Crystallization Skill
+              </h2>
+              <p className="mt-1 text-sm text-cyan-900/75">
+                Hourly source search forms a local chain and JiEvent review queue.
+              </p>
+            </div>
+            <Hash size={18} aria-hidden className="mt-1 text-cyan-700" />
+          </div>
+          <div className="mt-3 grid gap-2 text-sm">
+            <HealthRow
+              label="latest run"
+              value={snapshot.networkSkill.latestRunId ?? "none"}
+            />
+            <HealthRow label="candidates" value={snapshot.networkSkill.candidates} />
+            <HealthRow label="chained" value={snapshot.networkSkill.chained} />
+            <HealthRow
+              label="JiEvents"
+              value={snapshot.networkSkill.jiEventsWritten}
+            />
+          </div>
+          <div className="mt-3 rounded-md bg-white/80 p-2 text-xs leading-5 text-cyan-950">
+            <p>npm run skill:crystallize:watch -- --interval-ms 3600000</p>
+            <p className="break-all text-cyan-700">
+              latestHash: {snapshot.networkSkill.latestHash ?? "none"}
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="mt-6 rounded-lg border border-stone-900 bg-stone-950 p-5 text-stone-50 shadow-sm">

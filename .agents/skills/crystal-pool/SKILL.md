@@ -37,6 +37,9 @@ transition.
   local and non-financial unless the user explicitly starts a later real-market
   phase.
 - ChainAnchor: local digest bundle prepared for future IPFS/Arweave anchoring.
+- NetworkCrystallizationSkill: hourly observe-and-propose search over
+  configured high-quality RSS/Atom feeds. It writes local chain artifacts and
+  JiEvents only; it never creates canonical nodes directly.
 
 ## Engineering rules
 
@@ -56,6 +59,9 @@ transition.
    changed. It may write local run artifacts and import JiEvent records, but it
    must not promote canonical nodes, unlock AI mainline, upload anchors, publish
    artifacts, or open PRs automatically.
+10. Network search/crystallization work must be review-gated through JiEvent,
+    deterministic local chain artifacts, and `/ecosystem`; it must not treat
+    fetched source text as canonical truth.
 
 ## Good feature pattern
 

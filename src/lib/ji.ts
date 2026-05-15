@@ -10,6 +10,7 @@ export const jiSourceProjects = [
   "github",
   "chrome",
   "computer",
+  "network",
 ] as const;
 
 export type JiSourceProject = (typeof jiSourceProjects)[number];
@@ -130,6 +131,11 @@ export const jiSourceLabels: Record<
     label: "Computer Use",
     role: "本机操作臂",
     boundary: "Desktop UI actions produce observations only unless reviewed.",
+  },
+  network: {
+    label: "Network",
+    role: "高质量信息源",
+    boundary: "Network signals are reviewed observations, not canonical truth.",
   },
 };
 

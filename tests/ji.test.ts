@@ -27,6 +27,7 @@ describe("JiEvent protocol", () => {
   it("validates the cross-project source and required fields", () => {
     expect(jiSourceProjects).toContain("open-hermes");
     expect(jiSourceProjects).toContain("github");
+    expect(jiSourceProjects).toContain("network");
     expect(validateJiEvent(baseEvent)).toMatchObject({
       sourceProject: "houzuo-nianwu-mv",
       kind: "artifact.rendered",

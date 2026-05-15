@@ -26,6 +26,9 @@ Do not treat the project as a generic notes app.
 - WorldlineProtocol: horizontal Sandbox archetype. It may shape rehearsal
   hypothesis and responsibility questions, but it must not replace
   `FUGUE`/`SONATA`/`SYMPHONY` mode semantics.
+- NetworkCrystallizationSkill: hourly observe-and-propose search over
+  configured high-quality feeds. It can write local chain artifacts and
+  JiEvents, but it cannot promote canonical pool state.
 - EthicalInvariant: checkable ethics boundary for AI non-sovereignty, canonical
   review, proof-chain locality, no real-money instruments, JiEvent intake, fork
   right, soulful data, hopepunk repair, and reliability as ethics.
@@ -50,6 +53,9 @@ Do not treat the project as a generic notes app.
   local run artifacts and import JiEvent inbox records, but it must not promote
   canonical nodes, unlock AI mainline, upload anchors, publish artifacts, or
   open PRs automatically.
+- Network crystallization work must keep sources reviewable, link discoveries
+  into a deterministic local chain, and route every candidate through JiEvent
+  inbox/review before it can affect the canonical pool.
 - Any new mechanism must define mode semantics, validation rules, report
   templates, tests, and a migration or rollback note before it is considered
   complete.

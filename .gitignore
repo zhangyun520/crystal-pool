@@ -28,6 +28,9 @@
 # local ecosystem autonomy artifacts
 /data/ecosystem/inbox/*.jsonl
 /data/ecosystem/runs
+/data/ecosystem/network-runs
+/data/ecosystem/network-chain
+/data/ecosystem/network-sources.json
 
 # local meaning market artifacts
 /data/market/anchors

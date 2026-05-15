@@ -42,6 +42,8 @@ npm run ecosystem:once
 npm run ecosystem:watch -- --interval-ms 60000 --max-cycles 100
 npm run ecosystem:report
 npm run worldline:run -- --worldline HOPEPUNK_REPAIR --mode SONATA
+npm run skill:crystallize:once -- --max-items 8
+npm run skill:crystallize:watch -- --interval-ms 3600000
 npm run constitution:check
 ```
 
@@ -58,8 +60,12 @@ npm run constitution:check
 - `ChainAnchor`: a local IPFS/Arweave-ready digest bundle for contribution
   events.
 - `JiEvent`: a cross-project trigger point from Crystal Pool, Hermes, MV
-  projects, GitHub, Chrome, or Computer Use. It enters `data/ecosystem/inbox/`
-  and cannot affect the canonical pool until reviewed from `/ecosystem`.
+  projects, GitHub, Chrome, Computer Use, or network crystallization. It enters
+  `data/ecosystem/inbox/` and cannot affect the canonical pool until reviewed
+  from `/ecosystem`.
+- `NetworkCrystallizationSkill`: an hourly observe-and-propose loop that reads
+  configured high-quality feeds, scores candidates, links them into a local
+  hash chain, and emits reviewable JiEvents without creating canonical nodes.
 - `PoolSpace`: an isolated meaning space. Canonical, AI-directed, and Fugue
   pools do not share direct mutation paths.
 - `AIDirectorCycle`: one audited AI mutation pass over the AI-directed pool.
@@ -126,6 +132,11 @@ npm run constitution:check
   observations, proposals, manifests, and reports under
   `data/ecosystem/runs/<run-id>/`; it never creates canonical nodes, promotes
   sandbox learning, opens PRs, uploads anchors, or unlocks AI mainline.
+- Run the network crystallization skill with
+  `npm run skill:crystallize:once` or
+  `npm run skill:crystallize:watch -- --interval-ms 3600000`. It searches
+  configured RSS/Atom sources, creates `data/ecosystem/network-chain/` proof
+  links, writes local run reports, and drops JiEvents into the review inbox.
 - Record phase transitions and ha-softening events.
 - Bulk import pasted conversation residue with deterministic preview.
 - Mark local corpus shards from `/corpus` before they become nodes or edges.
@@ -177,6 +188,8 @@ Crystal Pool is the mother pool. Other projects act as organs that emit
   publish blockers, publish completions, and audience signals.
 - `github`: repo, PR, CI, and release discipline signals.
 - `chrome` and `computer`: authenticated or local UI observations.
+- `network`: high-quality public source feeds scored and chained by the
+  network crystallization skill.
 
 The boundary is strict: adapters write JSONL into `data/ecosystem/inbox/*.jsonl`
 or use `npm run ji:event`; they do not mutate the database. Run
@@ -196,6 +209,21 @@ npm run ecosystem:report
 The autonomy loop is observe + propose only. It reads JiEvent, Sandbox, AI Pool,
 anchor, and repo state, then writes cycle artifacts under
 `data/ecosystem/runs/<run-id>/`.
+
+For hourly network crystallization, use:
+
+```bash
+npm run skill:crystallize:once
+npm run skill:crystallize:watch -- --interval-ms 3600000 --max-cycles 24
+```
+
+The default sources are research or institutional feeds. To customize them,
+create a local, git-ignored `data/ecosystem/network-sources.json` file shaped as
+`{ "sources": [...] }`. Each cycle writes `manifest.json`, `candidates.jsonl`,
+`chain.jsonl`, `ji-events.jsonl`, and `report.md` under
+`data/ecosystem/network-runs/<run-id>/`, plus the latest local chain cursor
+under `data/ecosystem/network-chain/latest.json`. These artifacts are a
+reviewable memory chain, not canonical truth.
 
 Worldlines are generic rehearsal archetypes, not branded lore libraries:
 

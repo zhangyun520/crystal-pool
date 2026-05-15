@@ -8,6 +8,7 @@ import {
   getLatestEcosystemRunSummary,
   getResponsibilityMaturitySnapshot,
 } from "./ecosystemDaemon";
+import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
 import { defaultPoolIds } from "@/lib/pools";
 import { sandboxModes } from "@/lib/sandbox";
 import { phases, type EdgeRelation, type Phase } from "@/lib/domain";
@@ -243,6 +244,7 @@ export async function getObservationPoolSnapshot() {
     jiEvents,
     jiStatusGroups,
     latestEcosystemRun,
+    latestNetworkCrystallizationRun,
     responsibilityMaturity,
     constitution,
   ] = await Promise.all([
@@ -293,6 +295,7 @@ export async function getObservationPoolSnapshot() {
       _count: { status: true },
     }),
     getLatestEcosystemRunSummary(),
+    getLatestNetworkCrystallizationSummary(),
     getResponsibilityMaturitySnapshot(),
     getConstitutionSnapshot(),
   ]);
@@ -371,6 +374,17 @@ export async function getObservationPoolSnapshot() {
       observations: latestEcosystemRun?.observations.length ?? 0,
       proposals: latestEcosystemRun?.proposals.length ?? 0,
       hasReport: Boolean(latestEcosystemRun?.reportMarkdown),
+    },
+    networkSkill: {
+      latestRunId: latestNetworkCrystallizationRun?.runId,
+      candidates: latestNetworkCrystallizationRun?.manifest?.candidates ?? 0,
+      chained: latestNetworkCrystallizationRun?.manifest?.chained ?? 0,
+      jiEventsWritten:
+        latestNetworkCrystallizationRun?.manifest?.jiEventsWritten ?? 0,
+      latestHash: latestNetworkCrystallizationRun?.manifest?.latestHash,
+      fetchedSources: latestNetworkCrystallizationRun?.manifest?.fetchedSources ?? 0,
+      failedSources: latestNetworkCrystallizationRun?.manifest?.failedSources ?? 0,
+      hasReport: Boolean(latestNetworkCrystallizationRun?.reportMarkdown),
     },
     ethics: constitution,
     signals,
