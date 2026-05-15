@@ -1,58 +1,68 @@
-# Dependencies
-node_modules/
-.pnp/
-.pnp.js
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Build output
-dist/
-build/
-out/
-.next/
-.turbo/
-.vercel/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Environments
-.env
-.env.local
-.env.*.local
-.envrc
+# testing
+/coverage
+/playwright-report
+/test-results
 
-# Local data (Crystal Pool runtime artifacts — never commit)
-data/
-*.sqlite
-*.sqlite3
-*.db
+# local sqlite data
+/prisma/*.db
+/prisma/*.db-journal
 
-# Anchor bundles produced locally
-data/market/anchors/
-data/market/snapshots/
-data/market/logs/
+# local corpus long-run artifacts
+/data/corpus/inbox/*.jsonl
+/data/corpus/logs
+/data/corpus/runs
+/data/corpus/processed
 
-# Logs
-logs/
-*.log
+# local ecosystem autonomy artifacts
+/data/ecosystem/inbox/*.jsonl
+/data/ecosystem/runs
+
+# local meaning market artifacts
+/data/market/anchors
+/data/market/logs
+/data/market/snapshots
+
+# local scratch artifacts
+/.tmp
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
 
-# OS
-.DS_Store
-Thumbs.db
+# vercel
+.vercel
 
-# Test coverage
-coverage/
-.nyc_output/
-
-# TypeScript
+# typescript
 *.tsbuildinfo
+next-env.d.ts
 
-# Optional caches
-.cache/
-.eslintcache
+/src/generated/prisma
