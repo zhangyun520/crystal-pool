@@ -55,6 +55,11 @@ const evidence: PhilosophyAestheticsGoalEvidence = {
   latestAestheticSmokeStatus: "missing",
   latestAestheticSmokeRoutes: [],
   latestAestheticSmokeScreenshots: 0,
+  hasRepairQueueScript: false,
+  latestRepairQueueStatus: "missing",
+  latestRepairQueueItems: 0,
+  latestRepairQueueJiEvents: 0,
+  latestRepairQueueSandboxRuns: 0,
 };
 
 describe("philosophy/aesthetics goal audit", () => {
@@ -100,6 +105,25 @@ describe("philosophy/aesthetics goal audit", () => {
 
     expect(screenshotEvidence).toMatchObject({ status: "covered" });
     expect(audit.openItems.map((item) => item.id)).not.toContain("CP-GOAL-012");
+  });
+
+  it("closes the hopepunk repair gap only after a repair queue run creates review work", () => {
+    const audit = evaluatePhilosophyAestheticsGoal({
+      evidence: {
+        ...evidence,
+        hasRepairQueueScript: true,
+        latestRepairQueueStatus: "watch",
+        latestRepairQueueItems: 2,
+        latestRepairQueueJiEvents: 2,
+        latestRepairQueueSandboxRuns: 1,
+      },
+    });
+    const repairEvidence = audit.requirements.find(
+      (item) => item.id === "CP-GOAL-004",
+    );
+
+    expect(repairEvidence).toMatchObject({ status: "covered" });
+    expect(audit.openItems.map((item) => item.id)).not.toContain("CP-GOAL-004");
   });
 
   it("turns open gaps into review-gated JiEvents and sandbox rehearsals", () => {

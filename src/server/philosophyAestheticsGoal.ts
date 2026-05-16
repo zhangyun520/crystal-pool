@@ -20,6 +20,7 @@ import { worldlineKeys } from "@/lib/worldline";
 import { getConstitutionSnapshot } from "./constitution";
 import { prisma } from "./db";
 import { getLatestAestheticSmokeSummary } from "./aestheticSmoke";
+import { getLatestRepairQueueSummary } from "./repairQueue";
 import { writeJiEventToInbox } from "./ji";
 import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
 import { completeSandboxRun, runSandboxProtocol } from "./sandbox";
@@ -123,6 +124,7 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     routes,
     typedReviewProposals,
     aestheticSmoke,
+    repairQueue,
     responsibilityText,
     ethicalText,
   ] = await Promise.all([
@@ -135,6 +137,7 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
       where: { body: { contains: "Proposal kind:" } },
     }),
     getLatestAestheticSmokeSummary(),
+    getLatestRepairQueueSummary(),
     readOptional(path.join(process.cwd(), "src", "lib", "responsibilityMaturity.ts")),
     readOptional(path.join(process.cwd(), "src", "lib", "ethicalKernel.ts")),
   ]);
@@ -181,6 +184,11 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
       new Set(aestheticSmoke?.checks.map((check) => check.path) ?? []),
     ),
     latestAestheticSmokeScreenshots: aestheticSmoke?.manifest.screenshots ?? 0,
+    hasRepairQueueScript: scripts.includes("repair:queue"),
+    latestRepairQueueStatus: repairQueue?.manifest.status ?? "missing",
+    latestRepairQueueItems: repairQueue?.manifest.items ?? 0,
+    latestRepairQueueJiEvents: repairQueue?.manifest.jiEventsWritten ?? 0,
+    latestRepairQueueSandboxRuns: repairQueue?.manifest.sandboxRunsCreated ?? 0,
   };
 }
 

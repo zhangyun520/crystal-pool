@@ -245,11 +245,12 @@ test("hardening guardrail flow", async ({ page, request }) => {
   await expect(page.getByRole("heading", { name: "Long-Run Monitor" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Signals" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Ecosystem Intake" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Queue" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Queue", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pool Health" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Market Watcher" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Anchor Bundles" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Long Goal Compass" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Hopepunk Repair Queue" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Screenshot Smoke" })).toBeVisible();
 
   await page.goto("/backup");

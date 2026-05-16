@@ -11,6 +11,7 @@ import {
 } from "./ecosystemDaemon";
 import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
 import { getPhilosophyAestheticsGoalAudit } from "./philosophyAestheticsGoal";
+import { getLatestRepairQueueSummary } from "./repairQueue";
 import { defaultPoolIds } from "@/lib/pools";
 import { sandboxModes } from "@/lib/sandbox";
 import { phases, type EdgeRelation, type Phase } from "@/lib/domain";
@@ -253,6 +254,7 @@ export async function getObservationPoolSnapshot() {
     constitution,
     philosophyGoal,
     aestheticSmoke,
+    repairQueue,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -308,6 +310,7 @@ export async function getObservationPoolSnapshot() {
     getConstitutionSnapshot(),
     getPhilosophyAestheticsGoalAudit(),
     getLatestAestheticSmokeSummary(),
+    getLatestRepairQueueSummary(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -448,6 +451,18 @@ export async function getObservationPoolSnapshot() {
       screenshots: aestheticSmoke?.manifest.screenshots ?? 0,
       routes: Array.from(new Set(aestheticSmoke?.checks.map((check) => check.path) ?? [])),
       hasReport: Boolean(aestheticSmoke?.reportMarkdown),
+    },
+    repairQueue: {
+      latestRunId: repairQueue?.manifest.runId,
+      status: repairQueue?.manifest.status ?? "missing",
+      items: repairQueue?.manifest.items ?? 0,
+      critical: repairQueue?.manifest.critical ?? 0,
+      important: repairQueue?.manifest.important ?? 0,
+      watch: repairQueue?.manifest.watch ?? 0,
+      jiEventsWritten: repairQueue?.manifest.jiEventsWritten ?? 0,
+      sandboxRunsCreated: repairQueue?.manifest.sandboxRunsCreated ?? 0,
+      topItems: repairQueue?.items.slice(0, 4) ?? [],
+      hasReport: Boolean(repairQueue?.reportMarkdown),
     },
     ethics: constitution,
     signals,

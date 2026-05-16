@@ -62,6 +62,11 @@ export type PhilosophyAestheticsGoalEvidence = {
   latestAestheticSmokeStatus?: "pass" | "fail" | "missing";
   latestAestheticSmokeRoutes: readonly string[];
   latestAestheticSmokeScreenshots: number;
+  hasRepairQueueScript: boolean;
+  latestRepairQueueStatus?: "pass" | "watch" | "fail" | "missing";
+  latestRepairQueueItems: number;
+  latestRepairQueueJiEvents: number;
+  latestRepairQueueSandboxRuns: number;
 };
 
 export type PhilosophyAestheticsRequirement = {
@@ -260,12 +265,31 @@ export const philosophyAestheticsRequirements: PhilosophyAestheticsRequirement[]
     evaluate: (evidence) => {
       const hasWorldline = evidence.worldlineKeys.includes("HOPEPUNK_REPAIR");
       const hasProposalLane = evidence.proposalLaneKinds.includes("RFC_DRAFT_PROPOSAL");
+      const hasLatestRepairRun =
+        evidence.latestRepairQueueStatus !== undefined &&
+        evidence.latestRepairQueueStatus !== "missing";
+      const repairProposals =
+        evidence.latestRepairQueueItems === 0
+          ? evidence.latestRepairQueueStatus === "pass"
+          : evidence.latestRepairQueueJiEvents > 0;
       return statusEvidence(
-        hasWorldline && hasProposalLane ? "partial" : "gap",
+        hasWorldline &&
+          hasProposalLane &&
+          evidence.hasRepairQueueScript &&
+          hasLatestRepairRun &&
+          repairProposals
+          ? "covered"
+          : hasWorldline && hasProposalLane
+            ? "partial"
+            : "gap",
         [
           `hopepunk worldline: ${hasWorldline}`,
           `RFC proposal lane: ${hasProposalLane}`,
-          "dedicated repair queue: false",
+          `repair queue script: ${evidence.hasRepairQueueScript}`,
+          `latest repair queue status: ${evidence.latestRepairQueueStatus ?? "missing"}`,
+          `latest repair queue items: ${evidence.latestRepairQueueItems}`,
+          `latest repair queue JiEvents: ${evidence.latestRepairQueueJiEvents}`,
+          `latest repair queue sandboxes: ${evidence.latestRepairQueueSandboxRuns}`,
         ],
       );
     },
