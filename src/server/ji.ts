@@ -25,6 +25,10 @@ import {
   type JiReviewStatus,
   type JiSourceProject,
 } from "@/lib/ji";
+import {
+  buildHumaneReviewTriage,
+  type HumaneReviewTriageSummary,
+} from "@/lib/reviewTriage";
 import { type SandboxMode } from "@/lib/sandbox";
 import { defaultPoolIds } from "@/lib/pools";
 import { prisma, type DbClient } from "./db";
@@ -71,6 +75,7 @@ export type EcosystemDashboard = {
   bySource: Record<JiSourceProject, number>;
   byKind: Record<JiEventKind, number>;
   proposalLanes: JiProposalLaneSummary<EcosystemJiEvent>[];
+  triage: HumaneReviewTriageSummary;
   pending: EcosystemJiEvent[];
   recent: EcosystemJiEvent[];
 };
@@ -378,6 +383,15 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
     count: proposalLaneCounts[index] ?? 0,
     events: (proposalLaneSamples[index] ?? []).map(recordToJiEvent),
   })) satisfies JiProposalLaneSummary<EcosystemJiEvent>[];
+  const pendingEvents = Array.from(
+    new Map(
+      [...pendingPhilosophyCoverage, ...pendingCodingCoverage, ...pending].map(
+        (event) => [event.id, event],
+      ),
+    ).values(),
+  )
+    .slice(0, 24)
+    .map(recordToJiEvent);
 
   return {
     generatedAt: new Date().toISOString(),
@@ -394,15 +408,11 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
     bySource,
     byKind,
     proposalLanes,
-    pending: Array.from(
-      new Map(
-        [...pendingPhilosophyCoverage, ...pendingCodingCoverage, ...pending].map(
-          (event) => [event.id, event],
-        ),
-      ).values(),
-    )
-      .slice(0, 24)
-      .map(recordToJiEvent),
+    triage: buildHumaneReviewTriage({
+      events: pendingEvents,
+      totalPending: byStatus.pending,
+    }),
+    pending: pendingEvents,
     recent: recent.map(recordToJiEvent),
   };
 }

@@ -230,6 +230,7 @@ test("hardening guardrail flow", async ({ page, request }) => {
   await page.goto("/ecosystem");
   await expect(page.getByRole("heading", { name: "JiEvent Review Queue" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Project Organs" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Humane Review Triage" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Typed Proposal Lanes" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Import Inbox" })).toBeVisible();
 
@@ -347,6 +348,7 @@ test("mobile viewport keeps core surfaces usable", async ({ page }) => {
 
   await page.goto("/ecosystem");
   await expect(page.getByRole("heading", { name: "JiEvent Review Queue" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Humane Review Triage" })).toBeVisible();
 
   await page.goto("/corpus");
   await expect(page.getByText("ChatGPT Conversation Intake")).toBeVisible();

@@ -1,5 +1,6 @@
 import {
   Activity,
+  Gauge,
   GitPullRequestArrow,
   Inbox,
   ListChecks,
@@ -272,6 +273,83 @@ export default async function EcosystemPage() {
           </div>
         </section>
 
+        <section className="rounded-lg border border-violet-200 bg-violet-50 p-5 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Gauge size={18} aria-hidden className="text-violet-700" />
+                <h2 className="text-xl font-semibold tracking-normal text-violet-950">
+                  Humane Review Triage
+                </h2>
+              </div>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-violet-900/75">
+                The review gate is only humane if reviewers can see burden,
+                decision cost, reversibility, and the next safe action before
+                choosing import, sandbox, RFC, or dismissal.
+              </p>
+            </div>
+            <span className={triagePressureStyle(dashboard.triage.pressure)}>
+              {dashboard.triage.pressure}
+            </span>
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricCard
+              label="Pending"
+              value={dashboard.triage.totalPending}
+              detail={`${dashboard.triage.shown} shown`}
+            />
+            <MetricCard
+              label="Today"
+              value={dashboard.triage.counts.today + dashboard.triage.counts.repair}
+              detail={`${dashboard.triage.counts.repair} repair-first`}
+            />
+            <MetricCard
+              label="High Cost"
+              value={dashboard.triage.counts.highCost}
+              detail={`${dashboard.triage.counts.redress} redress-first`}
+            />
+            <MetricCard
+              label="Reversible"
+              value={dashboard.triage.counts.reversible}
+              detail="safe first moves"
+            />
+          </div>
+          <p className="mt-4 rounded-md bg-white/80 px-3 py-2 text-sm leading-6 text-violet-950">
+            {dashboard.triage.pressureDetail}
+          </p>
+          <div className="mt-4 grid gap-2 lg:grid-cols-2">
+            {dashboard.triage.topItems.length ? (
+              dashboard.triage.topItems.map((item) => (
+                <article
+                  key={item.eventId}
+                  className="rounded-md border border-violet-100 bg-white/85 p-3 text-sm text-violet-950"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold">{item.title}</p>
+                    <span className={triageUrgencyStyle(item.urgency)}>
+                      {item.urgency}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-violet-900/75">
+                    {item.nextAction.replaceAll("_", " ")} · cost{" "}
+                    {item.decisionCost} · {item.reversibility.replace("_", " ")}
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-xs leading-5 text-violet-900/70">
+                    {item.rationale}
+                  </p>
+                </article>
+              ))
+            ) : (
+              <div className="rounded-md border border-violet-100 bg-white/85 p-3 text-sm text-violet-950">
+                No pending JiEvents need triage right now.
+              </div>
+            )}
+          </div>
+          <p className="mt-4 text-xs text-violet-700">
+            triage is review guidance only · no automatic canonical promotion
+          </p>
+        </section>
+
         <section className="grid gap-4">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -293,9 +371,18 @@ export default async function EcosystemPage() {
           </div>
           {dashboard.pending.length > 0 ? (
             <div className="grid gap-4">
-              {dashboard.pending.map((event) => (
-                <PendingEventCard key={event.id} event={event} />
-              ))}
+              {dashboard.pending.map((event) => {
+                const triage = dashboard.triage.topItems.find(
+                  (item) => item.eventId === event.id,
+                );
+                return (
+                  <PendingEventCard
+                    key={event.id}
+                    event={event}
+                    triage={triage}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className="rounded-lg border border-dashed border-stone-300 bg-stone-50 p-6 text-sm text-stone-500">
@@ -458,7 +545,13 @@ function ProposalLaneCard({
   );
 }
 
-function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
+function PendingEventCard({
+  event,
+  triage,
+}: {
+  event: EcosystemJiEvent;
+  triage?: Awaited<ReturnType<typeof getEcosystemDashboard>>["triage"]["topItems"][number];
+}) {
   const detail = describeJiEvent(event);
   const soulful = assessJiEventSoulfulData(event);
   const domain = jiBodyField(event.body, "Domain");
@@ -521,6 +614,26 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
                   {ref.label}
                 </span>
               ))}
+            </div>
+          ) : null}
+          {triage ? (
+            <div className="mt-4 rounded-md border border-violet-100 bg-violet-50 p-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-semibold uppercase tracking-normal text-violet-800">
+                  Review Triage
+                </p>
+                <span className={triageUrgencyStyle(triage.urgency)}>
+                  {triage.urgency}
+                </span>
+              </div>
+              <p className="mt-2 text-sm leading-6 text-violet-950">
+                next: {triage.nextAction.replaceAll("_", " ")} · cost{" "}
+                {triage.decisionCost} ·{" "}
+                {triage.reversibility.replace("_", " ")}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-violet-900/75">
+                {triage.rationale}
+              </p>
             </div>
           ) : null}
           <div className="mt-4 rounded-md border border-lime-100 bg-lime-50 p-3">
@@ -641,6 +754,21 @@ function soulfulStatusStyle(status: "pass" | "warn" | "fail") {
   if (status === "fail") return `${base} bg-rose-100 text-rose-900`;
   if (status === "warn") return `${base} bg-amber-100 text-amber-900`;
   return `${base} bg-lime-100 text-lime-900`;
+}
+
+function triagePressureStyle(status: string) {
+  const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
+  if (status === "saturated") return `${base} bg-rose-100 text-rose-950`;
+  if (status === "loaded") return `${base} bg-amber-100 text-amber-950`;
+  return `${base} bg-lime-100 text-lime-950`;
+}
+
+function triageUrgencyStyle(status: string) {
+  const base = "rounded px-2 py-1 text-xs font-semibold";
+  if (status === "repair") return `${base} bg-rose-100 text-rose-900`;
+  if (status === "today") return `${base} bg-amber-100 text-amber-900`;
+  if (status === "watch") return `${base} bg-stone-100 text-stone-700`;
+  return `${base} bg-violet-100 text-violet-900`;
 }
 
 function RecentEventRow({ event }: { event: EcosystemJiEvent }) {

@@ -29,6 +29,7 @@ export const aestheticSmokeRoutes = [
     label: "Jellyfish ecosystem review",
     expectedText: [
       "JiEvent Review Queue",
+      "Humane Review Triage",
       "Typed Proposal Lanes",
       "Project Organs",
       "Pending Trigger Points",
