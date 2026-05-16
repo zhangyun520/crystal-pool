@@ -1,0 +1,526 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Phase {
+  gas
+  liquid
+  seed
+  crystal
+  fossil
+  dissolved
+}
+
+enum EdgeRelation {
+  resonates_with
+  contradicts
+  triggers
+  derives_from
+  hardens_into
+  dissolves_into
+  ha_softens
+}
+
+enum SourceType {
+  manual
+  chat
+  file
+  web
+  codex
+  ai
+  fugue
+  ecosystem
+}
+
+enum PoolKind {
+  canonical
+  ai_directed
+  fugue
+}
+
+enum PoolStatus {
+  active
+  paused
+  archived
+}
+
+enum SandboxMode {
+  FUGUE
+  SONATA
+  SYMPHONY
+}
+
+enum ActorKind {
+  human
+  ai
+  system
+}
+
+enum AIDirectorCycleStatus {
+  pending
+  skipped
+  completed
+  failed
+}
+
+enum AIDecisionKind {
+  create_node
+  create_edge
+  transition_phase
+  ha_soften
+  no_op
+}
+
+enum AIDecisionStatus {
+  proposed
+  applied
+  invalid
+  failed
+}
+
+enum HumanSuggestionStatus {
+  open
+  reviewed
+  accepted
+  rejected
+}
+
+enum FugueRunStatus {
+  draft
+  running
+  completed
+  reset
+  archived
+}
+
+enum FugueEventKind {
+  scenario_started
+  tick
+  pressure_spike
+  actor_action
+  system_observation
+  learning_proposed
+  reset
+}
+
+enum FugueLearningStatus {
+  proposed
+  imported
+  dismissed
+}
+
+enum JiReviewStatus {
+  pending
+  imported
+  sandboxed
+  rfc_drafted
+  dismissed
+}
+
+enum ContributionKind {
+  support
+  challenge
+  review
+  verify
+  build_intent
+  fund_intent
+  fork
+  feedback
+}
+
+enum MarketOrderSide {
+  bid
+  ask
+  support
+  challenge
+}
+
+enum MarketOrderStatus {
+  open
+  cancelled
+}
+
+enum AnchorProvider {
+  local
+  ipfs
+  arweave
+}
+
+enum AnchorStatus {
+  pending
+  exported
+  anchored
+  failed
+}
+
+model PoolSpace {
+  id          String     @id
+  slug        String     @unique
+  name        String
+  description String?
+  kind        PoolKind
+  status      PoolStatus @default(active)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  nodes            CrystalNode[]
+  aiDirectorCycles AIDirectorCycle[]
+  aiDecisions      AIDecision[]
+  humanSuggestions HumanSuggestion[]
+  fugueRuns        FugueRun[]
+
+  @@index([kind])
+  @@index([status])
+}
+
+model CrystalNode {
+  id                   String     @id @default(cuid())
+  poolId               String     @default("pool_canonical")
+  title                String
+  body                 String
+  phase                Phase      @default(gas)
+  crystallizationScore Float      @default(0)
+  entropyResistance    Float      @default(0)
+  publicness           Float      @default(0)
+  privateIntensity     Float      @default(0)
+  emotionFear          Float      @default(0)
+  emotionCuriosity     Float      @default(0)
+  emotionJoy           Float      @default(0)
+  emotionBoredom       Float      @default(0)
+  emotionHa            Float      @default(0)
+  sourceType           SourceType @default(manual)
+  sourceRef            String?
+  archivedAt           DateTime?
+  archiveReason        String?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  tags                   NodeTag[]
+  outgoingEdges          CrystalEdge[]           @relation("OutgoingEdges")
+  incomingEdges          CrystalEdge[]           @relation("IncomingEdges")
+  phaseEvents            PhaseEvent[]
+  contributionEvents     ContributionEvent[]
+  marketOrders           MarketOrder[]
+  pool                   PoolSpace               @relation(fields: [poolId], references: [id], onDelete: Restrict)
+  aiDecisions            AIDecision[]
+  importedFugueLearnings FugueLearningProposal[]
+
+  @@index([poolId])
+  @@index([phase])
+  @@index([archivedAt])
+  @@index([crystallizationScore])
+  @@index([createdAt])
+}
+
+model Actor {
+  id        String    @id @default(cuid())
+  alias     String    @unique
+  kind      ActorKind @default(human)
+  modelName String?
+  publicKey String?
+  url       String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  contributionEvents ContributionEvent[]
+  marketOrders       MarketOrder[]
+  humanSuggestions   HumanSuggestion[]
+
+  @@index([kind])
+}
+
+model AIDirectorCycle {
+  id               String                @id @default(cuid())
+  poolId           String
+  model            String
+  status           AIDirectorCycleStatus @default(pending)
+  inputDigest      String
+  openaiResponseId String?
+  outputJson       String?
+  error            String?
+  createdAt        DateTime              @default(now())
+  completedAt      DateTime?
+
+  pool      PoolSpace    @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  decisions AIDecision[]
+
+  @@index([poolId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AIDecision {
+  id           String           @id @default(cuid())
+  cycleId      String
+  poolId       String
+  kind         AIDecisionKind
+  status       AIDecisionStatus @default(proposed)
+  targetNodeId String?
+  title        String?
+  body         String?
+  phase        Phase?
+  relation     EdgeRelation?
+  weight       Float?
+  rationale    String
+  payloadJson  String
+  error        String?
+  createdAt    DateTime         @default(now())
+  appliedAt    DateTime?
+
+  cycle      AIDirectorCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  pool       PoolSpace       @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  targetNode CrystalNode?    @relation(fields: [targetNodeId], references: [id], onDelete: SetNull)
+
+  @@index([cycleId])
+  @@index([poolId])
+  @@index([kind])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model HumanSuggestion {
+  id         String                @id @default(cuid())
+  poolId     String
+  actorId    String
+  title      String
+  body       String
+  status     HumanSuggestionStatus @default(open)
+  createdAt  DateTime              @default(now())
+  reviewedAt DateTime?
+
+  pool  PoolSpace @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  actor Actor     @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([poolId])
+  @@index([actorId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ContributionEvent {
+  id           String           @id @default(cuid())
+  nodeId       String
+  actorId      String
+  kind         ContributionKind
+  body         String
+  weight       Float            @default(1)
+  previousHash String?
+  eventHash    String           @unique
+  anchorId     String?
+  createdAt    DateTime         @default(now())
+
+  node   CrystalNode  @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  actor  Actor        @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  anchor ChainAnchor? @relation(fields: [anchorId], references: [id], onDelete: SetNull)
+
+  @@index([nodeId])
+  @@index([actorId])
+  @@index([kind])
+  @@index([createdAt])
+  @@index([anchorId])
+}
+
+model MarketOrder {
+  id        String            @id @default(cuid())
+  nodeId    String
+  actorId   String
+  side      MarketOrderSide
+  price     Float
+  quantity  Float
+  note      String?
+  status    MarketOrderStatus @default(open)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  node  CrystalNode @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  actor Actor       @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([nodeId])
+  @@index([actorId])
+  @@index([side])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ChainAnchor {
+  id                 String         @id @default(cuid())
+  provider           AnchorProvider
+  status             AnchorStatus   @default(pending)
+  fromEventHash      String?
+  toEventHash        String?
+  eventCount         Int            @default(0)
+  bundleHash         String
+  bundlePath         String?
+  externalProvider   String?
+  externalRef        String?
+  externalRecordedAt DateTime?
+  externalNote       String?
+  error              String?
+  createdAt          DateTime       @default(now())
+  exportedAt         DateTime?
+  anchoredAt         DateTime?
+
+  events ContributionEvent[]
+
+  @@index([provider])
+  @@index([status])
+  @@index([createdAt])
+  @@index([bundleHash])
+  @@index([externalProvider])
+  @@index([externalRecordedAt])
+}
+
+model JiEventRecord {
+  id             String         @id
+  sourceProject  String
+  kind           String
+  title          String
+  body           String
+  occurredAt     DateTime
+  refsJson       String         @default("[]")
+  suggestedPhase Phase?
+  ha             Float?
+  status         JiReviewStatus @default(pending)
+  reviewAction   String?
+  reviewNote     String?
+  importedNodeId String?
+  sandboxRunId   String?
+  rfcDraft       String?
+  createdAt      DateTime       @default(now())
+  reviewedAt     DateTime?
+
+  @@index([sourceProject])
+  @@index([kind])
+  @@index([status])
+  @@index([occurredAt])
+  @@index([createdAt])
+  @@index([importedNodeId])
+  @@index([sandboxRunId])
+}
+
+model CrystalEdge {
+  id        String       @id @default(cuid())
+  fromId    String
+  toId      String
+  relation  EdgeRelation
+  weight    Float        @default(1)
+  createdAt DateTime     @default(now())
+
+  from CrystalNode @relation("OutgoingEdges", fields: [fromId], references: [id], onDelete: Cascade)
+  to   CrystalNode @relation("IncomingEdges", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@index([fromId])
+  @@index([toId])
+  @@index([relation])
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  nodes     NodeTag[]
+}
+
+model NodeTag {
+  nodeId     String
+  tagId      String
+  assignedAt DateTime @default(now())
+
+  node CrystalNode @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  tag  Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([nodeId, tagId])
+}
+
+model PhaseEvent {
+  id        String   @id @default(cuid())
+  nodeId    String
+  fromPhase Phase?
+  toPhase   Phase
+  reason    String
+  createdAt DateTime @default(now())
+
+  node CrystalNode @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+
+  @@index([nodeId])
+  @@index([toPhase])
+  @@index([createdAt])
+}
+
+model FugueRun {
+  id                  String         @id @default(cuid())
+  poolId              String
+  mode                SandboxMode    @default(FUGUE)
+  scenarioKey         String
+  title               String
+  description         String?
+  seed                Int
+  status              FugueRunStatus @default(running)
+  timeScale           Int            @default(60)
+  currentTick         Int            @default(0)
+  configJson          String
+  inputNodesJson      String         @default("[]")
+  inputActorsJson     String         @default("[]")
+  inputMechanismsJson String         @default("[]")
+  outputsJson         String         @default("[]")
+  diagnosticsJson     String         @default("[]")
+  reportMarkdown      String?
+  archivedAt          DateTime?
+  archiveReason       String?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  pool      PoolSpace               @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  events    FugueEvent[]
+  learnings FugueLearningProposal[]
+
+  @@index([poolId])
+  @@index([mode])
+  @@index([scenarioKey])
+  @@index([status])
+  @@index([createdAt])
+  @@index([archivedAt])
+}
+
+model FugueEvent {
+  id          String         @id @default(cuid())
+  runId       String
+  kind        FugueEventKind
+  tick        Int
+  actorLabel  String?
+  title       String
+  detail      String
+  payloadJson String
+  createdAt   DateTime       @default(now())
+
+  run FugueRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId])
+  @@index([kind])
+  @@index([tick])
+  @@index([createdAt])
+}
+
+model FugueLearningProposal {
+  id              String              @id @default(cuid())
+  runId           String
+  status          FugueLearningStatus @default(proposed)
+  title           String
+  body            String
+  suggestedAction String
+  importedNodeId  String?
+  createdAt       DateTime            @default(now())
+  reviewedAt      DateTime?
+
+  run          FugueRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  importedNode CrystalNode? @relation(fields: [importedNodeId], references: [id], onDelete: SetNull)
+
+  @@index([runId])
+  @@index([status])
+  @@index([createdAt])
+}
