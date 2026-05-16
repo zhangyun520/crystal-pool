@@ -18,6 +18,12 @@ Both layers are part of the same work. Neither replaces the other.
 | File | What it is | Best read when |
 |---|---|---|
 | [`soulful-data.md`](./soulful-data.md) | Nine-movement bilingual libretto on hopepunk engineering ethics | First contact, or after a long day |
+| [`three-panels.md`](./three-panels.md) | Triptych mapping the project's ethical, aesthetic, and philosophical lineages | When you want to know where this work stands in intellectual history |
+
+The two files are a **warm/cool diptych**:
+*Soulful Data* is meant to be **read aloud, inhabited, carried home**.
+*Three Panels* is meant to be **looked at slowly, like three paintings**.
+Neither replaces the other.
 
 ---
 

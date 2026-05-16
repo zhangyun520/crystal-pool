@@ -26,6 +26,11 @@ The repository has **three registers**, written in different languages:
 | **Spec / law** | `docs/constitution.md`, `docs/v0.1-issues.md` | engineers, governance designers |
 | **Architecture** | `docs/architecture.md`, `docs/pro-instructions/` | implementers |
 | **Libretto / soul** | `docs/booklet/soulful-data.md` | philosophers, critics, curators, sixteen-year-olds reading at midnight |
+| **Three Panels / lineage** | `docs/booklet/three-panels.md` | readers wanting the intellectual coordinates: ethics + aesthetics + philosophy as a triptych |
+
+The booklet layer holds a **warm/cool diptych**: `soulful-data.md` is the warm
+voice (read aloud, inhabited); `three-panels.md` is the cool voice (looked at,
+contemplated). Neither replaces the other.
 
 If a request feels ambiguous, ask which register it belongs to.
 A README sentence and a libretto sentence are not interchangeable.
