@@ -29,6 +29,13 @@ Do not treat the project as a generic notes app.
 - NetworkCrystallizationSkill: hourly observe-and-propose search over
   configured high-quality feeds. It can write local chain artifacts and
   JiEvents, but it cannot promote canonical pool state.
+- CodingIntelligenceLane: `CODING_AUTOMATION` crystallization domain for AI
+  coding agents, programming paradigms, modular architecture, design patterns,
+  repo evolution, tooling failures, and governance/security signals.
+- CodingRepositoryScan: read-only shallow clone of allowlisted repositories.
+  It may inspect file trees, README/docs metadata, package manifests, and
+  licenses, but must not install dependencies, execute code, run tests, open
+  GitHub issues/PRs/comments, or promote canonical pool state.
 - EthicalInvariant: checkable ethics boundary for AI non-sovereignty, canonical
   review, proof-chain locality, no real-money instruments, JiEvent intake, fork
   right, soulful data, hopepunk repair, and reliability as ethics.
@@ -56,6 +63,10 @@ Do not treat the project as a generic notes app.
 - Network crystallization work must keep sources reviewable, link discoveries
   into a deterministic local chain, and route every candidate through JiEvent
   inbox/review before it can affect the canonical pool.
+- Coding intelligence work must keep repo scans read-only, bounded, and
+  allowlisted. High-score coding signals may create completed Sandbox
+  rehearsals, but they must not create canonical nodes or promote sandbox
+  learning automatically.
 - Any new mechanism must define mode semantics, validation rules, report
   templates, tests, and a migration or rollback note before it is considered
   complete.

@@ -384,6 +384,9 @@ function SourceRow({
 function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
   const detail = describeJiEvent(event);
   const soulful = assessJiEventSoulfulData(event);
+  const domain = jiBodyField(event.body, "Domain");
+  const candidateKind = jiBodyField(event.body, "Candidate kind");
+  const repository = jiBodyField(event.body, "Repository");
 
   return (
     <article className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
@@ -397,6 +400,21 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
             <span className="rounded bg-stone-100 px-2 py-1 text-xs font-semibold text-stone-700">
               {event.kind}
             </span>
+            {domain ? (
+              <span className="rounded bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-900">
+                {domain}
+              </span>
+            ) : null}
+            {candidateKind ? (
+              <span className="rounded bg-cyan-100 px-2 py-1 text-xs font-semibold text-cyan-900">
+                {candidateKind}
+              </span>
+            ) : null}
+            {repository ? (
+              <span className="rounded bg-stone-900 px-2 py-1 text-xs font-semibold text-white">
+                {repository}
+              </span>
+            ) : null}
           </div>
           <h3 className="mt-3 text-lg font-semibold tracking-normal text-stone-950">
             {event.title}
@@ -453,6 +471,16 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
               ))}
             </div>
           </div>
+          {domain === "CODING_AUTOMATION" ? (
+            <div className="mt-3 rounded-md border border-violet-100 bg-violet-50 p-3 text-sm text-violet-950">
+              <p className="font-semibold">Coding Intelligence Signal</p>
+              <p className="mt-1 leading-6">
+                This signal came from the coding lane. Treat repo metadata,
+                release notes, and source summaries as observations; use
+                Sandbox or RFC review before importing architecture lessons.
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -507,6 +535,11 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
       </div>
     </article>
   );
+}
+
+function jiBodyField(body: string, label: string) {
+  const match = new RegExp(`^${label}:\\s*(.+)$`, "m").exec(body);
+  return match?.[1]?.trim();
 }
 
 function soulfulScore(value: number) {

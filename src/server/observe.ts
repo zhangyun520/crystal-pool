@@ -245,6 +245,7 @@ export async function getObservationPoolSnapshot() {
     jiStatusGroups,
     latestEcosystemRun,
     latestNetworkCrystallizationRun,
+    latestCodingCrystallizationRun,
     responsibilityMaturity,
     constitution,
   ] = await Promise.all([
@@ -295,7 +296,8 @@ export async function getObservationPoolSnapshot() {
       _count: { status: true },
     }),
     getLatestEcosystemRunSummary(),
-    getLatestNetworkCrystallizationSummary(),
+    getLatestNetworkCrystallizationSummary({ domain: "AI_RESEARCH" }),
+    getLatestNetworkCrystallizationSummary({ domain: "CODING_AUTOMATION" }),
     getResponsibilityMaturitySnapshot(),
     getConstitutionSnapshot(),
   ]);
@@ -385,6 +387,20 @@ export async function getObservationPoolSnapshot() {
       fetchedSources: latestNetworkCrystallizationRun?.manifest?.fetchedSources ?? 0,
       failedSources: latestNetworkCrystallizationRun?.manifest?.failedSources ?? 0,
       hasReport: Boolean(latestNetworkCrystallizationRun?.reportMarkdown),
+    },
+    codingSkill: {
+      latestRunId: latestCodingCrystallizationRun?.runId,
+      candidates: latestCodingCrystallizationRun?.manifest?.candidates ?? 0,
+      chained: latestCodingCrystallizationRun?.manifest?.chained ?? 0,
+      jiEventsWritten: latestCodingCrystallizationRun?.manifest?.jiEventsWritten ?? 0,
+      repoScans: latestCodingCrystallizationRun?.manifest?.repoScans ?? 0,
+      sandboxRunsCreated:
+        latestCodingCrystallizationRun?.manifest?.sandboxRunsCreated ?? 0,
+      latestHash: latestCodingCrystallizationRun?.manifest?.latestHash,
+      fetchedSources: latestCodingCrystallizationRun?.manifest?.fetchedSources ?? 0,
+      failedSources: latestCodingCrystallizationRun?.manifest?.failedSources ?? 0,
+      sandboxRunIds: latestCodingCrystallizationRun?.sandboxRunIds ?? [],
+      hasReport: Boolean(latestCodingCrystallizationRun?.reportMarkdown),
     },
     ethics: constitution,
     signals,

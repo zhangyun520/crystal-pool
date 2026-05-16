@@ -450,6 +450,9 @@ function RunDetail({ run }: { run?: SandboxRunRecord }) {
   }
 
   const worldline = run.worldlineKey ? worldlineProtocols[run.worldlineKey] : undefined;
+  const isCodingRun =
+    run.description?.includes("Coding automation rehearsal") ||
+    run.title.startsWith("Coding ");
 
   return (
     <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
@@ -515,6 +518,26 @@ function RunDetail({ run }: { run?: SandboxRunRecord }) {
             Worldline ethics shape the rehearsal hypothesis, but canonical
             changes still require review.
           </p>
+        </div>
+      ) : null}
+
+      {isCodingRun ? (
+        <div className="mt-3 rounded-md border border-violet-100 bg-violet-50 p-3 text-sm text-violet-950">
+          <p className="font-semibold">Coding Source Notes</p>
+          <p className="mt-2 leading-6">
+            This rehearsal was generated from the Coding Intelligence Lane. It
+            may encode repo architecture, programming paradigm, AI coding agent,
+            tooling failure, or governance/security signals, but it remains
+            sandbox-only until a human reviewer promotes a learning.
+          </p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+            <DetailPill
+              label="Source JiEvents"
+              value={run.sourceJiEventIds.length}
+            />
+            <DetailPill label="Learning import" value="review queue" />
+            <DetailPill label="Repo execution" value="disabled" />
+          </div>
         </div>
       ) : null}
 

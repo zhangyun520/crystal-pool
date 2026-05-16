@@ -3,9 +3,13 @@ import {
   buildNetworkCrystallizationChain,
   candidateToJiEvent,
   candidateToJiEventId,
+  codingCandidateToSandboxInput,
+  codingAutomationCrystallizationSources,
   generateNetworkCrystallizationReport,
+  parseCrystallizationDomain,
   parseNetworkFeed,
   selectNetworkCandidates,
+  sourcesForCrystallizationDomain,
   type NetworkCrystallizationManifest,
   type NetworkCrystallizationSource,
 } from "@/lib/networkCrystallization";
@@ -66,6 +70,20 @@ describe("network crystallization skill", () => {
     expect(selected.every((candidate) => candidate.qualityScore >= 72)).toBe(true);
   });
 
+  it("parses crystallization domains and separates source quotas", () => {
+    expect(parseCrystallizationDomain("coding")).toBe("CODING_AUTOMATION");
+    expect(parseCrystallizationDomain("AI_RESEARCH")).toBe("AI_RESEARCH");
+    expect(() => parseCrystallizationDomain("finance")).toThrow(
+      /Invalid crystallization domain/,
+    );
+    expect(
+      sourcesForCrystallizationDomain("CODING_AUTOMATION").every(
+        (item) => item.domain === "CODING_AUTOMATION",
+      ),
+    ).toBe(true);
+    expect(sourcesForCrystallizationDomain("AI_RESEARCH")).toHaveLength(3);
+  });
+
   it("deduplicates known JiEvent ids before writing a new review signal", () => {
     const [candidate] = parseNetworkFeed(rss, source);
     const knownEventIds = new Set([candidateToJiEventId(candidate)]);
@@ -94,8 +112,63 @@ describe("network crystallization skill", () => {
       kind: "memory.learned",
       suggestedPhase: "seed",
     });
+    expect(event.body).toContain("Domain: AI_RESEARCH");
+    expect(event.body).toContain("Candidate kind: ai_research_signal");
     expect(event.body).toContain("Chain hash:");
     expect(event.body).toContain("Review question:");
+  });
+
+  it("turns coding candidates into reviewable JiEvents and sandbox inputs", () => {
+    const [candidate] = parseNetworkFeed(
+      `<?xml version="1.0"?><feed>
+        <entry>
+          <title>Agent sandbox architecture for repo review</title>
+          <link href="https://github.com/openai/codex/releases/tag/v1" />
+          <updated>2026-05-15T11:00:00.000Z</updated>
+          <summary>Agent tooling adds permission boundaries, sandbox review, modular architecture, and rollback paths for coding automation.</summary>
+        </entry>
+      </feed>`,
+      codingAutomationCrystallizationSources[0],
+    );
+    const event = candidateToJiEvent(candidate);
+    const sandbox = codingCandidateToSandboxInput(candidate, event.id);
+
+    expect(candidate.domain).toBe("CODING_AUTOMATION");
+    expect(candidate.candidateKind).toBe("ai_coding_agent_pattern");
+    expect(event.body).toContain("Domain: CODING_AUTOMATION");
+    expect(event.body).toContain("Candidate kind: ai_coding_agent_pattern");
+    expect(event.refs?.some((ref) => ref.label === "repo")).toBe(true);
+    expect(sandbox.mode).toBe("SONATA");
+    expect(sandbox.worldlineKey).toBe("AI_DIRECTED_WORLD");
+    expect(sandbox.sourceJiEventIds).toEqual([event.id]);
+  });
+
+  it("maps coding signal kinds to distinct sandbox worldlines", () => {
+    const baseCandidate = parseNetworkFeed(rss, {
+      ...source,
+      domain: "CODING_AUTOMATION",
+      candidateKind: "repo_architecture_signal",
+      repo: "openai/codex",
+    })[0];
+
+    expect(
+      codingCandidateToSandboxInput({
+        ...baseCandidate,
+        candidateKind: "tooling_failure_signal",
+      }).mode,
+    ).toBe("FUGUE");
+    expect(
+      codingCandidateToSandboxInput({
+        ...baseCandidate,
+        candidateKind: "repo_architecture_signal",
+      }).worldlineKey,
+    ).toBe("STELLAR_COMMONWEALTH");
+    expect(
+      codingCandidateToSandboxInput({
+        ...baseCandidate,
+        candidateKind: "programming_paradigm_signal",
+      }).worldlineKey,
+    ).toBe("DAO_GOVERNANCE");
   });
 
   it("reports the observe-and-propose boundary", () => {
@@ -107,14 +180,17 @@ describe("network crystallization skill", () => {
     const manifest: NetworkCrystallizationManifest = {
       runId: "network-test",
       mode: "network_observe_propose",
+      domain: "AI_RESEARCH",
       createdAt: "2026-05-16T00:00:00.000Z",
       completedAt: "2026-05-16T00:00:00.000Z",
       sources: 1,
       fetchedSources: 1,
       failedSources: 0,
+      repoScans: 0,
       candidates: candidates.length,
       chained: chain.length,
       jiEventsWritten: candidates.length,
+      sandboxRunsCreated: 0,
       previousHash: null,
       latestHash: chain.at(-1)?.eventHash ?? null,
       intervalRecommendationMs: 3_600_000,
@@ -127,6 +203,7 @@ describe("network crystallization skill", () => {
     });
 
     expect(report).toContain("Network Crystallization Run");
+    expect(report).toContain("domain: AI_RESEARCH");
     expect(report).toContain("does not create canonical CrystalNodes");
     expect(report).toContain("Review the JiEvents in /ecosystem");
   });

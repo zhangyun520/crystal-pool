@@ -40,6 +40,13 @@ transition.
 - NetworkCrystallizationSkill: hourly observe-and-propose search over
   configured high-quality RSS/Atom feeds. It writes local chain artifacts and
   JiEvents only; it never creates canonical nodes directly.
+- CodingIntelligenceLane: the `CODING_AUTOMATION` crystallization domain for
+  AI coding agents, programming paradigms, modular architecture, design
+  patterns, repo evolution, tooling failures, and governance/security signals.
+- CodingRepositoryScan: read-only shallow clone of allowlisted GitHub repos
+  into local gitignored cache. It may inspect file trees, README/docs metadata,
+  package manifests, and licenses, but it must not execute repo code, install
+  dependencies, run tests, or open GitHub issues/PRs/comments.
 
 ## Engineering rules
 
@@ -62,6 +69,9 @@ transition.
 10. Network search/crystallization work must be review-gated through JiEvent,
     deterministic local chain artifacts, and `/ecosystem`; it must not treat
     fetched source text as canonical truth.
+11. Coding intelligence work may create completed Sandbox rehearsals for
+    high-score signals, but it must stay sandbox-only and must not promote
+    canonical nodes or learning automatically.
 
 ## Good feature pattern
 

@@ -1,0 +1,123 @@
+name: Crystal Pool Intelligence Lanes
+
+on:
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: "Lane to run"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - both
+          - ai-research
+          - coding
+      max_items:
+        description: "Maximum candidates per lane"
+        required: true
+        default: "8"
+      repo_scan_limit:
+        description: "Maximum coding repositories to scan"
+        required: true
+        default: "4"
+      max_sandbox_runs:
+        description: "Maximum coding sandbox runs to create"
+        required: true
+        default: "4"
+  schedule:
+    - cron: "7 * * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/coding-intelligence.yml"
+      - "scripts/network-crystallize-once.ts"
+      - "scripts/network-crystallize-watch.ts"
+      - "scripts/coding-*.ts"
+      - "src/lib/networkCrystallization.ts"
+      - "src/lib/codingRepository.ts"
+      - "src/server/networkCrystallization.ts"
+      - "src/server/codingRepository.ts"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+jobs:
+  intelligence-lane:
+    name: ${{ matrix.label }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DATABASE_URL: file:./dev.db
+      OPENAI_API_KEY: ""
+      CI: "true"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: AI research crystallization
+            lane: ai-research
+            command: npm run skill:crystallize:once -- --domain AI_RESEARCH --max-items "${MAX_ITEMS}" --skip-repo-scan --timeout-ms 30000
+          - label: Coding automation crystallization
+            lane: coding
+            command: npm run skill:crystallize:once -- --domain CODING_AUTOMATION --max-items "${MAX_ITEMS}" --repo-scan-limit "${REPO_SCAN_LIMIT}" --max-sandbox-runs "${MAX_SANDBOX_RUNS}" --timeout-ms 30000
+    steps:
+      - name: Select lane
+        id: select
+        env:
+          REQUESTED_LANE: ${{ github.event_name == 'workflow_dispatch' && inputs.lane || 'both' }}
+        run: |
+          if [ "$REQUESTED_LANE" = "both" ] || [ "$REQUESTED_LANE" = "${{ matrix.lane }}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.select.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        if: steps.select.outputs.enabled == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        if: steps.select.outputs.enabled == 'true'
+        run: npm ci
+
+      - name: Prepare database
+        if: steps.select.outputs.enabled == 'true'
+        run: npm run db:migrate
+
+      - name: Constitution boundary check
+        if: steps.select.outputs.enabled == 'true'
+        run: npm run constitution:check
+
+      - name: Run intelligence lane
+        if: steps.select.outputs.enabled == 'true'
+        env:
+          MAX_ITEMS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_items || '8' }}
+          REPO_SCAN_LIMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.repo_scan_limit || '4' }}
+          MAX_SANDBOX_RUNS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_sandbox_runs || '4' }}
+        run: ${{ matrix.command }}
+
+      - name: Verify read-only canonical boundary
+        if: steps.select.outputs.enabled == 'true'
+        run: npm run constitution:check
+
+      - name: Upload intelligence artifacts
+        if: steps.select.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: crystal-pool-${{ matrix.lane }}-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            data/ecosystem/network-runs/**
+            data/ecosystem/network-chain/**
+            data/ecosystem/repo-scans/**
+            data/ecosystem/inbox/network-crystallization.jsonl
+            prisma/dev.db

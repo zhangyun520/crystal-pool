@@ -79,6 +79,11 @@ function sideForConstitutionStatus(status: string) {
   return "crystallize" as const;
 }
 
+function jiBodyField(body: string, label: string) {
+  const match = new RegExp(`^${label}:\\s*(.+)$`, "m").exec(body);
+  return match?.[1]?.trim();
+}
+
 type FlowNodeForCluster = {
   id: string;
   title: string;
@@ -495,13 +500,25 @@ export async function getMeaningFlowSnapshot({
       : event.sandboxRunId
         ? `/sandbox?run=${event.sandboxRunId}`
         : "/ecosystem";
+    const domain = jiBodyField(event.body, "Domain");
+    const candidateKind = jiBodyField(event.body, "Candidate kind");
+    const repository = jiBodyField(event.body, "Repository");
+    const fallbackClusters = [
+      `ecosystem:${event.sourceProject}`,
+      domain ? `domain:${domain}` : undefined,
+      candidateKind ? `coding:${candidateKind}` : undefined,
+      repository ? `repo:${repository}` : undefined,
+    ].filter((item): item is string => Boolean(item));
     return {
       id: `ecosystem:${event.id}`,
       type: "ecosystem",
       side: sideForJiEvent(event.kind),
       at: iso(event.occurredAt),
-      title: `${event.sourceProject} · ${event.title}`,
-      detail: `${event.kind} / ${event.status}: ${event.body}`,
+      title:
+        domain === "CODING_AUTOMATION"
+          ? `coding · ${event.title}`
+          : `${event.sourceProject} · ${event.title}`,
+      detail: `${event.kind} / ${event.status}${candidateKind ? ` / ${candidateKind}` : ""}: ${event.body}`,
       intensity: normalizeFlowIntensity(
         12 + (event.ha ?? 2) * 7 + (event.status === "pending" ? 8 : 0),
       ),
@@ -510,7 +527,7 @@ export async function getMeaningFlowSnapshot({
       relatedNodeIds: event.importedNodeId ? [event.importedNodeId] : undefined,
       clusterIds: event.importedNodeId
         ? clusterIdsForNode(event.importedNodeId)
-        : [`ecosystem:${event.sourceProject}`],
+        : fallbackClusters,
     } satisfies MeaningFlowEvent;
   });
   const daemonProposalFlow: MeaningFlowEvent[] =
@@ -562,6 +579,28 @@ export async function getMeaningFlowSnapshot({
       clusterIds: ["ethics:constitution"],
     });
   }
+  const codingSkillFlow: MeaningFlowEvent[] = observation.codingSkill.latestRunId
+    ? [
+        {
+          id: `coding-skill:${observation.codingSkill.latestRunId}`,
+          type: "ecosystem",
+          side:
+            observation.codingSkill.sandboxRunsCreated > 0
+              ? "crystallize"
+              : "intake",
+          at: observation.generatedAt,
+          title: "coding · intelligence lane",
+          detail: `CODING_AUTOMATION latest=${observation.codingSkill.latestRunId} candidates=${observation.codingSkill.candidates} repoScans=${observation.codingSkill.repoScans} autoSandboxes=${observation.codingSkill.sandboxRunsCreated}`,
+          intensity: normalizeFlowIntensity(
+            22 +
+              observation.codingSkill.candidates * 5 +
+              observation.codingSkill.sandboxRunsCreated * 12,
+          ),
+          href: "/observe",
+          clusterIds: ["domain:CODING_AUTOMATION", "ecosystem:network"],
+        },
+      ]
+    : [];
 
   const events = rankFlowEvents(
     [
@@ -574,6 +613,7 @@ export async function getMeaningFlowSnapshot({
       ...ecosystemFlow,
       ...daemonProposalFlow,
       ...ethicsFlow,
+      ...codingSkillFlow,
     ],
     120,
   );

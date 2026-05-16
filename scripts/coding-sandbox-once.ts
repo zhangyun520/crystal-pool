@@ -14,49 +14,32 @@ function parsePositiveInt(value: string | undefined, fallback: number) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
-function parseSources(value: string | undefined) {
-  return value
-    ?.split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
 async function main() {
   const args = process.argv.slice(2);
   const result = await runNetworkCrystallizationCycle({
-    domain: getArgValue(args, "--domain"),
+    domain: "CODING_AUTOMATION",
     maxItems: parsePositiveInt(getArgValue(args, "--max-items"), 8),
     minQuality: parsePositiveInt(getArgValue(args, "--min-quality"), 72),
     query: getArgValue(args, "--query"),
-    sourceIds: parseSources(getArgValue(args, "--source")),
     timeoutMs: parsePositiveInt(getArgValue(args, "--timeout-ms"), 15_000),
-    writeJiEvents: !args.includes("--dry-run"),
-    autoSandbox: args.includes("--no-auto-sandbox") ? false : undefined,
+    repoScanLimit: parsePositiveInt(getArgValue(args, "--repo-scan-limit"), 4),
     maxSandboxRuns: parsePositiveInt(
-      getArgValue(args, "--max-sandbox-runs") ?? getArgValue(args, "--max-runs"),
+      getArgValue(args, "--max-runs") ?? getArgValue(args, "--max-sandbox-runs"),
       4,
     ),
-    repoScanLimit: parsePositiveInt(getArgValue(args, "--repo-scan-limit"), 4),
     skipRepoScan: args.includes("--skip-repo-scan"),
-    ignoreKnownEventIds: args.includes("--include-known"),
+    writeJiEvents: args.includes("--write-ji-events"),
+    autoSandbox: true,
+    ignoreKnownEventIds: true,
   });
 
-  console.log("Network crystallization skill");
-  console.log(`- domain: ${result.manifest.domain}`);
+  console.log("Coding sandbox crystallization");
   console.log(`- runId: ${result.runId}`);
-  console.log(`- runDir: ${result.runDir}`);
   console.log(`- candidates: ${result.candidates.length}`);
-  console.log(`- chained: ${result.chain.length}`);
-  console.log(`- jiEventsWritten: ${result.manifest.jiEventsWritten}`);
   console.log(`- repoScans: ${result.manifest.repoScans}`);
   console.log(`- sandboxRunsCreated: ${result.manifest.sandboxRunsCreated}`);
-  console.log(`- previousHash: ${result.manifest.previousHash ?? "genesis"}`);
-  console.log(`- latestHash: ${result.manifest.latestHash ?? "none"}`);
-  console.log(`- report: ${result.runDir}/report.md`);
-  if (result.errors.length > 0) {
-    console.log(`- sourceErrors: ${result.errors.length}`);
-    result.errors.slice(0, 4).forEach((error) => console.log(`  - ${error}`));
-  }
+  result.sandboxRunIds.forEach((id) => console.log(`  - ${id}`));
+  console.log("- boundary: sandbox completed runs only; no canonical promotion");
 }
 
 main()

@@ -31,6 +31,8 @@
 /data/ecosystem/network-runs
 /data/ecosystem/network-chain
 /data/ecosystem/network-sources.json
+/data/ecosystem/repo-cache
+/data/ecosystem/repo-scans
 
 # local meaning market artifacts
 /data/market/anchors

@@ -44,6 +44,10 @@ npm run ecosystem:report
 npm run worldline:run -- --worldline HOPEPUNK_REPAIR --mode SONATA
 npm run skill:crystallize:once -- --max-items 8
 npm run skill:crystallize:watch -- --interval-ms 3600000
+npm run skill:crystallize:once -- --domain coding --repo-scan-limit 4
+npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000
+npm run coding:repo-scan -- --repo openai/codex
+npm run coding:sandbox:once -- --max-runs 4
 npm run constitution:check
 ```
 
@@ -66,6 +70,14 @@ npm run constitution:check
 - `NetworkCrystallizationSkill`: an hourly observe-and-propose loop that reads
   configured high-quality feeds, scores candidates, links them into a local
   hash chain, and emits reviewable JiEvents without creating canonical nodes.
+- `CrystallizationDomain`: the domain lane for long-running crystallization.
+  `AI_RESEARCH` tracks research/institutional AI signals; `CODING_AUTOMATION`
+  tracks AI coding agents, programming paradigms, modular architecture, design
+  patterns, repo evolution, tooling failures, and governance/security signals.
+- `CodingRepositoryScan`: a read-only shallow clone of allowlisted GitHub repos
+  into `data/ecosystem/repo-cache/`. It reads file trees and metadata only. It
+  never installs dependencies, executes repo code, runs tests, opens issues, or
+  promotes canonical pool state.
 - `PoolSpace`: an isolated meaning space. Canonical, AI-directed, and Fugue
   pools do not share direct mutation paths.
 - `AIDirectorCycle`: one audited AI mutation pass over the AI-directed pool.
@@ -137,6 +149,12 @@ npm run constitution:check
   `npm run skill:crystallize:watch -- --interval-ms 3600000`. It searches
   configured RSS/Atom sources, creates `data/ecosystem/network-chain/` proof
   links, writes local run reports, and drops JiEvents into the review inbox.
+- Run the coding intelligence lane with
+  `npm run skill:crystallize:once -- --domain coding` or
+  `npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000`.
+  It can shallow clone allowlisted repositories for read-only architecture
+  analysis, emit coding JiEvents, and create high-score completed Sandbox
+  rehearsals inside the sandbox pool only.
 - Record phase transitions and ha-softening events.
 - Bulk import pasted conversation residue with deterministic preview.
 - Mark local corpus shards from `/corpus` before they become nodes or edges.
@@ -215,15 +233,27 @@ For hourly network crystallization, use:
 ```bash
 npm run skill:crystallize:once
 npm run skill:crystallize:watch -- --interval-ms 3600000 --max-cycles 24
+npm run skill:crystallize:once -- --domain coding --repo-scan-limit 4
+npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000 --max-cycles 24
+npm run coding:repo-scan -- --repo openai/codex
+npm run coding:sandbox:once -- --max-runs 4
 ```
 
-The default sources are research or institutional feeds. To customize them,
-create a local, git-ignored `data/ecosystem/network-sources.json` file shaped as
+Use `--domain coding` for the `CODING_AUTOMATION` lane and omit it for
+`AI_RESEARCH`. The coding lane scans official AI coding, agent protocol,
+open-source coding agent, and programming paradigm sources. Repo scan cache and
+reports live under git-ignored `data/ecosystem/repo-cache/` and
+`data/ecosystem/repo-scans/`. To customize source feeds, create a local,
+git-ignored `data/ecosystem/network-sources.json` file shaped as
 `{ "sources": [...] }`. Each cycle writes `manifest.json`, `candidates.jsonl`,
-`chain.jsonl`, `ji-events.jsonl`, and `report.md` under
-`data/ecosystem/network-runs/<run-id>/`, plus the latest local chain cursor
-under `data/ecosystem/network-chain/latest.json`. These artifacts are a
-reviewable memory chain, not canonical truth.
+`chain.jsonl`, `ji-events.jsonl`, `sandbox-runs.jsonl`, and `report.md` under
+`data/ecosystem/network-runs/<run-id>/`, plus domain-specific local chain
+cursors under `data/ecosystem/network-chain/`. These artifacts are a reviewable
+memory chain, not canonical truth.
+
+`npm run coding:sandbox:once` deliberately reuses known coding candidates when
+needed, so sandbox rehearsals can be regenerated after a local database reset
+without duplicating JiEvent inbox records.
 
 Worldlines are generic rehearsal archetypes, not branded lore libraries:
 

@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   Anchor,
   CheckCircle2,
+  Code2,
   Eye,
   GitCommitHorizontal,
   Hash,
@@ -189,7 +190,7 @@ export default async function ObservePage() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-cyan-950">
-                Network Crystallization Skill
+                AI Research Lane
               </h2>
               <p className="mt-1 text-sm text-cyan-900/75">
                 Hourly source search forms a local chain and JiEvent review queue.
@@ -213,6 +214,40 @@ export default async function ObservePage() {
             <p>npm run skill:crystallize:watch -- --interval-ms 3600000</p>
             <p className="break-all text-cyan-700">
               latestHash: {snapshot.networkSkill.latestHash ?? "none"}
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-violet-200 bg-violet-50 p-4 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-violet-950">
+                Coding Intelligence Lane
+              </h2>
+              <p className="mt-1 text-sm text-violet-900/75">
+                AI coding, repo architecture, paradigms, and design patterns
+                become reviewable JiEvents and sandbox rehearsals.
+              </p>
+            </div>
+            <Code2 size={18} aria-hidden className="mt-1 text-violet-700" />
+          </div>
+          <div className="mt-3 grid gap-2 text-sm">
+            <HealthRow
+              label="latest run"
+              value={snapshot.codingSkill.latestRunId ?? "none"}
+            />
+            <HealthRow label="candidates" value={snapshot.codingSkill.candidates} />
+            <HealthRow label="repo scans" value={snapshot.codingSkill.repoScans} />
+            <HealthRow
+              label="auto sandboxes"
+              value={snapshot.codingSkill.sandboxRunsCreated}
+            />
+          </div>
+          <div className="mt-3 rounded-md bg-white/80 p-2 text-xs leading-5 text-violet-950">
+            <p>npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000</p>
+            <p>npm run coding:repo-scan -- --repo openai/codex</p>
+            <p className="break-all text-violet-700">
+              latestHash: {snapshot.codingSkill.latestHash ?? "none"}
             </p>
           </div>
         </div>
