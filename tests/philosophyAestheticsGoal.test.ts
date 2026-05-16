@@ -51,6 +51,10 @@ const evidence: PhilosophyAestheticsGoalEvidence = {
   philosophyReviewProposals: 8,
   philosophySandboxRuns: 4,
   hasPhilosophyGapAudit: true,
+  hasAestheticSmokeScript: false,
+  latestAestheticSmokeStatus: "missing",
+  latestAestheticSmokeRoutes: [],
+  latestAestheticSmokeScreenshots: 0,
 };
 
 describe("philosophy/aesthetics goal audit", () => {
@@ -78,6 +82,24 @@ describe("philosophy/aesthetics goal audit", () => {
     expect(audit.requirements.some((item) => item.status === "covered")).toBe(true);
     expect(audit.openItems.map((item) => item.id)).toContain("CP-GOAL-004");
     expect(audit.openItems.map((item) => item.id)).toContain("CP-GOAL-012");
+  });
+
+  it("closes the aesthetic screenshot gap only after successful local evidence exists", () => {
+    const audit = evaluatePhilosophyAestheticsGoal({
+      evidence: {
+        ...evidence,
+        hasAestheticSmokeScript: true,
+        latestAestheticSmokeStatus: "pass",
+        latestAestheticSmokeRoutes: ["/flow", "/observe", "/ecosystem", "/sandbox"],
+        latestAestheticSmokeScreenshots: 8,
+      },
+    });
+    const screenshotEvidence = audit.requirements.find(
+      (item) => item.id === "CP-GOAL-012",
+    );
+
+    expect(screenshotEvidence).toMatchObject({ status: "covered" });
+    expect(audit.openItems.map((item) => item.id)).not.toContain("CP-GOAL-012");
   });
 
   it("turns open gaps into review-gated JiEvents and sandbox rehearsals", () => {

@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { prisma } from "./db";
+import { getLatestAestheticSmokeSummary } from "./aestheticSmoke";
 import { getConstitutionSnapshot } from "./constitution";
 import { getMarketOverview } from "./market";
 import { getJiInboxSnapshot } from "./ji";
@@ -251,6 +252,7 @@ export async function getObservationPoolSnapshot() {
     responsibilityMaturity,
     constitution,
     philosophyGoal,
+    aestheticSmoke,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -305,6 +307,7 @@ export async function getObservationPoolSnapshot() {
     getResponsibilityMaturitySnapshot(),
     getConstitutionSnapshot(),
     getPhilosophyAestheticsGoalAudit(),
+    getLatestAestheticSmokeSummary(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -344,6 +347,11 @@ export async function getObservationPoolSnapshot() {
       .filter((group) => group.status === "pending")
       .reduce((sum, group) => sum + group._count.status, 0),
   };
+  const aestheticSmokeStatus: "pass" | "fail" | "missing" = aestheticSmoke
+    ? aestheticSmoke.manifest.failed === 0
+      ? "pass"
+      : "fail"
+    : "missing";
 
   return {
     generatedAt: new Date().toISOString(),
@@ -431,6 +439,16 @@ export async function getObservationPoolSnapshot() {
       hasReport: Boolean(latestPhilosophyCrystallizationRun?.reportMarkdown),
     },
     philosophyGoal: philosophyGoal.audit,
+    aestheticSmoke: {
+      latestRunId: aestheticSmoke?.manifest.runId,
+      status: aestheticSmokeStatus,
+      checks: aestheticSmoke?.manifest.checks ?? 0,
+      passed: aestheticSmoke?.manifest.passed ?? 0,
+      failed: aestheticSmoke?.manifest.failed ?? 0,
+      screenshots: aestheticSmoke?.manifest.screenshots ?? 0,
+      routes: Array.from(new Set(aestheticSmoke?.checks.map((check) => check.path) ?? [])),
+      hasReport: Boolean(aestheticSmoke?.reportMarkdown),
+    },
     ethics: constitution,
     signals,
   };

@@ -19,6 +19,7 @@ import { sandboxModes } from "@/lib/sandbox";
 import { worldlineKeys } from "@/lib/worldline";
 import { getConstitutionSnapshot } from "./constitution";
 import { prisma } from "./db";
+import { getLatestAestheticSmokeSummary } from "./aestheticSmoke";
 import { writeJiEventToInbox } from "./ji";
 import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
 import { completeSandboxRun, runSandboxProtocol } from "./sandbox";
@@ -121,6 +122,7 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     tests,
     routes,
     typedReviewProposals,
+    aestheticSmoke,
     responsibilityText,
     ethicalText,
   ] = await Promise.all([
@@ -132,6 +134,7 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     prisma.jiEventRecord.count({
       where: { body: { contains: "Proposal kind:" } },
     }),
+    getLatestAestheticSmokeSummary(),
     readOptional(path.join(process.cwd(), "src", "lib", "responsibilityMaturity.ts")),
     readOptional(path.join(process.cwd(), "src", "lib", "ethicalKernel.ts")),
   ]);
@@ -168,6 +171,16 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     hasPhilosophyGapAudit: await pathExists(
       path.join(process.cwd(), "src", "lib", "philosophyAestheticsGoal.ts"),
     ),
+    hasAestheticSmokeScript: scripts.includes("ui:aesthetic-smoke"),
+    latestAestheticSmokeStatus: aestheticSmoke
+      ? aestheticSmoke.manifest.failed === 0
+        ? "pass"
+        : "fail"
+      : "missing",
+    latestAestheticSmokeRoutes: Array.from(
+      new Set(aestheticSmoke?.checks.map((check) => check.path) ?? []),
+    ),
+    latestAestheticSmokeScreenshots: aestheticSmoke?.manifest.screenshots ?? 0,
   };
 }
 

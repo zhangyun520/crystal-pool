@@ -242,6 +242,7 @@ npm run skill:crystallize:once -- --domain coding --repo-scan-limit 4
 npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000 --max-cycles 24
 npm run skill:crystallize:once -- --domain philosophy --max-sandbox-runs 4
 npm run skill:crystallize:watch -- --domain philosophy --interval-ms 3600000 --max-cycles 24
+npm run ui:aesthetic-smoke
 npm run philosophy:gap-audit
 npm run philosophy:gap-audit -- --create-sandboxes --max-runs 4
 npm run coding:repo-scan -- --repo openai/codex
@@ -267,6 +268,15 @@ git-ignored `data/ecosystem/network-sources.json` file shaped as
 `report.md` under `data/ecosystem/network-runs/<run-id>/`, plus
 domain-specific local chain cursors under `data/ecosystem/network-chain/`.
 These artifacts are a reviewable memory chain, not canonical truth.
+
+`npm run ui:aesthetic-smoke` expects the local app to be reachable at
+`http://localhost:3000`. It captures desktop and mobile screenshots for
+`/flow`, `/observe`, `/ecosystem`, and `/sandbox`, then writes
+`manifest.json`, `route-checks.json`, screenshots, and `report.md` under
+`data/ecosystem/aesthetic-smoke/<run-id>/`. It checks required domain text,
+HTTP status, blank-page risk, and horizontal overflow. It is local evidence for
+review only: no screenshots are uploaded and no design decision becomes
+canonical automatically.
 
 `npm run philosophy:gap-audit` is the internal companion to the public-source
 philosophy lane. It asks what Crystal Pool still lacks to fully realize its

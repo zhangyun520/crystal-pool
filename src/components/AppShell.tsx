@@ -66,7 +66,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-8 lg:px-8">{children}</main>
+      <main className="mx-auto max-w-7xl min-w-0 overflow-x-clip px-4 py-8 lg:px-8">
+        {children}
+      </main>
     </div>
   );
 }

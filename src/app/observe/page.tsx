@@ -379,6 +379,52 @@ export default async function ObservePage() {
         </div>
       </section>
 
+      <section className="mt-6 rounded-lg border border-cyan-200 bg-cyan-50 p-5 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-normal text-cyan-700">
+              Aesthetic Evidence
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold text-cyan-950">
+              Screenshot Smoke
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-cyan-900/75">
+              Core operation surfaces are captured as local desktop and mobile
+              screenshots. The run checks required domain text, HTTP status,
+              blank-page risk, and horizontal overflow; it is evidence for
+              review, not an automatic judgment of beauty.
+            </p>
+          </div>
+          <span className={aestheticSmokeStatusStyle(snapshot.aestheticSmoke.status)}>
+            {snapshot.aestheticSmoke.status}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <HealthRow label="checks" value={snapshot.aestheticSmoke.checks} />
+          <HealthRow label="passed" value={snapshot.aestheticSmoke.passed} />
+          <HealthRow label="failed" value={snapshot.aestheticSmoke.failed} />
+          <HealthRow label="screenshots" value={snapshot.aestheticSmoke.screenshots} />
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="rounded-md bg-white/80 p-3 text-sm text-cyan-950">
+            <p className="font-semibold">
+              {snapshot.aestheticSmoke.latestRunId ?? "No local screenshot run yet"}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-cyan-900/75">
+              Routes:{" "}
+              {snapshot.aestheticSmoke.routes.length
+                ? snapshot.aestheticSmoke.routes.join(", ")
+                : "run the local smoke command"}
+            </p>
+          </div>
+          <div className="rounded-md bg-white/80 p-3 text-xs leading-5 text-cyan-950">
+            <p>npm run ui:aesthetic-smoke</p>
+            <p>npm run philosophy:gap-audit -- --dry-run</p>
+            <p className="text-cyan-700">local artifacts only · no upload</p>
+          </div>
+        </div>
+      </section>
+
       <section className="mt-6 rounded-lg border border-stone-900 bg-stone-950 p-5 text-stone-50 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -1031,6 +1077,13 @@ function GapStatusPill({ status }: { status: "covered" | "partial" | "gap" }) {
       {status}
     </span>
   );
+}
+
+function aestheticSmokeStatusStyle(status: "pass" | "fail" | "missing") {
+  const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
+  if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
+  if (status === "fail") return `${base} bg-rose-100 text-rose-950`;
+  return `${base} bg-amber-100 text-amber-950`;
 }
 
 function formatDate(value: string) {

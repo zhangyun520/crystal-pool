@@ -55,6 +55,10 @@ Do not treat the project as a generic notes app.
   interface commitments. It may write local audit artifacts, JiEvent review
   signals, RFC/design/task drafts, and sandbox-only rehearsals, but it must not
   promote canonical state.
+- AestheticScreenshotSmoke: local Browser/Playwright screenshot evidence for
+  `/flow`, `/observe`, `/ecosystem`, and `/sandbox`. It may write screenshots,
+  route checks, manifests, and reports under `data/ecosystem/aesthetic-smoke/`,
+  but it must not upload images, publish releases, or decide canonical truth.
 
 ## Engineering principles
 

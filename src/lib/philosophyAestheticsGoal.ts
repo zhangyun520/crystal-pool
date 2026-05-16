@@ -58,6 +58,10 @@ export type PhilosophyAestheticsGoalEvidence = {
   philosophyReviewProposals: number;
   philosophySandboxRuns: number;
   hasPhilosophyGapAudit: boolean;
+  hasAestheticSmokeScript: boolean;
+  latestAestheticSmokeStatus?: "pass" | "fail" | "missing";
+  latestAestheticSmokeRoutes: readonly string[];
+  latestAestheticSmokeScreenshots: number;
 };
 
 export type PhilosophyAestheticsRequirement = {
@@ -330,10 +334,11 @@ export const philosophyAestheticsRequirements: PhilosophyAestheticsRequirement[]
     evaluate: (evidence) => {
       const routes = hasAll(evidence.routes, ["/flow", "/observe", "/sandbox", "/ecosystem"]);
       const e2e = hasPath(evidence.tests, /e2e\/crystal-pool\.spec\.ts$/);
-      return statusEvidence(routes && e2e ? "partial" : "gap", [
+      const smoke = evidence.hasAestheticSmokeScript;
+      return statusEvidence(routes && e2e && smoke ? "covered" : routes && e2e ? "partial" : "gap", [
         `core routes: ${routes}`,
         `e2e route smoke: ${e2e}`,
-        "explicit visual regression artifacts: false",
+        `aesthetic smoke script: ${smoke}`,
       ]);
     },
   },
@@ -545,11 +550,31 @@ export const philosophyAestheticsRequirements: PhilosophyAestheticsRequirement[]
     reviewPath: "Review as UI testing task before declaring the aesthetic complete.",
     sandboxMode: "FUGUE",
     worldlineKey: "OTHERNESS_MIRROR",
-    evaluate: (evidence) =>
-      statusEvidence("gap", [
-        `e2e present: ${hasPath(evidence.tests, /e2e\/crystal-pool\.spec\.ts$/)}`,
-        "dedicated screenshot artifact workflow: false",
-      ]),
+    evaluate: (evidence) => {
+      const script = evidence.hasAestheticSmokeScript;
+      const latestPass = evidence.latestAestheticSmokeStatus === "pass";
+      const routes = hasAll(evidence.latestAestheticSmokeRoutes, [
+        "/flow",
+        "/observe",
+        "/ecosystem",
+        "/sandbox",
+      ]);
+      const screenshots = evidence.latestAestheticSmokeScreenshots >= 8;
+      return statusEvidence(
+        script && latestPass && routes && screenshots
+          ? "covered"
+          : script
+            ? "partial"
+            : "gap",
+        [
+          `e2e present: ${hasPath(evidence.tests, /e2e\/crystal-pool\.spec\.ts$/)}`,
+          `aesthetic smoke script: ${script}`,
+          `latest smoke status: ${evidence.latestAestheticSmokeStatus ?? "missing"}`,
+          `latest smoke routes: ${evidence.latestAestheticSmokeRoutes.join(", ") || "none"}`,
+          `latest screenshots: ${evidence.latestAestheticSmokeScreenshots}`,
+        ],
+      );
+    },
   },
 ];
 
