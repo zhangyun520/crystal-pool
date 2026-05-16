@@ -12,6 +12,7 @@ on:
           - both
           - ai-research
           - coding
+          - philosophy
       max_items:
         description: "Maximum candidates per lane"
         required: true
@@ -61,6 +62,9 @@ jobs:
           - label: Coding automation crystallization
             lane: coding
             command: npm run skill:crystallize:once -- --domain CODING_AUTOMATION --max-items "${MAX_ITEMS}" --repo-scan-limit "${REPO_SCAN_LIMIT}" --max-sandbox-runs "${MAX_SANDBOX_RUNS}" --timeout-ms 30000
+          - label: Philosophy aesthetics crystallization
+            lane: philosophy
+            command: npm run skill:crystallize:once -- --domain PHILOSOPHY_AESTHETICS --max-items "${MAX_ITEMS}" --skip-repo-scan --max-sandbox-runs "${MAX_SANDBOX_RUNS}" --timeout-ms 30000
     steps:
       - name: Select lane
         id: select

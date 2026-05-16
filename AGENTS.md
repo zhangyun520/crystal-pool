@@ -32,6 +32,9 @@ Do not treat the project as a generic notes app.
 - CodingIntelligenceLane: `CODING_AUTOMATION` crystallization domain for AI
   coding agents, programming paradigms, modular architecture, design patterns,
   repo evolution, tooling failures, and governance/security signals.
+- PhilosophyAestheticsLane: `PHILOSOPHY_AESTHETICS` crystallization domain for
+  hopepunk ethics, humanistic governance, soulful data, reliability ethics,
+  worldline narrative, and operational interface aesthetics.
 - CodingRepositoryScan: read-only shallow clone of allowlisted repositories.
   It may inspect file trees, README/docs metadata, package manifests, and
   licenses, but must not install dependencies, execute code, run tests, open
@@ -67,6 +70,9 @@ Do not treat the project as a generic notes app.
   allowlisted. High-score coding signals may create completed Sandbox
   rehearsals, but they must not create canonical nodes or promote sandbox
   learning automatically.
+- Philosophy/aesthetics intelligence work may create reviewable JiEvents,
+  Sandbox rehearsals, RFC/essay/design proposals, or test ideas. It must not
+  turn external essays into doctrine or promote canonical state without review.
 - Any new mechanism must define mode semantics, validation rules, report
   templates, tests, and a migration or rollback note before it is considered
   complete.

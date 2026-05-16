@@ -9,6 +9,7 @@ import {
   GitCommitHorizontal,
   Hash,
   Link2,
+  Palette,
   RefreshCw,
   ShieldAlert,
   ShieldCheck,
@@ -248,6 +249,48 @@ export default async function ObservePage() {
             <p>npm run coding:repo-scan -- --repo openai/codex</p>
             <p className="break-all text-violet-700">
               latestHash: {snapshot.codingSkill.latestHash ?? "none"}
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-fuchsia-200 bg-fuchsia-50 p-4 shadow-sm">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-fuchsia-950">
+                Philosophy / Aesthetics Lane
+              </h2>
+              <p className="mt-1 text-sm text-fuchsia-900/75">
+                Hopepunk ethics, humanism, soulful data, interface beauty, and
+                worldline essays become reviewable JiEvents and sandbox prompts.
+              </p>
+            </div>
+            <Palette size={18} aria-hidden className="mt-1 text-fuchsia-700" />
+          </div>
+          <div className="mt-3 grid gap-2 text-sm">
+            <HealthRow
+              label="latest run"
+              value={snapshot.philosophySkill.latestRunId ?? "none"}
+            />
+            <HealthRow
+              label="candidates"
+              value={snapshot.philosophySkill.candidates}
+            />
+            <HealthRow
+              label="JiEvents"
+              value={snapshot.philosophySkill.jiEventsWritten}
+            />
+            <HealthRow
+              label="auto sandboxes"
+              value={snapshot.philosophySkill.sandboxRunsCreated}
+            />
+          </div>
+          <div className="mt-3 rounded-md bg-white/80 p-2 text-xs leading-5 text-fuchsia-950">
+            <p>
+              npm run skill:crystallize:watch -- --domain philosophy
+              --interval-ms 3600000
+            </p>
+            <p className="break-all text-fuchsia-700">
+              latestHash: {snapshot.philosophySkill.latestHash ?? "none"}
             </p>
           </div>
         </div>

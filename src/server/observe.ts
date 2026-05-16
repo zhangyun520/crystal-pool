@@ -246,6 +246,7 @@ export async function getObservationPoolSnapshot() {
     latestEcosystemRun,
     latestNetworkCrystallizationRun,
     latestCodingCrystallizationRun,
+    latestPhilosophyCrystallizationRun,
     responsibilityMaturity,
     constitution,
   ] = await Promise.all([
@@ -298,6 +299,7 @@ export async function getObservationPoolSnapshot() {
     getLatestEcosystemRunSummary(),
     getLatestNetworkCrystallizationSummary({ domain: "AI_RESEARCH" }),
     getLatestNetworkCrystallizationSummary({ domain: "CODING_AUTOMATION" }),
+    getLatestNetworkCrystallizationSummary({ domain: "PHILOSOPHY_AESTHETICS" }),
     getResponsibilityMaturitySnapshot(),
     getConstitutionSnapshot(),
   ]);
@@ -401,6 +403,23 @@ export async function getObservationPoolSnapshot() {
       failedSources: latestCodingCrystallizationRun?.manifest?.failedSources ?? 0,
       sandboxRunIds: latestCodingCrystallizationRun?.sandboxRunIds ?? [],
       hasReport: Boolean(latestCodingCrystallizationRun?.reportMarkdown),
+    },
+    philosophySkill: {
+      latestRunId: latestPhilosophyCrystallizationRun?.runId,
+      candidates: latestPhilosophyCrystallizationRun?.manifest?.candidates ?? 0,
+      chained: latestPhilosophyCrystallizationRun?.manifest?.chained ?? 0,
+      jiEventsWritten:
+        latestPhilosophyCrystallizationRun?.manifest?.jiEventsWritten ?? 0,
+      repoScans: latestPhilosophyCrystallizationRun?.manifest?.repoScans ?? 0,
+      sandboxRunsCreated:
+        latestPhilosophyCrystallizationRun?.manifest?.sandboxRunsCreated ?? 0,
+      latestHash: latestPhilosophyCrystallizationRun?.manifest?.latestHash,
+      fetchedSources:
+        latestPhilosophyCrystallizationRun?.manifest?.fetchedSources ?? 0,
+      failedSources:
+        latestPhilosophyCrystallizationRun?.manifest?.failedSources ?? 0,
+      sandboxRunIds: latestPhilosophyCrystallizationRun?.sandboxRunIds ?? [],
+      hasReport: Boolean(latestPhilosophyCrystallizationRun?.reportMarkdown),
     },
     ethics: constitution,
     signals,

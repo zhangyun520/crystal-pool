@@ -6,6 +6,7 @@ import { type WorldlineKey } from "./worldline";
 export const crystallizationDomains = [
   "AI_RESEARCH",
   "CODING_AUTOMATION",
+  "PHILOSOPHY_AESTHETICS",
 ] as const;
 export type CrystallizationDomain = (typeof crystallizationDomains)[number];
 
@@ -25,6 +26,12 @@ export const networkCandidateKinds = [
   "design_pattern_signal",
   "tooling_failure_signal",
   "governance_or_security_signal",
+  "ethical_philosophy_signal",
+  "aesthetic_interface_signal",
+  "humanism_governance_signal",
+  "soulful_data_signal",
+  "reliability_ethics_signal",
+  "worldline_narrative_signal",
 ] as const;
 
 export type NetworkCrystallizationSourceKind =
@@ -133,12 +140,29 @@ export const crystallizationDomainProfiles: Record<
     defaultQuota: 8,
     autoSandbox: true,
   },
+  PHILOSOPHY_AESTHETICS: {
+    domain: "PHILOSOPHY_AESTHETICS",
+    label: "Philosophy / Aesthetics",
+    nativeLabel: "哲学美学",
+    description:
+      "Hopepunk ethics, humanistic governance, soulful data, interface aesthetics, and worldline narrative signals.",
+    defaultQuota: 8,
+    autoSandbox: true,
+  },
 };
 
 export function parseCrystallizationDomain(value?: string): CrystallizationDomain {
   const normalized = (value ?? "AI_RESEARCH").trim().toUpperCase();
   if (normalized === "AI" || normalized === "RESEARCH") return "AI_RESEARCH";
   if (normalized === "CODING" || normalized === "CODE") return "CODING_AUTOMATION";
+  if (
+    normalized === "PHILOSOPHY" ||
+    normalized === "AESTHETICS" ||
+    normalized === "ETHICS" ||
+    normalized === "PHILOSOPHY_AESTHETIC"
+  ) {
+    return "PHILOSOPHY_AESTHETICS";
+  }
   if (crystallizationDomains.includes(normalized as CrystallizationDomain)) {
     return normalized as CrystallizationDomain;
   }
@@ -373,9 +397,139 @@ export const codingAutomationCrystallizationSources: NetworkCrystallizationSourc
   },
 ];
 
+export const philosophyAestheticsCrystallizationSources: NetworkCrystallizationSource[] = [
+  {
+    id: "stanford-encyclopedia-philosophy",
+    label: "Stanford Encyclopedia of Philosophy",
+    url: "https://plato.stanford.edu/rss/sep.xml",
+    kind: "rss",
+    qualityTier: "research",
+    category: "philosophy reference",
+    trustReason:
+      "The Stanford Encyclopedia of Philosophy is a curated academic reference for ethics, agency, responsibility, aesthetics, and political philosophy.",
+    queryHints: [
+      "ethics",
+      "agency",
+      "responsibility",
+      "humanism",
+      "aesthetics",
+      "virtue",
+    ],
+    defaultTags: ["network", "philosophy", "ethics", "humanism"],
+    domain: "PHILOSOPHY_AESTHETICS",
+    candidateKind: "ethical_philosophy_signal",
+  },
+  {
+    id: "arxiv-cs-cy-society",
+    label: "arXiv cs.CY",
+    url: "https://export.arxiv.org/rss/cs.CY",
+    kind: "rss",
+    qualityTier: "research",
+    category: "computers and society research",
+    trustReason:
+      "Computers and society research surfaces governance, harm, accountability, and social infrastructure questions.",
+    queryHints: [
+      "ethics",
+      "governance",
+      "responsibility",
+      "accountability",
+      "human",
+      "trust",
+    ],
+    defaultTags: ["network", "philosophy", "governance", "society"],
+    domain: "PHILOSOPHY_AESTHETICS",
+    candidateKind: "humanism_governance_signal",
+  },
+  {
+    id: "nngroup-interface-ethics",
+    label: "Nielsen Norman Group",
+    url: "https://www.nngroup.com/feed/rss/",
+    kind: "rss",
+    qualityTier: "institutional",
+    category: "interface research and UX practice",
+    trustReason:
+      "NN/g articles provide practical interface evidence for trust, usability, cognitive load, and operational clarity.",
+    queryHints: ["interface", "usability", "trust", "navigation", "design", "user"],
+    defaultTags: ["network", "aesthetics", "interface", "ux"],
+    domain: "PHILOSOPHY_AESTHETICS",
+    candidateKind: "aesthetic_interface_signal",
+  },
+  {
+    id: "alistapart-design-craft",
+    label: "A List Apart",
+    url: "https://alistapart.com/main/feed/",
+    kind: "rss",
+    qualityTier: "curated",
+    category: "web design craft",
+    trustReason:
+      "A List Apart keeps design craft, accessibility, content, and web stewardship in view.",
+    queryHints: [
+      "design",
+      "accessibility",
+      "content",
+      "interface",
+      "systems",
+      "stewardship",
+    ],
+    defaultTags: ["network", "aesthetics", "design", "craft"],
+    domain: "PHILOSOPHY_AESTHETICS",
+    candidateKind: "aesthetic_interface_signal",
+  },
+  {
+    id: "aeon-philosophy",
+    label: "Aeon Essays",
+    url: "https://aeon.co/feed.rss",
+    kind: "rss",
+    qualityTier: "curated",
+    category: "philosophy and culture essays",
+    trustReason:
+      "Aeon essays often connect philosophy, culture, ethics, science, and lived meaning in reviewable longform form.",
+    queryHints: ["hope", "meaning", "ethics", "human", "soul", "story"],
+    defaultTags: ["network", "philosophy", "worldline", "culture"],
+    domain: "PHILOSOPHY_AESTHETICS",
+    candidateKind: "worldline_narrative_signal",
+  },
+  {
+    id: "noema-governance",
+    label: "Noema Magazine",
+    url: "https://www.noemamag.com/feed/",
+    kind: "rss",
+    qualityTier: "curated",
+    category: "technology governance and civilization",
+    trustReason:
+      "Noema essays track technology, governance, civilization-scale change, and the human meaning of infrastructure.",
+    queryHints: [
+      "governance",
+      "civilization",
+      "technology",
+      "human",
+      "future",
+      "repair",
+    ],
+    defaultTags: ["network", "philosophy", "governance", "future"],
+    domain: "PHILOSOPHY_AESTHETICS",
+    candidateKind: "humanism_governance_signal",
+  },
+  {
+    id: "the-gradient-ai-culture",
+    label: "The Gradient",
+    url: "https://thegradient.pub/rss/",
+    kind: "rss",
+    qualityTier: "curated",
+    category: "AI culture and technical essays",
+    trustReason:
+      "The Gradient mixes technical AI essays with cultural reflection, useful for soulful data and AI subject boundary review.",
+    queryHints: ["ai", "data", "society", "ethics", "interpretability", "alignment"],
+    defaultTags: ["network", "philosophy", "ai-culture", "soulful-data"],
+    domain: "PHILOSOPHY_AESTHETICS",
+    candidateKind: "soulful_data_signal",
+  },
+];
+
 export const defaultNetworkCrystallizationSources: NetworkCrystallizationSource[] = [
   ...aiResearchCrystallizationSources,
   ...codingAutomationCrystallizationSources,
+  ...philosophyAestheticsCrystallizationSources,
 ];
 
 const tierBaseScore: Record<NetworkCrystallizationQualityTier, number> = {
@@ -407,6 +561,30 @@ const codingSandboxMap: Record<
   governance_or_security_signal: {
     mode: "SYMPHONY",
     worldlineKey: "HOPEPUNK_REPAIR",
+  },
+  ethical_philosophy_signal: {
+    mode: "SONATA",
+    worldlineKey: "HOPEPUNK_REPAIR",
+  },
+  aesthetic_interface_signal: {
+    mode: "SONATA",
+    worldlineKey: "RETURN_HOME",
+  },
+  humanism_governance_signal: {
+    mode: "SYMPHONY",
+    worldlineKey: "STELLAR_COMMONWEALTH",
+  },
+  soulful_data_signal: {
+    mode: "SONATA",
+    worldlineKey: "RETURN_HOME",
+  },
+  reliability_ethics_signal: {
+    mode: "FUGUE",
+    worldlineKey: "FORK_DRIFT",
+  },
+  worldline_narrative_signal: {
+    mode: "SYMPHONY",
+    worldlineKey: "OTHERNESS_MIRROR",
   },
 };
 
@@ -496,6 +674,25 @@ function classifyCandidateKind({
 }): NetworkCandidateKind {
   if (source.candidateKind) return source.candidateKind;
   if ((source.domain ?? "AI_RESEARCH") === "AI_RESEARCH") return "ai_research_signal";
+  if (source.domain === "PHILOSOPHY_AESTHETICS") {
+    const lower = `${title} ${summary} ${source.category}`.toLowerCase();
+    if (/(interface|design|aesthetic|beauty|usability|accessibility|craft)/.test(lower)) {
+      return "aesthetic_interface_signal";
+    }
+    if (/(data|provenance|consent|context|memory|soul|lived)/.test(lower)) {
+      return "soulful_data_signal";
+    }
+    if (/(reliab|trust|safety|risk|failure|repair|incident)/.test(lower)) {
+      return "reliability_ethics_signal";
+    }
+    if (/(governance|democracy|institution|commons|humanism|responsibility)/.test(lower)) {
+      return "humanism_governance_signal";
+    }
+    if (/(story|narrative|myth|world|future|culture|otherness)/.test(lower)) {
+      return "worldline_narrative_signal";
+    }
+    return "ethical_philosophy_signal";
+  }
   const lower = `${title} ${summary} ${source.category}`.toLowerCase();
   if (/(vulnerab|security|cve|permission|sandbox escape|prompt injection|governance)/.test(lower)) {
     return "governance_or_security_signal";
@@ -572,6 +769,10 @@ function scoreCandidate({
   if ((source.domain ?? "AI_RESEARCH") === "CODING_AUTOMATION") {
     score += 4;
     reasons.push(`coding domain candidate: ${candidateKind}`);
+  }
+  if (source.domain === "PHILOSOPHY_AESTHETICS") {
+    score += 4;
+    reasons.push(`philosophy/aesthetics domain candidate: ${candidateKind}`);
   }
   if (source.repo) {
     score += 4;
@@ -751,6 +952,12 @@ function bodyForCandidate(
   candidate: NetworkSignalCandidate,
   chain?: Pick<NetworkCrystallizationChainEntry, "eventHash" | "previousHash">,
 ) {
+  const reviewQuestion =
+    candidate.domain === "CODING_AUTOMATION"
+      ? "Should this coding signal become a CrystalNode, coding Sandbox rehearsal, RFC draft, architecture note, or be dismissed?"
+      : candidate.domain === "PHILOSOPHY_AESTHETICS"
+        ? "Should this philosophy/aesthetics signal become a design principle, ethical invariant, Sandbox rehearsal, RFC draft, essay note, or be dismissed?"
+        : "Should this network signal become a CrystalNode, Sandbox rehearsal, RFC draft, or be dismissed?";
   return [
     `Domain: ${candidate.domain}`,
     `Candidate kind: ${candidate.candidateKind}`,
@@ -769,9 +976,7 @@ function bodyForCandidate(
     ...candidate.qualityReasons.map((reason) => `- ${reason}`),
     "",
     "Review question:",
-    candidate.domain === "CODING_AUTOMATION"
-      ? "Should this coding signal become a CrystalNode, coding Sandbox rehearsal, RFC draft, architecture note, or be dismissed?"
-      : "Should this network signal become a CrystalNode, Sandbox rehearsal, RFC draft, or be dismissed?",
+    reviewQuestion,
   ]
     .filter((line): line is string => typeof line === "string")
     .join("\n");
@@ -858,20 +1063,30 @@ export function buildNetworkCrystallizationChain({
   });
 }
 
-export function codingCandidateToSandboxInput(
+export function networkCandidateToSandboxInput(
   candidate: NetworkSignalCandidate,
   sourceJiEventId = candidateToJiEventId(candidate),
 ): SandboxRunInput {
   const plan = codingSandboxPlanForCandidate(candidate);
   const repoText = candidate.repo ? ` in ${candidate.repo}` : "";
+  const isPhilosophy = candidate.domain === "PHILOSOPHY_AESTHETICS";
+  const laneLabel = isPhilosophy ? "Philosophy/Aesthetics" : "Coding";
+  const boundaryText = isPhilosophy
+    ? "Source remains a JiEvent review signal, not doctrine or canonical truth."
+    : "Source remains a JiEvent review signal, not canonical truth.";
+  const hypothesis = isPhilosophy
+    ? "A philosophy or aesthetics signal can improve Crystal Pool only when it becomes an auditable mechanism, interface principle, repair path, or reviewable essay note."
+    : `A coding signal can improve Crystal Pool only when architecture, responsibility, review, and repair stay traceable${repoText}.`;
+  const responsibilityQuestion = isPhilosophy
+    ? "Can this idea deepen hopepunk, humanistic responsibility, soulful data, or interface beauty without becoming decorative doctrine or unreviewed authority?"
+    : "Can this coding pattern improve automation without bypassing human review, test evidence, or canonical promotion gates?";
   const common = {
     mode: plan.mode,
-    title: `Coding ${plan.mode}: ${candidate.title}`,
-    description: `Coding automation rehearsal for ${candidate.candidateKind}${repoText}. Source remains a JiEvent review signal, not canonical truth.`,
+    title: `${laneLabel} ${plan.mode}: ${candidate.title}`,
+    description: `${laneLabel} rehearsal for ${candidate.candidateKind}${repoText}. ${boundaryText}`,
     worldlineKey: plan.worldlineKey,
-    worldlineHypothesis: `A coding signal can improve Crystal Pool only when architecture, responsibility, review, and repair stay traceable${repoText}.`,
-    responsibilityQuestion:
-      "Can this coding pattern improve automation without bypassing human review, test evidence, or canonical promotion gates?",
+    worldlineHypothesis: hypothesis,
+    responsibilityQuestion,
     sourceJiEventIds: [sourceJiEventId],
   } satisfies Partial<SandboxRunInput>;
 
@@ -881,10 +1096,14 @@ export function codingCandidateToSandboxInput(
       targetMechanism: candidate.candidateKind,
       inputMechanisms: [candidate.candidateKind, "review gate", "repo provenance"],
       exploitVector:
-        "Coding automation may remove review friction, execute untrusted code, or convert popularity into authority.",
+        isPhilosophy
+          ? "A beautiful or morally attractive idea may become dogma, taste-policing, passive consolation, or legitimacy theater."
+          : "Coding automation may remove review friction, execute untrusted code, or convert popularity into authority.",
       observedFailure: candidate.summary,
       proposedPatch:
-        "Keep repo analysis read-only, require review before canonical promotion, and sandbox any authority-expanding pattern.",
+        isPhilosophy
+          ? "Require every philosophy/aesthetics import to name its mechanism, failure mode, repair path, and review boundary."
+          : "Keep repo analysis read-only, require review before canonical promotion, and sandbox any authority-expanding pattern.",
     };
   }
 
@@ -893,37 +1112,62 @@ export function codingCandidateToSandboxInput(
       ...common,
       theme: candidate.title,
       counterTheme:
-        "A useful coding pattern can still harden into hidden coupling, tool deference, or unreviewed automation.",
+        isPhilosophy
+          ? "A resonant idea can still harden into slogan, mood, cultic authority, or an aesthetic that hides responsibility."
+          : "A useful coding pattern can still harden into hidden coupling, tool deference, or unreviewed automation.",
       inputMechanisms: [candidate.candidateKind, "module boundary", "review queue"],
       proposedRevision:
-        "Import only after a reviewer confirms provenance, failure mode, modular boundary, and rollback path.",
+        isPhilosophy
+          ? "Import only after a reviewer translates the idea into a testable invariant, interface affordance, sandbox question, or essay/RFC note."
+          : "Import only after a reviewer confirms provenance, failure mode, modular boundary, and rollback path.",
     };
   }
 
   return {
     ...common,
     inputMechanisms: [
-      "coding agent workflow",
-      "repo architecture",
+      isPhilosophy ? "ethical kernel" : "coding agent workflow",
+      isPhilosophy ? "aesthetic operation surface" : "repo architecture",
       "review gate",
       "sandbox learning promotion",
     ],
-    inputActors: ["coding agent", "maintainer", "reviewer", "future contributor"],
+    inputActors: isPhilosophy
+      ? ["reader", "designer", "maintainer", "future AI subject"]
+      : ["coding agent", "maintainer", "reviewer", "future contributor"],
     openingState:
-      "Coding tools, repositories, and programming paradigms emit reviewable signals into the ecosystem lane.",
+      isPhilosophy
+        ? "Philosophy, aesthetics, interface craft, and governance texts emit reviewable signals into the ecosystem lane."
+        : "Coding tools, repositories, and programming paradigms emit reviewable signals into the ecosystem lane.",
     firstShock: `${candidate.candidateKind}: ${candidate.title}`,
     escalation: candidate.summary,
     counterpoint:
-      "Automation speed, architecture quality, human responsibility, and open-source governance pull in different directions.",
+      isPhilosophy
+        ? "Beauty, hope, responsibility, pluralism, and operational reliability pull in different directions."
+        : "Automation speed, architecture quality, human responsibility, and open-source governance pull in different directions.",
     collapseOrStabilization:
-      "The system stabilizes only if repo evidence remains inspectable and sandbox outputs cannot become canonical without review.",
+      isPhilosophy
+        ? "The system stabilizes only if ideas become reviewable mechanisms, not prestige language or unchallengeable doctrine."
+        : "The system stabilizes only if repo evidence remains inspectable and sandbox outputs cannot become canonical without review.",
     lessons: [
-      "High coding velocity is not reliability unless tests, ownership, and repair paths remain visible.",
-      "Repository popularity is an observation, not proof of fit for Crystal Pool.",
+      isPhilosophy
+        ? "A beautiful system must still expose provenance, responsibility, and repair."
+        : "High coding velocity is not reliability unless tests, ownership, and repair paths remain visible.",
+      isPhilosophy
+        ? "Hopepunk is infrastructure when it changes review, repair, and interface behavior."
+        : "Repository popularity is an observation, not proof of fit for Crystal Pool.",
     ],
     constitutionalPatch:
-      "Coding automation may propose architecture and sandbox rehearsals, but cannot execute cloned code or promote canonical meaning directly.",
+      isPhilosophy
+        ? "Philosophy and aesthetics may propose invariants, surface changes, and sandbox rehearsals, but cannot bypass JiEvent review or become canonical by tone alone."
+        : "Coding automation may propose architecture and sandbox rehearsals, but cannot execute cloned code or promote canonical meaning directly.",
   };
+}
+
+export function codingCandidateToSandboxInput(
+  candidate: NetworkSignalCandidate,
+  sourceJiEventId = candidateToJiEventId(candidate),
+): SandboxRunInput {
+  return networkCandidateToSandboxInput(candidate, sourceJiEventId);
 }
 
 export function generateNetworkCrystallizationReport({
@@ -952,6 +1196,12 @@ export function generateNetworkCrystallizationReport({
         )
         .join("\n")
     : "- No chain entries created.";
+  const followUp =
+    manifest.domain === "CODING_AUTOMATION"
+      ? "Review coding JiEvents in /ecosystem and inspect auto-created Sandbox runs before importing architecture lessons."
+      : manifest.domain === "PHILOSOPHY_AESTHETICS"
+        ? "Review philosophy/aesthetics JiEvents in /ecosystem. Promote only as ethical invariants, interface changes, worldline rehearsals, RFCs, or essays after naming provenance, failure mode, and repair path."
+        : "Review the JiEvents in /ecosystem. Use Sonata for theme maturation, Symphony for systemic implications, and Fugue if a source reveals a mechanism failure.";
 
   return [
     `# Network Crystallization Run: ${manifest.runId}`,
@@ -960,7 +1210,7 @@ export function generateNetworkCrystallizationReport({
     `${profile.label} / ${profile.nativeLabel}: ${profile.description}`,
     "",
     "## Boundary",
-    "This skill searches configured high-quality sources, forms a local hash chain, and writes reviewable JiEvents. Coding repository scans are read-only. It does not create canonical CrystalNodes, promote learning, execute cloned code, upload anchors, open PRs, or unlock AI mainline.",
+    "This skill searches configured high-quality sources, forms a local hash chain, and writes reviewable JiEvents. Coding repository scans are read-only. Philosophy and aesthetics signals are observations, not doctrine. It does not create canonical CrystalNodes, promote learning, execute cloned code, upload anchors, open PRs, or unlock AI mainline.",
     "",
     "## Summary",
     `- domain: ${manifest.domain}`,
@@ -983,8 +1233,6 @@ export function generateNetworkCrystallizationReport({
     chainLines,
     "",
     "## Recommended Follow-up",
-    manifest.domain === "CODING_AUTOMATION"
-      ? "Review coding JiEvents in /ecosystem and inspect auto-created Sandbox runs before importing architecture lessons."
-      : "Review the JiEvents in /ecosystem. Use Sonata for theme maturation, Symphony for systemic implications, and Fugue if a source reveals a mechanism failure.",
+    followUp,
   ].join("\n");
 }

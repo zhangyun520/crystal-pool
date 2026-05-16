@@ -43,6 +43,9 @@ transition.
 - CodingIntelligenceLane: the `CODING_AUTOMATION` crystallization domain for
   AI coding agents, programming paradigms, modular architecture, design
   patterns, repo evolution, tooling failures, and governance/security signals.
+- PhilosophyAestheticsLane: the `PHILOSOPHY_AESTHETICS` crystallization domain
+  for hopepunk ethics, humanistic governance, soulful data, reliability ethics,
+  worldline narrative, and operational interface aesthetics.
 - CodingRepositoryScan: read-only shallow clone of allowlisted GitHub repos
   into local gitignored cache. It may inspect file trees, README/docs metadata,
   package manifests, and licenses, but it must not execute repo code, install
@@ -72,6 +75,9 @@ transition.
 11. Coding intelligence work may create completed Sandbox rehearsals for
     high-score signals, but it must stay sandbox-only and must not promote
     canonical nodes or learning automatically.
+12. Philosophy/aesthetics intelligence work may create completed Sandbox
+    rehearsals, RFC/essay/design proposals, or review signals, but it must not
+    turn external sources into doctrine or bypass JiEvent review.
 
 ## Good feature pattern
 

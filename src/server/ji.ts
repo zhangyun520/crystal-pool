@@ -278,6 +278,8 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
     inbox,
     totalEvents,
     pending,
+    pendingCodingCoverage,
+    pendingPhilosophyCoverage,
     recent,
     statusGroups,
     sourceGroups,
@@ -287,8 +289,24 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
     prisma.jiEventRecord.count(),
     prisma.jiEventRecord.findMany({
       where: { status: "pending" },
-      orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }],
+      orderBy: [{ createdAt: "desc" }, { occurredAt: "desc" }],
       take: 24,
+    }),
+    prisma.jiEventRecord.findMany({
+      where: {
+        status: "pending",
+        body: { contains: "Domain: CODING_AUTOMATION" },
+      },
+      orderBy: [{ createdAt: "desc" }, { occurredAt: "desc" }],
+      take: 6,
+    }),
+    prisma.jiEventRecord.findMany({
+      where: {
+        status: "pending",
+        body: { contains: "Domain: PHILOSOPHY_AESTHETICS" },
+      },
+      orderBy: [{ createdAt: "desc" }, { occurredAt: "desc" }],
+      take: 6,
     }),
     prisma.jiEventRecord.findMany({
       orderBy: [{ createdAt: "desc" }],
@@ -341,7 +359,15 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
     byStatus,
     bySource,
     byKind,
-    pending: pending.map(recordToJiEvent),
+    pending: Array.from(
+      new Map(
+        [...pendingPhilosophyCoverage, ...pendingCodingCoverage, ...pending].map(
+          (event) => [event.id, event],
+        ),
+      ).values(),
+    )
+      .slice(0, 24)
+      .map(recordToJiEvent),
     recent: recent.map(recordToJiEvent),
   };
 }

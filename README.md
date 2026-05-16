@@ -46,6 +46,8 @@ npm run skill:crystallize:once -- --max-items 8
 npm run skill:crystallize:watch -- --interval-ms 3600000
 npm run skill:crystallize:once -- --domain coding --repo-scan-limit 4
 npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000
+npm run skill:crystallize:once -- --domain philosophy --max-sandbox-runs 4
+npm run skill:crystallize:watch -- --domain philosophy --interval-ms 3600000
 npm run coding:repo-scan -- --repo openai/codex
 npm run coding:sandbox:once -- --max-runs 4
 npm run constitution:check
@@ -73,7 +75,10 @@ npm run constitution:check
 - `CrystallizationDomain`: the domain lane for long-running crystallization.
   `AI_RESEARCH` tracks research/institutional AI signals; `CODING_AUTOMATION`
   tracks AI coding agents, programming paradigms, modular architecture, design
-  patterns, repo evolution, tooling failures, and governance/security signals.
+  patterns, repo evolution, tooling failures, and governance/security signals;
+  `PHILOSOPHY_AESTHETICS` tracks hopepunk ethics, humanistic governance,
+  soulful data, reliability ethics, worldline narrative, and operational
+  interface aesthetics.
 - `CodingRepositoryScan`: a read-only shallow clone of allowlisted GitHub repos
   into `data/ecosystem/repo-cache/`. It reads file trees and metadata only. It
   never installs dependencies, executes repo code, runs tests, opens issues, or
@@ -235,13 +240,19 @@ npm run skill:crystallize:once
 npm run skill:crystallize:watch -- --interval-ms 3600000 --max-cycles 24
 npm run skill:crystallize:once -- --domain coding --repo-scan-limit 4
 npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000 --max-cycles 24
+npm run skill:crystallize:once -- --domain philosophy --max-sandbox-runs 4
+npm run skill:crystallize:watch -- --domain philosophy --interval-ms 3600000 --max-cycles 24
 npm run coding:repo-scan -- --repo openai/codex
 npm run coding:sandbox:once -- --max-runs 4
 ```
 
 Use `--domain coding` for the `CODING_AUTOMATION` lane and omit it for
-`AI_RESEARCH`. The coding lane scans official AI coding, agent protocol,
-open-source coding agent, and programming paradigm sources. Repo scan cache and
+`AI_RESEARCH`. Use `--domain philosophy` for the `PHILOSOPHY_AESTHETICS`
+lane. The coding lane scans official AI coding, agent protocol,
+open-source coding agent, and programming paradigm sources. The philosophy lane
+scans curated philosophy, governance, AI culture, and interface-craft sources
+for reviewable mechanisms, ethical invariants, design principles, and worldline
+rehearsal prompts. Repo scan cache and
 reports live under git-ignored `data/ecosystem/repo-cache/` and
 `data/ecosystem/repo-scans/`. To customize source feeds, create a local,
 git-ignored `data/ecosystem/network-sources.json` file shaped as

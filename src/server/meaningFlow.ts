@@ -503,10 +503,18 @@ export async function getMeaningFlowSnapshot({
     const domain = jiBodyField(event.body, "Domain");
     const candidateKind = jiBodyField(event.body, "Candidate kind");
     const repository = jiBodyField(event.body, "Repository");
+    const candidateCluster =
+      domain === "CODING_AUTOMATION"
+        ? `coding:${candidateKind}`
+        : domain === "PHILOSOPHY_AESTHETICS"
+          ? `philosophy:${candidateKind}`
+          : candidateKind
+            ? `network:${candidateKind}`
+            : undefined;
     const fallbackClusters = [
       `ecosystem:${event.sourceProject}`,
       domain ? `domain:${domain}` : undefined,
-      candidateKind ? `coding:${candidateKind}` : undefined,
+      candidateCluster,
       repository ? `repo:${repository}` : undefined,
     ].filter((item): item is string => Boolean(item));
     return {
@@ -517,6 +525,8 @@ export async function getMeaningFlowSnapshot({
       title:
         domain === "CODING_AUTOMATION"
           ? `coding · ${event.title}`
+          : domain === "PHILOSOPHY_AESTHETICS"
+            ? `philosophy · ${event.title}`
           : `${event.sourceProject} · ${event.title}`,
       detail: `${event.kind} / ${event.status}${candidateKind ? ` / ${candidateKind}` : ""}: ${event.body}`,
       intensity: normalizeFlowIntensity(
@@ -601,6 +611,29 @@ export async function getMeaningFlowSnapshot({
         },
       ]
     : [];
+  const philosophySkillFlow: MeaningFlowEvent[] = observation.philosophySkill
+    .latestRunId
+    ? [
+        {
+          id: `philosophy-skill:${observation.philosophySkill.latestRunId}`,
+          type: "ecosystem",
+          side:
+            observation.philosophySkill.sandboxRunsCreated > 0
+              ? "crystallize"
+              : "intake",
+          at: observation.generatedAt,
+          title: "philosophy · aesthetics lane",
+          detail: `PHILOSOPHY_AESTHETICS latest=${observation.philosophySkill.latestRunId} candidates=${observation.philosophySkill.candidates} JiEvents=${observation.philosophySkill.jiEventsWritten} autoSandboxes=${observation.philosophySkill.sandboxRunsCreated}`,
+          intensity: normalizeFlowIntensity(
+            22 +
+              observation.philosophySkill.candidates * 5 +
+              observation.philosophySkill.sandboxRunsCreated * 12,
+          ),
+          href: "/observe",
+          clusterIds: ["domain:PHILOSOPHY_AESTHETICS", "ecosystem:network"],
+        },
+      ]
+    : [];
 
   const events = rankFlowEvents(
     [
@@ -614,6 +647,7 @@ export async function getMeaningFlowSnapshot({
       ...daemonProposalFlow,
       ...ethicsFlow,
       ...codingSkillFlow,
+      ...philosophySkillFlow,
     ],
     120,
   );

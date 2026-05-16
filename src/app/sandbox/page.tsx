@@ -453,6 +453,9 @@ function RunDetail({ run }: { run?: SandboxRunRecord }) {
   const isCodingRun =
     run.description?.includes("Coding automation rehearsal") ||
     run.title.startsWith("Coding ");
+  const isPhilosophyRun =
+    run.description?.includes("Philosophy/Aesthetics rehearsal") ||
+    run.title.startsWith("Philosophy/Aesthetics ");
 
   return (
     <section className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
@@ -537,6 +540,27 @@ function RunDetail({ run }: { run?: SandboxRunRecord }) {
             />
             <DetailPill label="Learning import" value="review queue" />
             <DetailPill label="Repo execution" value="disabled" />
+          </div>
+        </div>
+      ) : null}
+
+      {isPhilosophyRun ? (
+        <div className="mt-3 rounded-md border border-fuchsia-100 bg-fuchsia-50 p-3 text-sm text-fuchsia-950">
+          <p className="font-semibold">Philosophy / Aesthetics Source Notes</p>
+          <p className="mt-2 leading-6">
+            This rehearsal was generated from the Philosophy / Aesthetics Lane.
+            It may encode hopepunk repair, humanistic governance, soulful data,
+            interface aesthetics, reliability ethics, or worldline narrative
+            pressure, but it remains sandbox-only until a reviewer translates it
+            into a mechanism, invariant, RFC, or design change.
+          </p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+            <DetailPill
+              label="Source JiEvents"
+              value={run.sourceJiEventIds.length}
+            />
+            <DetailPill label="Doctrine import" value="disabled" />
+            <DetailPill label="Review shape" value="mechanism/RFC" />
           </div>
         </div>
       ) : null}

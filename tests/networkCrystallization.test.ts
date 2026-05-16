@@ -6,8 +6,10 @@ import {
   codingCandidateToSandboxInput,
   codingAutomationCrystallizationSources,
   generateNetworkCrystallizationReport,
+  networkCandidateToSandboxInput,
   parseCrystallizationDomain,
   parseNetworkFeed,
+  philosophyAestheticsCrystallizationSources,
   selectNetworkCandidates,
   sourcesForCrystallizationDomain,
   type NetworkCrystallizationManifest,
@@ -72,6 +74,9 @@ describe("network crystallization skill", () => {
 
   it("parses crystallization domains and separates source quotas", () => {
     expect(parseCrystallizationDomain("coding")).toBe("CODING_AUTOMATION");
+    expect(parseCrystallizationDomain("philosophy")).toBe(
+      "PHILOSOPHY_AESTHETICS",
+    );
     expect(parseCrystallizationDomain("AI_RESEARCH")).toBe("AI_RESEARCH");
     expect(() => parseCrystallizationDomain("finance")).toThrow(
       /Invalid crystallization domain/,
@@ -82,6 +87,11 @@ describe("network crystallization skill", () => {
       ),
     ).toBe(true);
     expect(sourcesForCrystallizationDomain("AI_RESEARCH")).toHaveLength(3);
+    expect(
+      sourcesForCrystallizationDomain("PHILOSOPHY_AESTHETICS").every(
+        (item) => item.domain === "PHILOSOPHY_AESTHETICS",
+      ),
+    ).toBe(true);
   });
 
   it("deduplicates known JiEvent ids before writing a new review signal", () => {
@@ -169,6 +179,33 @@ describe("network crystallization skill", () => {
         candidateKind: "programming_paradigm_signal",
       }).worldlineKey,
     ).toBe("DAO_GOVERNANCE");
+  });
+
+  it("turns philosophy/aesthetics signals into review-gated sandbox inputs", () => {
+    const [candidate] = parseNetworkFeed(
+      `<?xml version="1.0"?><rss><channel>
+        <item>
+          <title>Hope as repair infrastructure for humane interfaces</title>
+          <link>https://example.com/essays/hope-repair-interface</link>
+          <pubDate>Fri, 15 May 2026 10:00:00 GMT</pubDate>
+          <description>Hopepunk systems need provenance, consent, repair capacity, interface beauty, and human responsibility before aesthetic language can become trustworthy infrastructure.</description>
+        </item>
+      </channel></rss>`,
+      philosophyAestheticsCrystallizationSources[0],
+    );
+    const event = candidateToJiEvent(candidate);
+    const sandbox = networkCandidateToSandboxInput(candidate, event.id);
+
+    expect(candidate.domain).toBe("PHILOSOPHY_AESTHETICS");
+    expect(candidate.candidateKind).toBe("ethical_philosophy_signal");
+    expect(event.body).toContain("Domain: PHILOSOPHY_AESTHETICS");
+    expect(event.body).toContain(
+      "Should this philosophy/aesthetics signal become a design principle",
+    );
+    expect(sandbox.mode).toBe("SONATA");
+    expect(sandbox.worldlineKey).toBe("HOPEPUNK_REPAIR");
+    expect(sandbox.sourceJiEventIds).toEqual([event.id]);
+    expect(sandbox.description).toContain("not doctrine");
   });
 
   it("reports the observe-and-propose boundary", () => {

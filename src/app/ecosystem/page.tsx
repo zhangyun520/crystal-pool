@@ -481,6 +481,17 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
               </p>
             </div>
           ) : null}
+          {domain === "PHILOSOPHY_AESTHETICS" ? (
+            <div className="mt-3 rounded-md border border-fuchsia-100 bg-fuchsia-50 p-3 text-sm text-fuchsia-950">
+              <p className="font-semibold">Philosophy / Aesthetics Signal</p>
+              <p className="mt-1 leading-6">
+                This signal may inform hopepunk ethics, soulful data, interface
+                beauty, or worldline rehearsal. Treat it as a reviewable
+                observation, not doctrine; import only after naming mechanism,
+                failure mode, and repair path.
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
 

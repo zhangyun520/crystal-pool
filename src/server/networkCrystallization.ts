@@ -4,9 +4,9 @@ import {
   buildNetworkCrystallizationChain,
   candidateToJiEvent,
   candidateToJiEventId,
-  codingCandidateToSandboxInput,
   crystallizationDomainProfiles,
   generateNetworkCrystallizationReport,
+  networkCandidateToSandboxInput,
   networkCrystallizationQualityTiers,
   parseCrystallizationDomain,
   parseNetworkFeed,
@@ -321,13 +321,16 @@ export async function runNetworkCrystallizationCycle({
   const shouldAutoSandbox =
     autoSandbox ?? crystallizationDomainProfiles[domain].autoSandbox;
   const sandboxRunIds: string[] = [];
-  if (shouldAutoSandbox && domain === "CODING_AUTOMATION") {
+  if (
+    shouldAutoSandbox &&
+    (domain === "CODING_AUTOMATION" || domain === "PHILOSOPHY_AESTHETICS")
+  ) {
     for (const candidate of candidates
       .filter((item) => item.qualityScore >= 88)
       .slice(0, maxSandboxRuns)) {
       const eventId = candidateToJiEventId(candidate);
       const sandboxRun = await runSandboxProtocol(
-        codingCandidateToSandboxInput(candidate, eventId),
+        networkCandidateToSandboxInput(candidate, eventId),
       );
       const completed =
         sandboxRun.status === "completed"
