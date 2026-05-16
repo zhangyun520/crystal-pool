@@ -446,6 +446,80 @@ export default async function ObservePage() {
         </div>
       </section>
 
+      <section className="mt-6 rounded-lg border border-violet-200 bg-violet-50 p-5 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-normal text-violet-700">
+              <Compass size={16} aria-hidden />
+              Next Horizon
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold text-violet-950">
+              Long Goal Horizon
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-violet-900/75">
+              When the evidence bundle is green, Crystal Pool should not fall
+              asleep. This horizon cycle asks what the philosophy and aesthetic
+              system still needs next, then emits review-gated JiEvents,
+              sandbox rehearsals, RFC drafts, design proposals, and engineering
+              tasks.
+            </p>
+          </div>
+          <span className={horizonStatusStyle(snapshot.longGoalHorizon.status)}>
+            {snapshot.longGoalHorizon.status}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <HealthRow label="proposals" value={snapshot.longGoalHorizon.proposals} />
+          <HealthRow label="near" value={snapshot.longGoalHorizon.near} />
+          <HealthRow label="JiEvents" value={snapshot.longGoalHorizon.jiEventsWritten} />
+          <HealthRow
+            label="sandboxes"
+            value={snapshot.longGoalHorizon.sandboxRunsCreated}
+          />
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid gap-2 lg:grid-cols-2">
+            {snapshot.longGoalHorizon.topProposals.length ? (
+              snapshot.longGoalHorizon.topProposals.map((proposal) => (
+                <article
+                  key={proposal.id}
+                  className="rounded-md border border-violet-100 bg-white/80 p-3 text-sm text-violet-950"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold">
+                      {proposal.id} · {proposal.title}
+                    </p>
+                    <span className="rounded bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-950">
+                      {proposal.priority}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-violet-900/75">
+                    {proposal.pillar} · {proposal.category} ·{" "}
+                    {proposal.proposalKind}
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-xs leading-5 text-violet-900/70">
+                    {proposal.nextQuestion}
+                  </p>
+                </article>
+              ))
+            ) : (
+              <div className="rounded-md border border-violet-100 bg-white/80 p-3 text-sm text-violet-950">
+                No horizon run yet. The first cycle will turn the current
+                green evidence floor into the next reviewable questions.
+              </div>
+            )}
+          </div>
+          <div className="rounded-md bg-white/80 p-3 text-xs leading-5 text-violet-950">
+            <p>{snapshot.longGoalHorizon.latestRunId ?? "No horizon run yet"}</p>
+            <p>npm run long-goal:horizon</p>
+            <p>npm run long-goal:horizon -- --create-sandboxes</p>
+            <p className="text-violet-700">
+              next questions only · no canonical promotion
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="mt-6 rounded-lg border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -1384,6 +1458,13 @@ function evidenceBundleStatusStyle(status: string) {
   const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
   if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
   if (status === "fail") return `${base} bg-rose-100 text-rose-950`;
+  return `${base} bg-amber-100 text-amber-950`;
+}
+
+function horizonStatusStyle(status: string) {
+  const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
+  if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
+  if (status === "watch") return `${base} bg-violet-100 text-violet-950`;
   return `${base} bg-amber-100 text-amber-950`;
 }
 

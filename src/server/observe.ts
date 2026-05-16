@@ -15,6 +15,7 @@ import { getLatestRepairQueueSummary } from "./repairQueue";
 import { getLatestWorldlineCoverageSummary } from "./worldlineCoverage";
 import { getLatestForkCompatibilitySummary } from "./forkCompatibility";
 import { getLatestLongGoalEvidenceSummary } from "./longGoalEvidence";
+import { getLatestLongGoalHorizonSummary } from "./longGoalHorizon";
 import { defaultPoolIds } from "@/lib/pools";
 import { sandboxModes } from "@/lib/sandbox";
 import { phases, type EdgeRelation, type Phase } from "@/lib/domain";
@@ -261,6 +262,7 @@ export async function getObservationPoolSnapshot() {
     worldlineCoverage,
     forkCompatibility,
     longGoalEvidence,
+    longGoalHorizon,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -320,6 +322,7 @@ export async function getObservationPoolSnapshot() {
     getLatestWorldlineCoverageSummary(),
     getLatestForkCompatibilitySummary(),
     getLatestLongGoalEvidenceSummary(),
+    getLatestLongGoalHorizonSummary(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -504,6 +507,18 @@ export async function getObservationPoolSnapshot() {
       fail: longGoalEvidence?.manifest.fail ?? 0,
       topItems: longGoalEvidence?.bundle.items.slice(0, 6) ?? [],
       hasReport: Boolean(longGoalEvidence?.reportMarkdown),
+    },
+    longGoalHorizon: {
+      latestRunId: longGoalHorizon?.manifest.runId,
+      status: longGoalHorizon?.manifest.status ?? "missing",
+      proposals: longGoalHorizon?.manifest.proposals ?? 0,
+      near: longGoalHorizon?.manifest.near ?? 0,
+      next: longGoalHorizon?.manifest.next ?? 0,
+      watch: longGoalHorizon?.manifest.watch ?? 0,
+      jiEventsWritten: longGoalHorizon?.manifest.jiEventsWritten ?? 0,
+      sandboxRunsCreated: longGoalHorizon?.manifest.sandboxRunsCreated ?? 0,
+      topProposals: longGoalHorizon?.proposals.slice(0, 6) ?? [],
+      hasReport: Boolean(longGoalHorizon?.reportMarkdown),
     },
     ethics: constitution,
     signals,

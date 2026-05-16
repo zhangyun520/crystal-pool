@@ -16,6 +16,7 @@ export const aestheticSmokeRoutes = [
       "Long-Run Monitor",
       "Long Goal Compass",
       "Long Goal Evidence Bundle",
+      "Long Goal Horizon",
       "Worldline Coverage Matrix",
       "Fork Compatibility Boundary",
       "Hopepunk Repair Queue",
