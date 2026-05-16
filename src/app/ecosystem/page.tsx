@@ -38,14 +38,16 @@ import {
   getLatestEcosystemRunSummary,
   getResponsibilityMaturitySnapshot,
 } from "@/server/ecosystemDaemon";
+import { getLatestSoulfulDataRedressSummary } from "@/server/soulfulDataRedress";
 
 export const dynamic = "force-dynamic";
 
 export default async function EcosystemPage() {
-  const [dashboard, latestDaemonRun, maturity] = await Promise.all([
+  const [dashboard, latestDaemonRun, maturity, latestRedress] = await Promise.all([
     getEcosystemDashboard(),
     getLatestEcosystemRunSummary(),
     getResponsibilityMaturitySnapshot(),
+    getLatestSoulfulDataRedressSummary(),
   ]);
 
   return (
@@ -348,6 +350,83 @@ export default async function EcosystemPage() {
           <p className="mt-4 text-xs text-violet-700">
             triage is review guidance only · no automatic canonical promotion
           </p>
+        </section>
+
+        <section className="rounded-lg border border-lime-200 bg-lime-50 p-5 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <h2 className="text-xl font-semibold tracking-normal text-lime-950">
+                Soulful Data Redress Packets
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-lime-900/75">
+                Redress packets turn weak provenance, context, consent,
+                repairability, non-extractive use, and human responsibility
+                signals into explicit review work before any canonical import.
+              </p>
+            </div>
+            <span className="inline-flex h-9 w-fit items-center rounded-md bg-white px-3 text-sm font-semibold text-lime-950">
+              {latestRedress?.manifest.packets ?? 0} packets
+            </span>
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <MetricCard
+              label="Draft"
+              value={latestRedress?.manifest.draft ?? 0}
+              detail="needs repair"
+            />
+            <MetricCard
+              label="Ready"
+              value={latestRedress?.manifest.readyForReview ?? 0}
+              detail="reviewable"
+            />
+            <MetricCard
+              label="JiEvents"
+              value={latestRedress?.manifest.jiEventsWritten ?? 0}
+              detail="redress signals"
+            />
+            <MetricCard
+              label="Sandboxes"
+              value={latestRedress?.manifest.sandboxRunsCreated ?? 0}
+              detail="Fugue rehearsals"
+            />
+          </div>
+          <div className="mt-4 grid gap-2 lg:grid-cols-2">
+            {latestRedress?.packets.length ? (
+              latestRedress.packets.slice(0, 6).map((packet) => (
+                <article
+                  key={packet.id}
+                  className="rounded-md border border-lime-100 bg-white/85 p-3 text-sm text-lime-950"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold">{packet.sourceTitle}</p>
+                    <span className={redressStatusStyle(packet.status)}>
+                      {packet.status.replaceAll("_", " ")}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-lime-900/75">
+                    score {packet.score}/100 · weak {packet.weakSignals.length} ·{" "}
+                    {packet.requestedActions.slice(0, 3).join(", ")}
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-xs leading-5 text-lime-900/70">
+                    {packet.acceptanceCheck}
+                  </p>
+                </article>
+              ))
+            ) : (
+              <div className="rounded-md border border-lime-100 bg-white/85 p-3 text-sm text-lime-950">
+                No redress packet run yet. Run{" "}
+                <code>npm run soulful:redress</code> to generate local packets
+                from pending JiEvents.
+              </div>
+            )}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-lime-700">
+            <code className="rounded bg-white px-2 py-1">npm run soulful:redress</code>
+            <code className="rounded bg-white px-2 py-1">
+              npm run soulful:redress -- --create-sandboxes
+            </code>
+            <span>review guidance only · no canonical promotion</span>
+          </div>
         </section>
 
         <section className="grid gap-4">
@@ -769,6 +848,13 @@ function triageUrgencyStyle(status: string) {
   if (status === "today") return `${base} bg-amber-100 text-amber-900`;
   if (status === "watch") return `${base} bg-stone-100 text-stone-700`;
   return `${base} bg-violet-100 text-violet-900`;
+}
+
+function redressStatusStyle(status: string) {
+  const base = "rounded px-2 py-1 text-xs font-semibold";
+  if (status === "draft") return `${base} bg-amber-100 text-amber-900`;
+  if (status === "ready_for_review") return `${base} bg-lime-100 text-lime-900`;
+  return `${base} bg-stone-100 text-stone-700`;
 }
 
 function RecentEventRow({ event }: { event: EcosystemJiEvent }) {

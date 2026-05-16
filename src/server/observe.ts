@@ -505,7 +505,7 @@ export async function getObservationPoolSnapshot() {
       pass: longGoalEvidence?.manifest.pass ?? 0,
       warn: longGoalEvidence?.manifest.warn ?? 0,
       fail: longGoalEvidence?.manifest.fail ?? 0,
-      topItems: longGoalEvidence?.bundle.items.slice(0, 6) ?? [],
+      topItems: longGoalEvidence?.bundle.items.slice(0, 8) ?? [],
       hasReport: Boolean(longGoalEvidence?.reportMarkdown),
     },
     longGoalHorizon: {

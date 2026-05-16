@@ -417,6 +417,19 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
   };
 }
 
+export async function listPendingJiEvents({
+  take = 50,
+}: {
+  take?: number;
+} = {}): Promise<EcosystemJiEvent[]> {
+  const records = await prisma.jiEventRecord.findMany({
+    where: { status: "pending" },
+    orderBy: [{ createdAt: "desc" }, { occurredAt: "desc" }],
+    take,
+  });
+  return records.map(recordToJiEvent);
+}
+
 export async function importJiEventAsNode(eventId: string) {
   await ensureDefaultPoolSpaces();
   return prisma.$transaction(async (tx) => {

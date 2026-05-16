@@ -31,6 +31,7 @@
     "skill:crystallize:watch": "tsx scripts/network-crystallize-watch.ts",
     "ui:aesthetic-smoke": "tsx scripts/aesthetic-smoke.ts",
     "repair:queue": "tsx scripts/repair-queue.ts",
+    "soulful:redress": "tsx scripts/soulful-data-redress.ts",
     "fork:compatibility": "tsx scripts/fork-compatibility.ts",
     "long-goal:evidence": "tsx scripts/long-goal-evidence.ts",
     "long-goal:horizon": "tsx scripts/long-goal-horizon.ts",

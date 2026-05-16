@@ -18,6 +18,7 @@ import {
 } from "./worldlineCoverage";
 import { getLatestForkCompatibilitySummary } from "./forkCompatibility";
 import { getPhilosophyAestheticsGoalAudit } from "./philosophyAestheticsGoal";
+import { getLatestSoulfulDataRedressSummary } from "./soulfulDataRedress";
 
 export const longGoalEvidenceRunsDir = path.join(
   process.cwd(),
@@ -68,6 +69,7 @@ export async function collectLongGoalEvidenceBundle(
     currentWorldlineCoverage,
     latestWorldlineCoverage,
     forkCompatibility,
+    redress,
   ] = await Promise.all([
     getPhilosophyAestheticsGoalAudit(),
     getConstitutionSnapshot(),
@@ -76,6 +78,7 @@ export async function collectLongGoalEvidenceBundle(
     getCurrentWorldlineCoverageMatrix(),
     getLatestWorldlineCoverageSummary(),
     getLatestForkCompatibilitySummary(),
+    getLatestSoulfulDataRedressSummary(),
   ]);
 
   const items: LongGoalEvidenceItem[] = [
@@ -148,6 +151,17 @@ export async function collectLongGoalEvidenceBundle(
       command: "npm run ui:aesthetic-smoke",
       artifact: "data/ecosystem/aesthetic-smoke/<run-id>/report.md",
       boundary: "Screenshots are local evidence and do not decide aesthetic truth automatically.",
+    },
+    {
+      id: "LG-EV-007",
+      title: "Soulful data redress packet",
+      status: passWarnFail(Boolean(redress), true),
+      proof: redress
+        ? `redressPackets=${redress.manifest.packets}; jiEventsWritten=${redress.manifest.jiEventsWritten}; sandboxRunsCreated=${redress.manifest.sandboxRunsCreated}; canonicalMutationAllowed=${redress.manifest.canonicalMutationAllowed}.`
+        : "No soulful-data redress packet run artifact found yet.",
+      command: "npm run soulful:redress",
+      artifact: "data/ecosystem/soulful-data-redress/<run-id>/report.md",
+      boundary: "Redress packets are review guidance only; they cannot mutate canonical state.",
     },
   ];
 

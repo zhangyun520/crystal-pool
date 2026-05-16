@@ -30,6 +30,7 @@ export const aestheticSmokeRoutes = [
     expectedText: [
       "JiEvent Review Queue",
       "Humane Review Triage",
+      "Soulful Data Redress Packets",
       "Typed Proposal Lanes",
       "Project Organs",
       "Pending Trigger Points",
