@@ -60,6 +60,11 @@ const evidence: PhilosophyAestheticsGoalEvidence = {
   latestRepairQueueItems: 0,
   latestRepairQueueJiEvents: 0,
   latestRepairQueueSandboxRuns: 0,
+  hasWorldlineCoverageScript: false,
+  latestWorldlineCoverageStatus: "missing",
+  latestWorldlineCoveragePercent: 0,
+  latestWorldlineCoverageMissingCells: 24,
+  latestWorldlineCoverageSandboxRuns: 0,
 };
 
 describe("philosophy/aesthetics goal audit", () => {
@@ -124,6 +129,25 @@ describe("philosophy/aesthetics goal audit", () => {
 
     expect(repairEvidence).toMatchObject({ status: "covered" });
     expect(audit.openItems.map((item) => item.id)).not.toContain("CP-GOAL-004");
+  });
+
+  it("closes the worldline sandbox gap only after full matrix evidence exists", () => {
+    const audit = evaluatePhilosophyAestheticsGoal({
+      evidence: {
+        ...evidence,
+        hasWorldlineCoverageScript: true,
+        latestWorldlineCoverageStatus: "pass",
+        latestWorldlineCoveragePercent: 100,
+        latestWorldlineCoverageMissingCells: 0,
+        latestWorldlineCoverageSandboxRuns: 12,
+      },
+    });
+    const matrixEvidence = audit.requirements.find(
+      (item) => item.id === "CP-GOAL-007",
+    );
+
+    expect(matrixEvidence).toMatchObject({ status: "covered" });
+    expect(audit.openItems.map((item) => item.id)).not.toContain("CP-GOAL-007");
   });
 
   it("turns open gaps into review-gated JiEvents and sandbox rehearsals", () => {

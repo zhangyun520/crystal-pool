@@ -12,6 +12,7 @@ import {
 import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
 import { getPhilosophyAestheticsGoalAudit } from "./philosophyAestheticsGoal";
 import { getLatestRepairQueueSummary } from "./repairQueue";
+import { getLatestWorldlineCoverageSummary } from "./worldlineCoverage";
 import { defaultPoolIds } from "@/lib/pools";
 import { sandboxModes } from "@/lib/sandbox";
 import { phases, type EdgeRelation, type Phase } from "@/lib/domain";
@@ -255,6 +256,7 @@ export async function getObservationPoolSnapshot() {
     philosophyGoal,
     aestheticSmoke,
     repairQueue,
+    worldlineCoverage,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -311,6 +313,7 @@ export async function getObservationPoolSnapshot() {
     getPhilosophyAestheticsGoalAudit(),
     getLatestAestheticSmokeSummary(),
     getLatestRepairQueueSummary(),
+    getLatestWorldlineCoverageSummary(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -463,6 +466,17 @@ export async function getObservationPoolSnapshot() {
       sandboxRunsCreated: repairQueue?.manifest.sandboxRunsCreated ?? 0,
       topItems: repairQueue?.items.slice(0, 4) ?? [],
       hasReport: Boolean(repairQueue?.reportMarkdown),
+    },
+    worldlineCoverage: {
+      latestRunId: worldlineCoverage?.manifest.runId,
+      status: worldlineCoverage?.manifest.status ?? "missing",
+      coveragePercent: worldlineCoverage?.manifest.coveragePercent ?? 0,
+      coveredCells: worldlineCoverage?.manifest.coveredCells ?? 0,
+      missingCells: worldlineCoverage?.manifest.missingCells ?? 0,
+      totalCells: worldlineCoverage?.manifest.totalCells ?? 0,
+      sandboxRunsCreated: worldlineCoverage?.manifest.sandboxRunsCreated ?? 0,
+      missing: worldlineCoverage?.matrix.missing.slice(0, 6) ?? [],
+      hasReport: Boolean(worldlineCoverage?.reportMarkdown),
     },
     ethics: constitution,
     signals,

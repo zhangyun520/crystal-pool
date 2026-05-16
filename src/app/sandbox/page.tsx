@@ -229,6 +229,81 @@ export default async function SandboxPage({
         </div>
       </section>
 
+      <section className="mt-6 rounded-lg border border-indigo-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">Worldline Coverage Matrix</h2>
+            <p className="mt-1 text-sm text-stone-600">
+              Coverage means a completed sandbox run exists for each
+              worldline-mode pair. Missing cells are rehearsal work, not
+              canonical failure.
+            </p>
+          </div>
+          <div className="grid min-w-56 grid-cols-2 gap-2 text-sm">
+            <DetailPill
+              label="coverage"
+              value={`${dashboard.worldlineCoverage.coveragePercent}%`}
+            />
+            <DetailPill
+              label="missing"
+              value={dashboard.worldlineCoverage.missingCells}
+            />
+          </div>
+        </div>
+        <div className="mt-4 overflow-x-auto">
+          <div className="grid min-w-[680px] gap-2">
+            <div className="grid grid-cols-[220px_repeat(3,minmax(0,1fr))] gap-2 text-xs font-semibold uppercase tracking-normal text-stone-500">
+              <span>Worldline</span>
+              <span>Fugue</span>
+              <span>Sonata</span>
+              <span>Symphony</span>
+            </div>
+            {worldlineKeys.map((key) => (
+              <div
+                key={key}
+                className="grid grid-cols-[220px_repeat(3,minmax(0,1fr))] gap-2 rounded-md bg-indigo-50 p-2 text-sm"
+              >
+                <div>
+                  <p className="font-semibold text-indigo-950">
+                    {worldlineProtocols[key].label}
+                  </p>
+                  <p className="text-xs text-indigo-900/70">{key}</p>
+                </div>
+                {(["FUGUE", "SONATA", "SYMPHONY"] as const).map((mode) => {
+                  const cell = dashboard.worldlineCoverage.cells.find(
+                    (item) => item.worldlineKey === key && item.mode === mode,
+                  );
+                  return (
+                    <span
+                      key={`${key}:${mode}`}
+                      className={`rounded-md px-2 py-2 text-xs font-semibold ${
+                        cell?.status === "covered"
+                          ? "bg-lime-100 text-lime-950"
+                          : "bg-amber-100 text-amber-950"
+                      }`}
+                    >
+                      {cell?.status ?? "missing"}
+                      {cell?.completedCount ? ` · ${cell.completedCount}` : ""}
+                    </span>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-stone-500">
+          <code className="rounded bg-stone-100 px-2 py-1">
+            npm run worldline:coverage
+          </code>
+          <code className="rounded bg-stone-100 px-2 py-1">
+            npm run worldline:coverage -- --create-missing
+          </code>
+          <span>
+            latest: {dashboard.latestWorldlineCoverage?.manifest.runId ?? "not recorded"}
+          </span>
+        </div>
+      </section>
+
       <section className="mt-6 grid gap-6 xl:grid-cols-3">
         <ProtocolForm
           mode="FUGUE"

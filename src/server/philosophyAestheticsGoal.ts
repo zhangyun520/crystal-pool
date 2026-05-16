@@ -21,6 +21,10 @@ import { getConstitutionSnapshot } from "./constitution";
 import { prisma } from "./db";
 import { getLatestAestheticSmokeSummary } from "./aestheticSmoke";
 import { getLatestRepairQueueSummary } from "./repairQueue";
+import {
+  getCurrentWorldlineCoverageMatrix,
+  getLatestWorldlineCoverageSummary,
+} from "./worldlineCoverage";
 import { writeJiEventToInbox } from "./ji";
 import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
 import { completeSandboxRun, runSandboxProtocol } from "./sandbox";
@@ -125,6 +129,8 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     typedReviewProposals,
     aestheticSmoke,
     repairQueue,
+    worldlineCoverage,
+    currentWorldlineCoverage,
     responsibilityText,
     ethicalText,
   ] = await Promise.all([
@@ -138,6 +144,8 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     }),
     getLatestAestheticSmokeSummary(),
     getLatestRepairQueueSummary(),
+    getLatestWorldlineCoverageSummary(),
+    getCurrentWorldlineCoverageMatrix(),
     readOptional(path.join(process.cwd(), "src", "lib", "responsibilityMaturity.ts")),
     readOptional(path.join(process.cwd(), "src", "lib", "ethicalKernel.ts")),
   ]);
@@ -189,6 +197,14 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     latestRepairQueueItems: repairQueue?.manifest.items ?? 0,
     latestRepairQueueJiEvents: repairQueue?.manifest.jiEventsWritten ?? 0,
     latestRepairQueueSandboxRuns: repairQueue?.manifest.sandboxRunsCreated ?? 0,
+    hasWorldlineCoverageScript: scripts.includes("worldline:coverage"),
+    latestWorldlineCoverageStatus:
+      worldlineCoverage ? currentWorldlineCoverage.status : "missing",
+    latestWorldlineCoveragePercent: currentWorldlineCoverage.coveragePercent,
+    latestWorldlineCoverageMissingCells:
+      currentWorldlineCoverage.missingCells,
+    latestWorldlineCoverageSandboxRuns:
+      worldlineCoverage?.manifest.sandboxRunsCreated ?? 0,
   };
 }
 

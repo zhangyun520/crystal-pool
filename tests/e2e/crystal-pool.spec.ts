@@ -222,6 +222,7 @@ test("hardening guardrail flow", async ({ page, request }) => {
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Scenario Gallery" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Run List" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Worldline Coverage Matrix" })).toBeVisible();
   await expect(page.getByText("Bubble Market")).toBeVisible();
   await page.goto("/fugue");
   await expect(page.getByRole("heading", { name: "Scenario Gallery" })).toBeVisible();
@@ -250,6 +251,7 @@ test("hardening guardrail flow", async ({ page, request }) => {
   await expect(page.getByRole("heading", { name: "Market Watcher" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Anchor Bundles" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Long Goal Compass" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Worldline Coverage Matrix" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Hopepunk Repair Queue" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Screenshot Smoke" })).toBeVisible();
 

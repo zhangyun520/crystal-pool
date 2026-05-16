@@ -10,6 +10,7 @@ import {
   GitCommitHorizontal,
   Hash,
   Link2,
+  Network,
   Palette,
   RefreshCw,
   ShieldAlert,
@@ -377,6 +378,80 @@ export default async function ObservePage() {
             npm run philosophy:gap-audit -- --create-sandboxes
           </code>
           <span>observe + propose · no auto promote</span>
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-lg border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-normal text-indigo-700">
+              <Network size={16} aria-hidden />
+              Worldline Sandbox
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold text-indigo-950">
+              Worldline Coverage Matrix
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-indigo-900/75">
+              Every worldline should be rehearsed through Fugue, Sonata, and
+              Symphony. The matrix tracks actual sandbox runs and names missing
+              combinations before lore hardens into untested doctrine.
+            </p>
+          </div>
+          <span className={worldlineCoverageStatusStyle(snapshot.worldlineCoverage.status)}>
+            {snapshot.worldlineCoverage.status}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <HealthRow
+            label="coverage"
+            value={`${snapshot.worldlineCoverage.coveragePercent}%`}
+          />
+          <HealthRow
+            label="covered"
+            value={`${snapshot.worldlineCoverage.coveredCells}/${snapshot.worldlineCoverage.totalCells}`}
+          />
+          <HealthRow label="missing" value={snapshot.worldlineCoverage.missingCells} />
+          <HealthRow
+            label="created"
+            value={snapshot.worldlineCoverage.sandboxRunsCreated}
+          />
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid gap-2">
+            {snapshot.worldlineCoverage.missing.length ? (
+              snapshot.worldlineCoverage.missing.map((cell) => (
+                <article
+                  key={`${cell.worldlineKey}:${cell.mode}`}
+                  className="rounded-md border border-indigo-100 bg-white/80 p-3 text-sm text-indigo-950"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold">
+                      {cell.worldlineKey} + {cell.mode}
+                    </p>
+                    <span className="rounded bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-950">
+                      missing
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-indigo-900/75">
+                    {cell.worldlineLabel}
+                  </p>
+                </article>
+              ))
+            ) : (
+              <div className="rounded-md border border-indigo-100 bg-white/80 p-3 text-sm text-indigo-950">
+                All worldline and mode combinations have completed sandbox
+                rehearsal evidence.
+              </div>
+            )}
+          </div>
+          <div className="rounded-md bg-white/80 p-3 text-xs leading-5 text-indigo-950">
+            <p>{snapshot.worldlineCoverage.latestRunId ?? "No matrix run yet"}</p>
+            <p>npm run worldline:coverage</p>
+            <p>npm run worldline:coverage -- --create-missing</p>
+            <p className="text-indigo-700">
+              sandbox evidence only · no learning promotion
+            </p>
+          </div>
         </div>
       </section>
 
@@ -1156,6 +1231,12 @@ function repairQueueStatusStyle(status: string) {
   const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
   if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
   if (status === "fail") return `${base} bg-rose-100 text-rose-950`;
+  return `${base} bg-amber-100 text-amber-950`;
+}
+
+function worldlineCoverageStatusStyle(status: string) {
+  const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
+  if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
   return `${base} bg-amber-100 text-amber-950`;
 }
 

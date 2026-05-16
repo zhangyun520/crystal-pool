@@ -67,6 +67,11 @@ export type PhilosophyAestheticsGoalEvidence = {
   latestRepairQueueItems: number;
   latestRepairQueueJiEvents: number;
   latestRepairQueueSandboxRuns: number;
+  hasWorldlineCoverageScript: boolean;
+  latestWorldlineCoverageStatus?: "pass" | "partial" | "missing";
+  latestWorldlineCoveragePercent: number;
+  latestWorldlineCoverageMissingCells: number;
+  latestWorldlineCoverageSandboxRuns: number;
 };
 
 export type PhilosophyAestheticsRequirement = {
@@ -399,13 +404,26 @@ export const philosophyAestheticsRequirements: PhilosophyAestheticsRequirement[]
         "FORK_DRIFT",
       ]);
       const rehearsals = evidence.philosophySandboxRuns > 0;
+      const matrixCovered =
+        evidence.hasWorldlineCoverageScript &&
+        evidence.latestWorldlineCoverageStatus === "pass" &&
+        evidence.latestWorldlineCoverageMissingCells === 0 &&
+        evidence.latestWorldlineCoveragePercent === 100;
       return statusEvidence(
-        modes && worldlines && rehearsals ? "partial" : "gap",
+        modes && worldlines && rehearsals && matrixCovered
+          ? "covered"
+          : modes && worldlines && rehearsals
+            ? "partial"
+            : "gap",
         [
           `sandbox modes: ${modes}`,
           `core worldlines: ${worldlines}`,
           `recent philosophy sandboxes: ${evidence.philosophySandboxRuns}`,
-          "full coverage matrix: false",
+          `coverage matrix script: ${evidence.hasWorldlineCoverageScript}`,
+          `latest matrix status: ${evidence.latestWorldlineCoverageStatus ?? "missing"}`,
+          `latest matrix coverage: ${evidence.latestWorldlineCoveragePercent}%`,
+          `latest matrix missing cells: ${evidence.latestWorldlineCoverageMissingCells}`,
+          `latest matrix sandbox runs: ${evidence.latestWorldlineCoverageSandboxRuns}`,
         ],
       );
     },

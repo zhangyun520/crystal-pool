@@ -15,6 +15,7 @@ export const aestheticSmokeRoutes = [
     expectedText: [
       "Long-Run Monitor",
       "Long Goal Compass",
+      "Worldline Coverage Matrix",
       "Hopepunk Repair Queue",
       "Constitution Status",
       "Proof Chain Explorer",

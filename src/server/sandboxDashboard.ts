@@ -26,6 +26,10 @@ import { worldlineKeys, worldlineProtocols } from "@/lib/worldline";
 import { prisma } from "./db";
 import { ensureDefaultPoolSpaces } from "./pools";
 import { archiveSandboxRun, listSandboxRuns, runSandboxProtocol } from "./sandbox";
+import {
+  getCurrentWorldlineCoverageMatrix,
+  getLatestWorldlineCoverageSummary,
+} from "./worldlineCoverage";
 
 const startFugueRunSchema = z.object({
   scenarioKey: z.string().trim().min(1),
@@ -98,7 +102,14 @@ export async function getSandboxDashboard({
   selectedRunId?: string;
 } = {}) {
   await ensureDefaultPoolSpaces();
-  const [runs, learnings, modeCounts, statusCounts] = await Promise.all([
+  const [
+    runs,
+    learnings,
+    modeCounts,
+    statusCounts,
+    worldlineCoverage,
+    latestWorldlineCoverage,
+  ] = await Promise.all([
     listSandboxRuns({ take: 16 }),
     prisma.fugueLearningProposal.findMany({
       include: { run: true },
@@ -115,6 +126,8 @@ export async function getSandboxDashboard({
       where: { poolId: defaultPoolIds.fugue },
       _count: { status: true },
     }),
+    getCurrentWorldlineCoverageMatrix(),
+    getLatestWorldlineCoverageSummary(),
   ]);
 
   const selectedRun =
@@ -136,6 +149,8 @@ export async function getSandboxDashboard({
     protocols: sandboxModeProtocols,
     worldlines: worldlineProtocols,
     scenarios: fugueScenarios,
+    worldlineCoverage,
+    latestWorldlineCoverage,
     runs,
     selectedRun,
     learnings: learnings.map(
