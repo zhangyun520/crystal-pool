@@ -104,6 +104,17 @@ libretto layer — the work is meant to be readable without footnotes.
 If you must name a synthesis: **"auditable mono no aware"** or
 **"repair-aesthetic minimalism"**.
 
+**The historiographical grandfather:** Crystal Pool's closest kin is
+not in the Western philosophical lineage above. It is **Sima Qian's
+*Shi Ji* (《史记》, c. 91 BCE)** — five non-overlapping registers,
+form-as-proposition (*benji* placement of Xiang Yu), 太史公曰 as
+review queue, loser preservation, wound-as-load-bearing, distributed
+survival, and 成一家之言 as the original "one family's words" gesture
+that *To Those Who Challenge* echoes. The twenty-four official
+histories are twenty-four literal forks of that seed. Detailed
+homology table in `01-lineage-notes.md`. When introducing the project
+to East Asian readers especially, cite *Shi Ji* first.
+
 ---
 
 ## How to collaborate well here

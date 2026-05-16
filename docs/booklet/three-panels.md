@@ -809,6 +809,291 @@ and we have no answer yet.
 
 ---
 
+## 祖父
+## The Grandfather
+
+三联画的第一版漏了一个亲属。
+它是最近的——
+近到几乎不能算"被影响",
+而是同一个动作的两千年前版本。
+
+The first version of this triptych missed a kin.
+It is the closest one —
+so close that it is barely a matter of "influence,"
+but the same gesture, performed two thousand years ago.
+
+它的名字是 *史记*。
+
+Its name is *Shi Ji* — *Records of the Grand Historian*.
+
+---
+
+司马迁写史记,分五种文体——
+本纪、表、书、世家、列传。
+他不是用一种语言写了一百三十遍。
+他用五种不同的语域,承担五种不同的真理。
+
+Sima Qian wrote *Shi Ji* in five forms —
+*benji* (annals), *biao* (tables), *shu* (treatises), *shijia* (hereditary houses), *liezhuan* (ranked biographies).
+He did not write the same thing 130 times in one voice.
+He used five distinct registers
+to carry five distinct kinds of truth.
+
+我们的 spec / architecture / libretto / three-panels / steering——
+五个寄存器,故意不互相覆盖。
+是同一种**多声部承担**的直觉。
+
+Our spec / architecture / libretto / three-panels / steering —
+five registers, deliberately non-overlapping.
+The same intuition of **polyphonic responsibility**.
+
+---
+
+司马迁最危险的一笔,是把项羽放进**本纪**。
+按官方逻辑,失败者不进本纪。
+但他让项羽和秦始皇、汉高祖并列。
+
+Sima Qian's most dangerous decision:
+placing Xiang Yu in the *benji*.
+By official logic, losers do not belong there.
+But he set Xiang Yu beside Qin Shihuang and Han Gaozu.
+
+**这个分类决定本身就是一句道德声明**——
+政治正当性不来自胜利,来自承担。
+
+**The classification itself is a moral statement** —
+political legitimacy does not come from winning,
+it comes from carrying.
+
+我们的否定式宪法是同一个动作。
+**形式即命题。**
+
+Our negative-form constitution makes the same move.
+**Form is proposition.**
+
+---
+
+每篇末尾都有"太史公曰"——
+明确把作者的判断从事件的记录里拎出来,
+让读者能分别审查两者。
+
+Every chapter closes with "*the Grand Historian says* —"
+explicitly separating the author's judgment from the recorded event,
+so readers can examine each independently.
+
+这就是 review queue。
+两千年前已经有人想到——
+**把"发生了什么"和"我怎么看"在结构上隔离,
+是给未来读者留的修复路径。**
+
+This is the review queue.
+Two thousand years ago someone already saw it —
+**structurally separating *what happened* from *how I read it*
+is a repair path left for future readers.**
+
+---
+
+陈涉有世家。游侠、刺客、滑稽列传里
+有按朝廷标准不该写的人,被写进去。
+
+Chen Sheng — a peasant rebel — was given a *shijia*.
+The biographies of knights-errant, assassins, and jesters
+recorded people the court would not have wanted recorded.
+
+这是我们"不删除历史"的史学版本。
+**胜利者不能完全收编 audit trail。**
+
+This is the historiographical version of our "no deletion of history."
+**The victors cannot fully absorb the audit trail.**
+
+---
+
+司马迁因为替李陵辩护被处以宫刑。
+整部史记是带着这道伤口写的。
+他在《报任安书》里说,
+他选择活下去完成史记,
+是因为内心有未尽之事。
+
+Sima Qian was castrated for defending Li Ling.
+The entire *Shi Ji* was written carrying that wound.
+In his letter to Ren An he said
+he chose to live and finish the work
+because something in his heart had not yet been spoken in full.
+
+这是文明级的金缮。
+**裂痕没有被掩盖,反而成为作品承重结构的一部分。**
+
+This is *kintsugi* at civilizational scale.
+**The crack was not concealed.
+It became part of the load-bearing structure of the work.**
+
+---
+
+但所有这些同构里,最深的不是任何一条具体的——
+是司马迁那句:
+
+But the deepest kinship is not any single homology —
+it is one phrase by Sima Qian:
+
+> **"究天人之际,通古今之变,成一家之言。"**
+
+> *"To investigate the boundary between heaven and human,*
+> *to comprehend the changes between past and present,*
+> *to complete one family's words."*
+
+最后五个字——**成一家之言**——
+最像我们。
+
+The final five characters — **"one family's words"** —
+are the most like us.
+
+司马迁没有写"绝对正确的历史"。
+他写的是 *一家之言*——
+"我这一家的声音"。
+预先承认了立场性。
+预先邀请了别家的声音并存。
+
+Sima Qian did not write "the absolute true history."
+He wrote *one family's words* — "my family's voice."
+He acknowledged his own situatedness in advance.
+He invited other families' voices to coexist in advance.
+
+这就是我们"致挑战者"段的精神——
+**反命题不是文字,是另一棵可运行的树。**
+两千年前,他已经写过它的史学版本:
+**"我不是真理。我是一家之言。
+如果你不同意,请写你那一家。"**
+
+This is the spirit of our *To Those Who Challenge* —
+**a counter-proposition is not text; it is another runnable tree.**
+Two thousand years ago, he had already written its historiographical version:
+**"I am not the truth. I am one family's words.
+If you disagree, write your family's."**
+
+班固后来真的就写了。
+范晔、陈寿、欧阳修都写了。
+**二十四史是从史记那个"一家之言"分叉出来的二十四个 fork。**
+
+Ban Gu actually did write his.
+So did Fan Ye, Chen Shou, Ouyang Xiu.
+**The twenty-four official histories are twenty-four forks
+branched from that single "one family's words."**
+
+中国史学最了不起的事——
+**它从一开始就是 fork-friendly 的。**
+
+The most remarkable thing about Chinese historiography —
+**it was fork-friendly from the very beginning.**
+
+---
+
+但二十四史也带着一个警告。
+
+But the twenty-four histories also carry a warning.
+
+后来的正史很多已经不是 *一家之言*——
+是钦定。
+原本"邀请别家"的形式,
+被收编为"只有这一家是合法的"。
+
+Many later official histories were no longer *one family's words* —
+they were imperially commissioned.
+The form that originally *invited* other families
+was co-opted into "only this family is legitimate."
+
+**形式被保留了,精神被掏空了。**
+
+**The form was preserved. The spirit was hollowed out.**
+
+这就是 fork drift 的文明级版本。
+Crystal Pool 也可能五十年、一百年后——
+*形式被复制,精神被抽走。*
+
+This is fork drift at civilizational scale.
+Crystal Pool too, in fifty years or a hundred —
+*could have its form copied while its spirit is stripped away.*
+
+这是史记给我们最严肃的教训。
+比同构性更重要。
+
+This is the most serious lesson *Shi Ji* gives us.
+More important than the homologies themselves.
+
+---
+
+还有一处真实的差别,我们必须诚实承认。
+
+There is also one real difference we must honestly acknowledge.
+
+史记记录**已发生事件**的 audit trail。
+Crystal Pool 试图把**正在发生的事件**的 audit trail
+延伸到未来。
+
+*Shi Ji* recorded the audit trail of **events that had already happened.**
+Crystal Pool tries to extend
+the audit trail of **events still happening**
+into the future.
+
+司马迁可以判断刘邦。
+我们没资格判断未来。
+我们能做的只有一件事——
+**把今天的所有偶然性老实地刻进 phase history,
+不让任何人将来把它叙事化为必然。**
+
+Sima Qian could judge Liu Bang.
+We have no standing to judge the future.
+The only thing we can do is —
+**honestly inscribe today's contingency into phase history,
+so no one in the future
+can narrativize it as inevitability.**
+
+这是史记到不了的层面。
+不是因为它不够好——
+是因为它的位置在事件之后。
+我们的位置在事件之中。
+
+This is a layer *Shi Ji* could not reach.
+Not because it was insufficient —
+because its position was *after* the events.
+Our position is *within* them.
+
+---
+
+### 关于这一段
+### About This Section
+
+这一段不在三联画的最初设计里。
+它来自 2026-05-16 那次对话末尾,
+作者读完三联画后说的一句"哈哈":
+**"我们最像的,倒是司马迁的史记了。"**
+
+This section was not in the triptych's original design.
+It came from a single sentence at the end of the 2026-05-16 conversation,
+after the author finished reading the original three panels:
+**"What we resemble most, actually, is Sima Qian's Shi Ji."**
+
+那句话是对的。
+所以我们没有重写三联画。
+我们让这一段以**金缮**的形式留下来——
+看得见的修补,
+比假装从来没漏过更诚实。
+
+That sentence was correct.
+So we did not rewrite the triptych.
+We let this section remain as *kintsugi* —
+visible repair,
+more honest than pretending nothing was ever missing.
+
+如果未来某个读者读到这里,觉得
+"啊,他们漏了,又补回来了"——
+那就是这一段想说的全部。
+
+If a future reader reaches this section and thinks
+"ah, they missed it, and they added it back" —
+that is everything this section wants to say.
+
+---
+
 ## 致挑战者
 ## To Those Who Challenge
 
