@@ -72,6 +72,10 @@ export type PhilosophyAestheticsGoalEvidence = {
   latestWorldlineCoveragePercent: number;
   latestWorldlineCoverageMissingCells: number;
   latestWorldlineCoverageSandboxRuns: number;
+  hasForkCompatibilityScript: boolean;
+  latestForkCompatibilityStatus?: "pass" | "warn" | "fail" | "missing";
+  latestForkCompatibilityCriteria: number;
+  latestForkCompatibilityFailures: number;
 };
 
 export type PhilosophyAestheticsRequirement = {
@@ -456,12 +460,31 @@ export const philosophyAestheticsRequirements: PhilosophyAestheticsRequirement[]
         "docs/philosophy/soulful-data-hopepunk-engineering.md",
         "docs/philosophy/ai-discussion-brief.md",
       ]);
+      const hasCompatibilityDoc = evidence.docs.includes(
+        "docs/governance/fork-compatibility.md",
+      );
       const hasWorldline = evidence.worldlineKeys.includes("FORK_DRIFT");
-      return statusEvidence(hasDoc && hasWorldline ? "partial" : "gap", [
-        `philosophy docs: ${hasDoc}`,
-        `fork drift worldline: ${hasWorldline}`,
-        "compatibility badge criteria: false",
-      ]);
+      const hasCompatibilityCheck =
+        evidence.hasForkCompatibilityScript &&
+        evidence.latestForkCompatibilityStatus === "pass" &&
+        evidence.latestForkCompatibilityFailures === 0 &&
+        evidence.latestForkCompatibilityCriteria >= 8;
+      return statusEvidence(
+        hasDoc && hasCompatibilityDoc && hasWorldline && hasCompatibilityCheck
+          ? "covered"
+          : hasDoc && hasWorldline
+            ? "partial"
+            : "gap",
+        [
+          `philosophy docs: ${hasDoc}`,
+          `compatibility doc: ${hasCompatibilityDoc}`,
+          `fork drift worldline: ${hasWorldline}`,
+          `fork compatibility script: ${evidence.hasForkCompatibilityScript}`,
+          `latest compatibility status: ${evidence.latestForkCompatibilityStatus ?? "missing"}`,
+          `latest compatibility criteria: ${evidence.latestForkCompatibilityCriteria}`,
+          `latest compatibility failures: ${evidence.latestForkCompatibilityFailures}`,
+        ],
+      );
     },
   },
   {

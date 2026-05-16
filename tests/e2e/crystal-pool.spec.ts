@@ -252,6 +252,7 @@ test("hardening guardrail flow", async ({ page, request }) => {
   await expect(page.getByRole("heading", { name: "Anchor Bundles" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Long Goal Compass" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Worldline Coverage Matrix" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Fork Compatibility Boundary" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Hopepunk Repair Queue" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Screenshot Smoke" })).toBeVisible();
 

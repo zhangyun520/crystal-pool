@@ -25,6 +25,7 @@ import {
   getCurrentWorldlineCoverageMatrix,
   getLatestWorldlineCoverageSummary,
 } from "./worldlineCoverage";
+import { getLatestForkCompatibilitySummary } from "./forkCompatibility";
 import { writeJiEventToInbox } from "./ji";
 import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
 import { completeSandboxRun, runSandboxProtocol } from "./sandbox";
@@ -131,6 +132,7 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     repairQueue,
     worldlineCoverage,
     currentWorldlineCoverage,
+    forkCompatibility,
     responsibilityText,
     ethicalText,
   ] = await Promise.all([
@@ -146,6 +148,7 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
     getLatestRepairQueueSummary(),
     getLatestWorldlineCoverageSummary(),
     getCurrentWorldlineCoverageMatrix(),
+    getLatestForkCompatibilitySummary(),
     readOptional(path.join(process.cwd(), "src", "lib", "responsibilityMaturity.ts")),
     readOptional(path.join(process.cwd(), "src", "lib", "ethicalKernel.ts")),
   ]);
@@ -205,6 +208,13 @@ export async function collectPhilosophyAestheticsGoalEvidence(): Promise<
       currentWorldlineCoverage.missingCells,
     latestWorldlineCoverageSandboxRuns:
       worldlineCoverage?.manifest.sandboxRunsCreated ?? 0,
+    hasForkCompatibilityScript: scripts.includes("fork:compatibility"),
+    latestForkCompatibilityStatus:
+      forkCompatibility?.manifest.status ?? "missing",
+    latestForkCompatibilityCriteria:
+      forkCompatibility?.result.criteria.length ?? 0,
+    latestForkCompatibilityFailures:
+      forkCompatibility?.manifest.fail ?? 0,
   };
 }
 

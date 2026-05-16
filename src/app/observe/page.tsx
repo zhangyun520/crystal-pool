@@ -7,6 +7,7 @@ import {
   Code2,
   Compass,
   Eye,
+  GitFork,
   GitCommitHorizontal,
   Hash,
   Link2,
@@ -450,6 +451,74 @@ export default async function ObservePage() {
             <p>npm run worldline:coverage -- --create-missing</p>
             <p className="text-indigo-700">
               sandbox evidence only · no learning promotion
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-normal text-emerald-700">
+              <GitFork size={16} aria-hidden />
+              Open Core / Closed Shell
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold text-emerald-950">
+              Fork Compatibility Boundary
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-emerald-900/75">
+              Forks may diverge, commercialize shells, and build their own
+              worlds, but compatibility requires the auditable core to keep
+              review gates, AI non-sovereignty, proof locality, repair, and
+              fork drift rehearsal visible.
+            </p>
+          </div>
+          <span className={forkCompatibilityStatusStyle(snapshot.forkCompatibility.status)}>
+            {snapshot.forkCompatibility.compatibilityBadge}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <HealthRow label="pass" value={snapshot.forkCompatibility.pass} />
+          <HealthRow label="warn" value={snapshot.forkCompatibility.warn} />
+          <HealthRow label="fail" value={snapshot.forkCompatibility.fail} />
+          <HealthRow
+            label="status"
+            value={snapshot.forkCompatibility.status}
+          />
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid gap-2 lg:grid-cols-2">
+            {snapshot.forkCompatibility.criteria.length ? (
+              snapshot.forkCompatibility.criteria.map((criterion) => (
+                <article
+                  key={criterion.id}
+                  className="rounded-md border border-emerald-100 bg-white/80 p-3 text-sm text-emerald-950"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold">
+                      {criterion.id} · {criterion.title}
+                    </p>
+                    <span className="rounded bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-950">
+                      {criterion.status}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-emerald-900/75">
+                    {criterion.category}
+                  </p>
+                </article>
+              ))
+            ) : (
+              <div className="rounded-md border border-emerald-100 bg-white/80 p-3 text-sm text-emerald-950">
+                No fork compatibility run yet.
+              </div>
+            )}
+          </div>
+          <div className="rounded-md bg-white/80 p-3 text-xs leading-5 text-emerald-950">
+            <p>{snapshot.forkCompatibility.latestRunId ?? "No fork check yet"}</p>
+            <p>npm run fork:compatibility</p>
+            <p>docs/governance/fork-compatibility.md</p>
+            <p className="text-emerald-700">
+              evidence only · no automatic certification
             </p>
           </div>
         </div>
@@ -1237,6 +1306,13 @@ function repairQueueStatusStyle(status: string) {
 function worldlineCoverageStatusStyle(status: string) {
   const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
   if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
+  return `${base} bg-amber-100 text-amber-950`;
+}
+
+function forkCompatibilityStatusStyle(status: string) {
+  const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
+  if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
+  if (status === "fail") return `${base} bg-rose-100 text-rose-950`;
   return `${base} bg-amber-100 text-amber-950`;
 }
 

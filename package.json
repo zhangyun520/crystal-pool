@@ -31,6 +31,7 @@
     "skill:crystallize:watch": "tsx scripts/network-crystallize-watch.ts",
     "ui:aesthetic-smoke": "tsx scripts/aesthetic-smoke.ts",
     "repair:queue": "tsx scripts/repair-queue.ts",
+    "fork:compatibility": "tsx scripts/fork-compatibility.ts",
     "philosophy:gap-audit": "tsx scripts/philosophy-gap-audit.ts",
     "coding:repo-scan": "tsx scripts/coding-repo-scan.ts",
     "coding:sandbox:once": "tsx scripts/coding-sandbox-once.ts",

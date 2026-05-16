@@ -13,6 +13,7 @@ import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization
 import { getPhilosophyAestheticsGoalAudit } from "./philosophyAestheticsGoal";
 import { getLatestRepairQueueSummary } from "./repairQueue";
 import { getLatestWorldlineCoverageSummary } from "./worldlineCoverage";
+import { getLatestForkCompatibilitySummary } from "./forkCompatibility";
 import { defaultPoolIds } from "@/lib/pools";
 import { sandboxModes } from "@/lib/sandbox";
 import { phases, type EdgeRelation, type Phase } from "@/lib/domain";
@@ -257,6 +258,7 @@ export async function getObservationPoolSnapshot() {
     aestheticSmoke,
     repairQueue,
     worldlineCoverage,
+    forkCompatibility,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -314,6 +316,7 @@ export async function getObservationPoolSnapshot() {
     getLatestAestheticSmokeSummary(),
     getLatestRepairQueueSummary(),
     getLatestWorldlineCoverageSummary(),
+    getLatestForkCompatibilitySummary(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -477,6 +480,17 @@ export async function getObservationPoolSnapshot() {
       sandboxRunsCreated: worldlineCoverage?.manifest.sandboxRunsCreated ?? 0,
       missing: worldlineCoverage?.matrix.missing.slice(0, 6) ?? [],
       hasReport: Boolean(worldlineCoverage?.reportMarkdown),
+    },
+    forkCompatibility: {
+      latestRunId: forkCompatibility?.manifest.runId,
+      status: forkCompatibility?.manifest.status ?? "missing",
+      compatibilityBadge:
+        forkCompatibility?.manifest.compatibilityBadge ?? "review-required",
+      pass: forkCompatibility?.manifest.pass ?? 0,
+      warn: forkCompatibility?.manifest.warn ?? 0,
+      fail: forkCompatibility?.manifest.fail ?? 0,
+      criteria: forkCompatibility?.result.criteria.slice(0, 6) ?? [],
+      hasReport: Boolean(forkCompatibility?.reportMarkdown),
     },
     ethics: constitution,
     signals,

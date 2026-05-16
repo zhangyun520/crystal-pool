@@ -44,7 +44,15 @@ const evidence: PhilosophyAestheticsGoalEvidence = {
     "docs/philosophy/ai-discussion-brief.md",
   ],
   tests: ["tests/e2e/crystal-pool.spec.ts", ...Array.from({ length: 24 }, (_, index) => `tests/${index}.test.ts`)],
-  packageScripts: ["lint", "test", "build", "test:e2e", "constitution:check"],
+  packageScripts: [
+    "lint",
+    "test",
+    "build",
+    "test:e2e",
+    "constitution:check",
+    "repair:queue",
+    "worldline:coverage",
+  ],
   pendingJiEvents: 32,
   typedReviewProposals: 16,
   philosophyCandidates: 8,
@@ -65,6 +73,10 @@ const evidence: PhilosophyAestheticsGoalEvidence = {
   latestWorldlineCoveragePercent: 0,
   latestWorldlineCoverageMissingCells: 24,
   latestWorldlineCoverageSandboxRuns: 0,
+  hasForkCompatibilityScript: false,
+  latestForkCompatibilityStatus: "missing",
+  latestForkCompatibilityCriteria: 0,
+  latestForkCompatibilityFailures: 0,
 };
 
 describe("philosophy/aesthetics goal audit", () => {
@@ -148,6 +160,29 @@ describe("philosophy/aesthetics goal audit", () => {
 
     expect(matrixEvidence).toMatchObject({ status: "covered" });
     expect(audit.openItems.map((item) => item.id)).not.toContain("CP-GOAL-007");
+  });
+
+  it("closes the fork compatibility gap only after badge criteria pass", () => {
+    const audit = evaluatePhilosophyAestheticsGoal({
+      evidence: {
+        ...evidence,
+        docs: [
+          ...evidence.docs,
+          "docs/governance/fork-compatibility.md",
+        ],
+        packageScripts: [...evidence.packageScripts, "fork:compatibility"],
+        hasForkCompatibilityScript: true,
+        latestForkCompatibilityStatus: "pass",
+        latestForkCompatibilityCriteria: 8,
+        latestForkCompatibilityFailures: 0,
+      },
+    });
+    const forkEvidence = audit.requirements.find(
+      (item) => item.id === "CP-GOAL-008",
+    );
+
+    expect(forkEvidence).toMatchObject({ status: "covered" });
+    expect(audit.openItems.map((item) => item.id)).not.toContain("CP-GOAL-008");
   });
 
   it("turns open gaps into review-gated JiEvents and sandbox rehearsals", () => {
