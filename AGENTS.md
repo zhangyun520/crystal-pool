@@ -35,6 +35,10 @@ Do not treat the project as a generic notes app.
 - PhilosophyAestheticsLane: `PHILOSOPHY_AESTHETICS` crystallization domain for
   hopepunk ethics, humanistic governance, soulful data, reliability ethics,
   worldline narrative, and operational interface aesthetics.
+- NetworkReviewProposal: typed observe-and-propose artifact that routes a
+  crystallization candidate toward observation review, ethical invariant,
+  aesthetic surface, RFC draft, essay note, or engineering task review. It is a
+  proposal only and must not mutate canonical pool state.
 - CodingRepositoryScan: read-only shallow clone of allowlisted repositories.
   It may inspect file trees, README/docs metadata, package manifests, and
   licenses, but must not install dependencies, execute code, run tests, open

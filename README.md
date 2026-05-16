@@ -252,15 +252,19 @@ lane. The coding lane scans official AI coding, agent protocol,
 open-source coding agent, and programming paradigm sources. The philosophy lane
 scans curated philosophy, governance, AI culture, and interface-craft sources
 for reviewable mechanisms, ethical invariants, design principles, and worldline
-rehearsal prompts. Repo scan cache and
+rehearsal prompts. Each candidate also receives a typed review proposal such as
+`ETHICAL_INVARIANT_PROPOSAL`, `AESTHETIC_SURFACE_PROPOSAL`,
+`RFC_DRAFT_PROPOSAL`, `ESSAY_NOTE_PROPOSAL`, or
+`ENGINEERING_TASK_PROPOSAL`, so reviewers can route it into the right artifact
+instead of treating all signals as generic notes. Repo scan cache and
 reports live under git-ignored `data/ecosystem/repo-cache/` and
 `data/ecosystem/repo-scans/`. To customize source feeds, create a local,
 git-ignored `data/ecosystem/network-sources.json` file shaped as
 `{ "sources": [...] }`. Each cycle writes `manifest.json`, `candidates.jsonl`,
-`chain.jsonl`, `ji-events.jsonl`, `sandbox-runs.jsonl`, and `report.md` under
-`data/ecosystem/network-runs/<run-id>/`, plus domain-specific local chain
-cursors under `data/ecosystem/network-chain/`. These artifacts are a reviewable
-memory chain, not canonical truth.
+`chain.jsonl`, `ji-events.jsonl`, `proposals.jsonl`, `sandbox-runs.jsonl`, and
+`report.md` under `data/ecosystem/network-runs/<run-id>/`, plus
+domain-specific local chain cursors under `data/ecosystem/network-chain/`.
+These artifacts are a reviewable memory chain, not canonical truth.
 
 `npm run coding:sandbox:once` deliberately reuses known coding candidates when
 needed, so sandbox rehearsals can be regenerated after a local database reset

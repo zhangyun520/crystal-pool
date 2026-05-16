@@ -34,11 +34,37 @@ export const networkCandidateKinds = [
   "worldline_narrative_signal",
 ] as const;
 
+export const networkReviewProposalKinds = [
+  "OBSERVATION_REVIEW",
+  "ETHICAL_INVARIANT_PROPOSAL",
+  "AESTHETIC_SURFACE_PROPOSAL",
+  "RFC_DRAFT_PROPOSAL",
+  "ESSAY_NOTE_PROPOSAL",
+  "ENGINEERING_TASK_PROPOSAL",
+] as const;
+
 export type NetworkCrystallizationSourceKind =
   (typeof networkCrystallizationSourceKinds)[number];
 export type NetworkCrystallizationQualityTier =
   (typeof networkCrystallizationQualityTiers)[number];
 export type NetworkCandidateKind = (typeof networkCandidateKinds)[number];
+export type NetworkReviewProposalKind =
+  (typeof networkReviewProposalKinds)[number];
+
+export type NetworkReviewProposal = {
+  id: string;
+  candidateId: string;
+  candidateKind: NetworkCandidateKind;
+  proposalKind: NetworkReviewProposalKind;
+  title: string;
+  body: string;
+  reviewPath: string;
+  acceptanceCheck: string;
+  suggestedArtifacts: string[];
+  sourceHref: string;
+  eventId: string;
+  chainHash?: string;
+};
 
 export type CrystallizationDomainProfile = {
   domain: CrystallizationDomain;
@@ -71,6 +97,7 @@ export type NetworkSignalCandidate = {
   sourceKind: NetworkCrystallizationSourceKind | "repo_scan";
   domain: CrystallizationDomain;
   candidateKind: NetworkCandidateKind;
+  proposalKind: NetworkReviewProposalKind;
   title: string;
   href: string;
   summary: string;
@@ -88,6 +115,7 @@ export type NetworkCrystallizationChainEntry = {
   sourceId: string;
   domain: CrystallizationDomain;
   candidateKind: NetworkCandidateKind;
+  proposalKind: NetworkReviewProposalKind;
   title: string;
   href: string;
   repo?: string;
@@ -113,6 +141,7 @@ export type NetworkCrystallizationManifest = {
   chained: number;
   jiEventsWritten: number;
   sandboxRunsCreated: number;
+  reviewProposals: number;
   previousHash: string | null;
   latestHash: string | null;
   intervalRecommendationMs: 3_600_000;
@@ -712,6 +741,59 @@ function classifyCandidateKind({
   return "repo_architecture_signal";
 }
 
+function proposalKindForCandidateKind({
+  domain,
+  candidateKind,
+}: {
+  domain: CrystallizationDomain;
+  candidateKind: NetworkCandidateKind;
+}): NetworkReviewProposalKind {
+  if (domain === "PHILOSOPHY_AESTHETICS") {
+    if (
+      candidateKind === "ethical_philosophy_signal" ||
+      candidateKind === "soulful_data_signal" ||
+      candidateKind === "reliability_ethics_signal"
+    ) {
+      return "ETHICAL_INVARIANT_PROPOSAL";
+    }
+    if (candidateKind === "aesthetic_interface_signal") {
+      return "AESTHETIC_SURFACE_PROPOSAL";
+    }
+    if (candidateKind === "humanism_governance_signal") {
+      return "RFC_DRAFT_PROPOSAL";
+    }
+    if (candidateKind === "worldline_narrative_signal") {
+      return "ESSAY_NOTE_PROPOSAL";
+    }
+  }
+
+  if (domain === "CODING_AUTOMATION") {
+    if (
+      candidateKind === "repo_architecture_signal" ||
+      candidateKind === "design_pattern_signal" ||
+      candidateKind === "programming_paradigm_signal" ||
+      candidateKind === "tooling_failure_signal"
+    ) {
+      return "ENGINEERING_TASK_PROPOSAL";
+    }
+    if (
+      candidateKind === "ai_coding_agent_pattern" ||
+      candidateKind === "governance_or_security_signal"
+    ) {
+      return "RFC_DRAFT_PROPOSAL";
+    }
+  }
+
+  return "OBSERVATION_REVIEW";
+}
+
+export function reviewProposalKindForCandidate(candidate: NetworkSignalCandidate) {
+  return proposalKindForCandidateKind({
+    domain: candidate.domain,
+    candidateKind: candidate.candidateKind,
+  });
+}
+
 function scoreCandidate({
   source,
   title,
@@ -819,6 +901,10 @@ export function createNetworkSignalCandidate({
     summary: cleanSummary,
   });
   const domain = source.domain ?? "AI_RESEARCH";
+  const proposalKind = proposalKindForCandidateKind({
+    domain,
+    candidateKind: kind,
+  });
   const scored = scoreCandidate({
     source,
     title: cleanTitle,
@@ -835,6 +921,7 @@ export function createNetworkSignalCandidate({
     sourceKind: sourceKind ?? source.kind,
     domain,
     candidateKind: kind,
+    proposalKind,
     title: cleanTitle,
     href: cleanHref,
     summary: cleanSummary,
@@ -948,10 +1035,101 @@ export function candidateToJiEventId(candidate: NetworkSignalCandidate) {
   }).slice(0, 24)}`;
 }
 
+function reviewPathForProposalKind(kind: NetworkReviewProposalKind) {
+  const paths: Record<NetworkReviewProposalKind, string> = {
+    OBSERVATION_REVIEW:
+      "/ecosystem reviewer decides whether to create a node, sandbox, RFC, or dismiss.",
+    ETHICAL_INVARIANT_PROPOSAL:
+      "Ethical Kernel review: translate into invariant principle, failure mode, mechanized check, and tests.",
+    AESTHETIC_SURFACE_PROPOSAL:
+      "Design review: translate into an operational surface change with route, interaction state, screenshot, and smoke check.",
+    RFC_DRAFT_PROPOSAL:
+      "RFC review: draft problem, mechanism, migration/rollback, tests, and canonical boundary.",
+    ESSAY_NOTE_PROPOSAL:
+      "Publication review: fold into philosophy notes, booklet, or AI discussion brief with mechanism mapping.",
+    ENGINEERING_TASK_PROPOSAL:
+      "Engineering review: define affected module, implementation task, verification command, and rollback note.",
+  };
+  return paths[kind];
+}
+
+function acceptanceCheckForProposalKind(kind: NetworkReviewProposalKind) {
+  const checks: Record<NetworkReviewProposalKind, string> = {
+    OBSERVATION_REVIEW:
+      "Reviewer records one explicit decision: import, sandbox, RFC, essay note, engineering task, or dismiss.",
+    ETHICAL_INVARIANT_PROPOSAL:
+      "Invariant has id, principle, failureMode, mechanizedAs, checkKind, severity, refs, and a passing/failing fixture.",
+    AESTHETIC_SURFACE_PROPOSAL:
+      "UI change names the workflow it improves, renders without overlap on desktop/mobile, and keeps review/canonical boundaries visible.",
+    RFC_DRAFT_PROPOSAL:
+      "RFC draft includes goal, non-goals, data model or protocol boundary, tests, and rollback/migration note.",
+    ESSAY_NOTE_PROPOSAL:
+      "Essay note includes thesis, source provenance, Crystal Pool mechanism mapping, and non-doctrine boundary.",
+    ENGINEERING_TASK_PROPOSAL:
+      "Task includes file/module scope, concrete acceptance tests, and proof it does not promote canonical state automatically.",
+  };
+  return checks[kind];
+}
+
+function artifactsForProposalKind(kind: NetworkReviewProposalKind) {
+  const artifacts: Record<NetworkReviewProposalKind, string[]> = {
+    OBSERVATION_REVIEW: ["JiEvent review decision"],
+    ETHICAL_INVARIANT_PROPOSAL: [
+      "EthicalInvariant patch",
+      "constitution fixture",
+      "review note",
+    ],
+    AESTHETIC_SURFACE_PROPOSAL: [
+      "route/component patch",
+      "browser smoke",
+      "screenshot note",
+    ],
+    RFC_DRAFT_PROPOSAL: ["RFC markdown draft", "test plan", "rollback note"],
+    ESSAY_NOTE_PROPOSAL: [
+      "philosophy markdown note",
+      "AI discussion brief entry",
+      "source provenance",
+    ],
+    ENGINEERING_TASK_PROPOSAL: [
+      "scoped code task",
+      "verification command",
+      "migration/rollback note",
+    ],
+  };
+  return artifacts[kind];
+}
+
+export function candidateToReviewProposal(
+  candidate: NetworkSignalCandidate,
+  chain?: Pick<NetworkCrystallizationChainEntry, "eventHash">,
+): NetworkReviewProposal {
+  const kind = candidate.proposalKind;
+  const eventId = candidateToJiEventId(candidate);
+  return {
+    id: `proposal-${stableHash({
+      eventId,
+      proposalKind: kind,
+      href: candidate.href,
+    }).slice(0, 24)}`,
+    candidateId: candidate.id,
+    candidateKind: candidate.candidateKind,
+    proposalKind: kind,
+    title: candidate.title.slice(0, 220),
+    body: candidate.summary,
+    reviewPath: reviewPathForProposalKind(kind),
+    acceptanceCheck: acceptanceCheckForProposalKind(kind),
+    suggestedArtifacts: artifactsForProposalKind(kind),
+    sourceHref: candidate.href,
+    eventId,
+    chainHash: chain?.eventHash,
+  };
+}
+
 function bodyForCandidate(
   candidate: NetworkSignalCandidate,
   chain?: Pick<NetworkCrystallizationChainEntry, "eventHash" | "previousHash">,
 ) {
+  const proposal = candidateToReviewProposal(candidate, chain);
   const reviewQuestion =
     candidate.domain === "CODING_AUTOMATION"
       ? "Should this coding signal become a CrystalNode, coding Sandbox rehearsal, RFC draft, architecture note, or be dismissed?"
@@ -961,6 +1139,7 @@ function bodyForCandidate(
   return [
     `Domain: ${candidate.domain}`,
     `Candidate kind: ${candidate.candidateKind}`,
+    `Proposal kind: ${candidate.proposalKind}`,
     `Source: ${candidate.sourceLabel} (${candidate.sourceId})`,
     candidate.repo ? `Repository: ${candidate.repo}` : undefined,
     candidate.language ? `Language: ${candidate.language}` : undefined,
@@ -974,6 +1153,15 @@ function bodyForCandidate(
     "",
     "Quality reasons:",
     ...candidate.qualityReasons.map((reason) => `- ${reason}`),
+    "",
+    "Review path:",
+    proposal.reviewPath,
+    "",
+    "Acceptance check:",
+    proposal.acceptanceCheck,
+    "",
+    "Suggested artifacts:",
+    ...proposal.suggestedArtifacts.map((artifact) => `- ${artifact}`),
     "",
     "Review question:",
     reviewQuestion,
@@ -998,6 +1186,7 @@ export function candidateToJiEvent(
       { label: "feed", hash: candidate.sourceId },
       { label: "domain", hash: candidate.domain },
       { label: "candidate-kind", hash: candidate.candidateKind },
+      { label: "proposal-kind", hash: candidate.proposalKind },
       ...(candidate.repo
         ? [{ label: "repo", href: `https://github.com/${candidate.repo}` }]
         : []),
@@ -1025,6 +1214,7 @@ export function buildNetworkCrystallizationChain({
       sourceId: candidate.sourceId,
       domain: candidate.domain,
       candidateKind: candidate.candidateKind,
+      proposalKind: candidate.proposalKind,
       title: candidate.title,
       href: candidate.href,
       repo: candidate.repo,
@@ -1038,6 +1228,7 @@ export function buildNetworkCrystallizationChain({
       sourceId: candidate.sourceId,
       domain: candidate.domain,
       candidateKind: candidate.candidateKind,
+      proposalKind: candidate.proposalKind,
       href: candidate.href,
       bodyHash,
       previousHash: cursor,
@@ -1048,6 +1239,7 @@ export function buildNetworkCrystallizationChain({
       sourceId: candidate.sourceId,
       domain: candidate.domain,
       candidateKind: candidate.candidateKind,
+      proposalKind: candidate.proposalKind,
       title: candidate.title,
       href: candidate.href,
       repo: candidate.repo,
@@ -1184,7 +1376,7 @@ export function generateNetworkCrystallizationReport({
     ? candidates
         .map(
           (candidate) =>
-            `- ${candidate.qualityScore}/100 [${candidate.domain}/${candidate.candidateKind}] ${candidate.sourceLabel}: ${candidate.title}${candidate.repo ? ` repo=${candidate.repo}` : ""} (${candidate.href})`,
+            `- ${candidate.qualityScore}/100 [${candidate.domain}/${candidate.candidateKind}/${candidate.proposalKind}] ${candidate.sourceLabel}: ${candidate.title}${candidate.repo ? ` repo=${candidate.repo}` : ""} (${candidate.href})`,
         )
         .join("\n")
     : "- No candidates met the quality threshold.";
@@ -1192,10 +1384,18 @@ export function generateNetworkCrystallizationReport({
     ? chain
         .map(
           (entry) =>
-            `- ${entry.index}: ${entry.eventId} ${entry.domain}/${entry.candidateKind} hash=${entry.eventHash.slice(0, 16)} prev=${entry.previousHash?.slice(0, 16) ?? "genesis"}`,
+            `- ${entry.index}: ${entry.eventId} ${entry.domain}/${entry.candidateKind}/${entry.proposalKind} hash=${entry.eventHash.slice(0, 16)} prev=${entry.previousHash?.slice(0, 16) ?? "genesis"}`,
         )
         .join("\n")
     : "- No chain entries created.";
+  const proposalLines = candidates.length
+    ? candidates
+        .map((candidate, index) => {
+          const proposal = candidateToReviewProposal(candidate, chain[index]);
+          return `- ${proposal.proposalKind}: ${proposal.title}\n  - path: ${proposal.reviewPath}\n  - acceptance: ${proposal.acceptanceCheck}`;
+        })
+        .join("\n")
+    : "- No typed review proposals created.";
   const followUp =
     manifest.domain === "CODING_AUTOMATION"
       ? "Review coding JiEvents in /ecosystem and inspect auto-created Sandbox runs before importing architecture lessons."
@@ -1222,6 +1422,7 @@ export function generateNetworkCrystallizationReport({
     `- chained: ${manifest.chained}`,
     `- jiEventsWritten: ${manifest.jiEventsWritten}`,
     `- sandboxRunsCreated: ${manifest.sandboxRunsCreated}`,
+    `- reviewProposals: ${manifest.reviewProposals ?? candidates.length}`,
     `- previousHash: ${manifest.previousHash ?? "genesis"}`,
     `- latestHash: ${manifest.latestHash ?? "none"}`,
     `- recommendedIntervalMs: ${manifest.intervalRecommendationMs}`,
@@ -1231,6 +1432,9 @@ export function generateNetworkCrystallizationReport({
     "",
     "## Chain",
     chainLines,
+    "",
+    "## Typed Review Proposals",
+    proposalLines,
     "",
     "## Recommended Follow-up",
     followUp,

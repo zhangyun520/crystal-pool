@@ -210,6 +210,10 @@ export default async function ObservePage() {
               label="JiEvents"
               value={snapshot.networkSkill.jiEventsWritten}
             />
+            <HealthRow
+              label="proposals"
+              value={snapshot.networkSkill.reviewProposals}
+            />
           </div>
           <div className="mt-3 rounded-md bg-white/80 p-2 text-xs leading-5 text-cyan-950">
             <p>npm run skill:crystallize:watch -- --interval-ms 3600000</p>
@@ -242,6 +246,10 @@ export default async function ObservePage() {
             <HealthRow
               label="auto sandboxes"
               value={snapshot.codingSkill.sandboxRunsCreated}
+            />
+            <HealthRow
+              label="proposals"
+              value={snapshot.codingSkill.reviewProposals}
             />
           </div>
           <div className="mt-3 rounded-md bg-white/80 p-2 text-xs leading-5 text-violet-950">
@@ -282,6 +290,10 @@ export default async function ObservePage() {
             <HealthRow
               label="auto sandboxes"
               value={snapshot.philosophySkill.sandboxRunsCreated}
+            />
+            <HealthRow
+              label="proposals"
+              value={snapshot.philosophySkill.reviewProposals}
             />
           </div>
           <div className="mt-3 rounded-md bg-white/80 p-2 text-xs leading-5 text-fuchsia-950">

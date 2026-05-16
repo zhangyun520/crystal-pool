@@ -71,7 +71,7 @@ async function main() {
   for (let cycle = 1; cycle <= config.maxCycles; cycle += 1) {
     const result = await runNetworkCrystallizationCycle(config);
     console.log(
-      `[network:crystallize:watch] cycle=${cycle} domain=${result.manifest.domain} run=${result.runId} candidates=${result.candidates.length} chained=${result.chain.length} jiEvents=${result.manifest.jiEventsWritten} repoScans=${result.manifest.repoScans} sandboxes=${result.manifest.sandboxRunsCreated} latestHash=${result.manifest.latestHash ?? "none"}`,
+      `[network:crystallize:watch] cycle=${cycle} domain=${result.manifest.domain} run=${result.runId} candidates=${result.candidates.length} chained=${result.chain.length} jiEvents=${result.manifest.jiEventsWritten} repoScans=${result.manifest.repoScans} sandboxes=${result.manifest.sandboxRunsCreated} proposals=${result.manifest.reviewProposals} latestHash=${result.manifest.latestHash ?? "none"}`,
     );
     if (result.errors.length > 0) {
       console.log(

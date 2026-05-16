@@ -386,6 +386,7 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
   const soulful = assessJiEventSoulfulData(event);
   const domain = jiBodyField(event.body, "Domain");
   const candidateKind = jiBodyField(event.body, "Candidate kind");
+  const proposalKind = jiBodyField(event.body, "Proposal kind");
   const repository = jiBodyField(event.body, "Repository");
 
   return (
@@ -408,6 +409,11 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
             {candidateKind ? (
               <span className="rounded bg-cyan-100 px-2 py-1 text-xs font-semibold text-cyan-900">
                 {candidateKind}
+              </span>
+            ) : null}
+            {proposalKind ? (
+              <span className="rounded bg-fuchsia-100 px-2 py-1 text-xs font-semibold text-fuchsia-900">
+                {proposalKind}
               </span>
             ) : null}
             {repository ? (
@@ -487,8 +493,9 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
               <p className="mt-1 leading-6">
                 This signal may inform hopepunk ethics, soulful data, interface
                 beauty, or worldline rehearsal. Treat it as a reviewable
-                observation, not doctrine; import only after naming mechanism,
-                failure mode, and repair path.
+                observation, not doctrine. Its proposal type should guide the
+                next artifact: invariant, design surface, RFC, essay note, or
+                engineering task.
               </p>
             </div>
           ) : null}

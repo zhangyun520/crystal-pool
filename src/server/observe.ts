@@ -385,6 +385,8 @@ export async function getObservationPoolSnapshot() {
       chained: latestNetworkCrystallizationRun?.manifest?.chained ?? 0,
       jiEventsWritten:
         latestNetworkCrystallizationRun?.manifest?.jiEventsWritten ?? 0,
+      reviewProposals:
+        latestNetworkCrystallizationRun?.manifest?.reviewProposals ?? 0,
       latestHash: latestNetworkCrystallizationRun?.manifest?.latestHash,
       fetchedSources: latestNetworkCrystallizationRun?.manifest?.fetchedSources ?? 0,
       failedSources: latestNetworkCrystallizationRun?.manifest?.failedSources ?? 0,
@@ -395,6 +397,8 @@ export async function getObservationPoolSnapshot() {
       candidates: latestCodingCrystallizationRun?.manifest?.candidates ?? 0,
       chained: latestCodingCrystallizationRun?.manifest?.chained ?? 0,
       jiEventsWritten: latestCodingCrystallizationRun?.manifest?.jiEventsWritten ?? 0,
+      reviewProposals:
+        latestCodingCrystallizationRun?.manifest?.reviewProposals ?? 0,
       repoScans: latestCodingCrystallizationRun?.manifest?.repoScans ?? 0,
       sandboxRunsCreated:
         latestCodingCrystallizationRun?.manifest?.sandboxRunsCreated ?? 0,
@@ -410,6 +414,8 @@ export async function getObservationPoolSnapshot() {
       chained: latestPhilosophyCrystallizationRun?.manifest?.chained ?? 0,
       jiEventsWritten:
         latestPhilosophyCrystallizationRun?.manifest?.jiEventsWritten ?? 0,
+      reviewProposals:
+        latestPhilosophyCrystallizationRun?.manifest?.reviewProposals ?? 0,
       repoScans: latestPhilosophyCrystallizationRun?.manifest?.repoScans ?? 0,
       sandboxRunsCreated:
         latestPhilosophyCrystallizationRun?.manifest?.sandboxRunsCreated ?? 0,

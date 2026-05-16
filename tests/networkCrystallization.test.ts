@@ -3,6 +3,7 @@ import {
   buildNetworkCrystallizationChain,
   candidateToJiEvent,
   candidateToJiEventId,
+  candidateToReviewProposal,
   codingCandidateToSandboxInput,
   codingAutomationCrystallizationSources,
   generateNetworkCrystallizationReport,
@@ -124,7 +125,9 @@ describe("network crystallization skill", () => {
     });
     expect(event.body).toContain("Domain: AI_RESEARCH");
     expect(event.body).toContain("Candidate kind: ai_research_signal");
+    expect(event.body).toContain("Proposal kind: OBSERVATION_REVIEW");
     expect(event.body).toContain("Chain hash:");
+    expect(event.body).toContain("Acceptance check:");
     expect(event.body).toContain("Review question:");
   });
 
@@ -145,9 +148,12 @@ describe("network crystallization skill", () => {
 
     expect(candidate.domain).toBe("CODING_AUTOMATION");
     expect(candidate.candidateKind).toBe("ai_coding_agent_pattern");
+    expect(candidate.proposalKind).toBe("RFC_DRAFT_PROPOSAL");
     expect(event.body).toContain("Domain: CODING_AUTOMATION");
     expect(event.body).toContain("Candidate kind: ai_coding_agent_pattern");
+    expect(event.body).toContain("Proposal kind: RFC_DRAFT_PROPOSAL");
     expect(event.refs?.some((ref) => ref.label === "repo")).toBe(true);
+    expect(event.refs?.some((ref) => ref.label === "proposal-kind")).toBe(true);
     expect(sandbox.mode).toBe("SONATA");
     expect(sandbox.worldlineKey).toBe("AI_DIRECTED_WORLD");
     expect(sandbox.sourceJiEventIds).toEqual([event.id]);
@@ -198,14 +204,56 @@ describe("network crystallization skill", () => {
 
     expect(candidate.domain).toBe("PHILOSOPHY_AESTHETICS");
     expect(candidate.candidateKind).toBe("ethical_philosophy_signal");
+    expect(candidate.proposalKind).toBe("ETHICAL_INVARIANT_PROPOSAL");
     expect(event.body).toContain("Domain: PHILOSOPHY_AESTHETICS");
+    expect(event.body).toContain("Proposal kind: ETHICAL_INVARIANT_PROPOSAL");
+    expect(event.body).toContain("Suggested artifacts:");
     expect(event.body).toContain(
       "Should this philosophy/aesthetics signal become a design principle",
     );
+    expect(candidateToReviewProposal(candidate)).toMatchObject({
+      proposalKind: "ETHICAL_INVARIANT_PROPOSAL",
+      acceptanceCheck: expect.stringContaining("Invariant has id"),
+    });
     expect(sandbox.mode).toBe("SONATA");
     expect(sandbox.worldlineKey).toBe("HOPEPUNK_REPAIR");
     expect(sandbox.sourceJiEventIds).toEqual([event.id]);
     expect(sandbox.description).toContain("not doctrine");
+  });
+
+  it("routes philosophy/aesthetics candidates into typed review proposals", () => {
+    const [interfaceCandidate] = parseNetworkFeed(
+      `<?xml version="1.0"?><rss><channel>
+        <item>
+          <title>Handmade interface design as a trust signal</title>
+          <link>https://example.com/design/handmade-trust</link>
+          <description>Interface design can make responsibility, provenance, consent, and repair visible instead of hiding decisions behind generic automation.</description>
+        </item>
+      </channel></rss>`,
+      philosophyAestheticsCrystallizationSources[2],
+    );
+    const [worldlineCandidate] = parseNetworkFeed(
+      `<?xml version="1.0"?><rss><channel>
+        <item>
+          <title>Worldline narratives for repair under future pressure</title>
+          <link>https://example.com/essay/worldline-repair</link>
+          <description>Stories about future institutions can reveal where hope, otherness, governance, and repair paths become brittle.</description>
+        </item>
+      </channel></rss>`,
+      {
+        ...philosophyAestheticsCrystallizationSources[4],
+        candidateKind: "worldline_narrative_signal",
+      },
+    );
+
+    expect(candidateToReviewProposal(interfaceCandidate)).toMatchObject({
+      proposalKind: "AESTHETIC_SURFACE_PROPOSAL",
+      acceptanceCheck: expect.stringContaining("desktop/mobile"),
+    });
+    expect(candidateToReviewProposal(worldlineCandidate)).toMatchObject({
+      proposalKind: "ESSAY_NOTE_PROPOSAL",
+      acceptanceCheck: expect.stringContaining("Essay note includes thesis"),
+    });
   });
 
   it("reports the observe-and-propose boundary", () => {
@@ -228,6 +276,7 @@ describe("network crystallization skill", () => {
       chained: chain.length,
       jiEventsWritten: candidates.length,
       sandboxRunsCreated: 0,
+      reviewProposals: candidates.length,
       previousHash: null,
       latestHash: chain.at(-1)?.eventHash ?? null,
       intervalRecommendationMs: 3_600_000,
@@ -241,6 +290,8 @@ describe("network crystallization skill", () => {
 
     expect(report).toContain("Network Crystallization Run");
     expect(report).toContain("domain: AI_RESEARCH");
+    expect(report).toContain("Typed Review Proposals");
+    expect(report).toContain("OBSERVATION_REVIEW");
     expect(report).toContain("does not create canonical CrystalNodes");
     expect(report).toContain("Review the JiEvents in /ecosystem");
   });

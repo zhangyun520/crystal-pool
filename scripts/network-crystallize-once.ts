@@ -50,6 +50,7 @@ async function main() {
   console.log(`- jiEventsWritten: ${result.manifest.jiEventsWritten}`);
   console.log(`- repoScans: ${result.manifest.repoScans}`);
   console.log(`- sandboxRunsCreated: ${result.manifest.sandboxRunsCreated}`);
+  console.log(`- reviewProposals: ${result.manifest.reviewProposals}`);
   console.log(`- previousHash: ${result.manifest.previousHash ?? "genesis"}`);
   console.log(`- latestHash: ${result.manifest.latestHash ?? "none"}`);
   console.log(`- report: ${result.runDir}/report.md`);

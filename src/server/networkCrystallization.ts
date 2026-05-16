@@ -4,6 +4,7 @@ import {
   buildNetworkCrystallizationChain,
   candidateToJiEvent,
   candidateToJiEventId,
+  candidateToReviewProposal,
   crystallizationDomainProfiles,
   generateNetworkCrystallizationReport,
   networkCandidateToSandboxInput,
@@ -16,6 +17,7 @@ import {
   type NetworkCrystallizationChainEntry,
   type NetworkCrystallizationManifest,
   type NetworkCrystallizationSource,
+  type NetworkReviewProposal,
   type NetworkSignalCandidate,
 } from "@/lib/networkCrystallization";
 import { parseJiEventJsonl, type JiEvent } from "@/lib/ji";
@@ -46,6 +48,7 @@ export type NetworkCrystallizationRunResult = {
   candidates: NetworkSignalCandidate[];
   chain: NetworkCrystallizationChainEntry[];
   jiEvents: JiEvent[];
+  reviewProposals: NetworkReviewProposal[];
   sandboxRunIds: string[];
   reportMarkdown: string;
   errors: string[];
@@ -57,6 +60,7 @@ export type LatestNetworkCrystallizationSummary = {
   manifest?: NetworkCrystallizationManifest;
   candidates: NetworkSignalCandidate[];
   chain: NetworkCrystallizationChainEntry[];
+  reviewProposals: NetworkReviewProposal[];
   sandboxRunIds: string[];
   reportMarkdown?: string;
 };
@@ -311,6 +315,9 @@ export async function runNetworkCrystallizationCycle({
   const jiEvents = candidates.map((candidate, index) =>
     candidateToJiEvent(candidate, chain[index]),
   );
+  const reviewProposals = candidates.map((candidate, index) =>
+    candidateToReviewProposal(candidate, chain[index]),
+  );
 
   if (writeJiEvents) {
     for (const event of jiEvents) {
@@ -356,6 +363,7 @@ export async function runNetworkCrystallizationCycle({
     chained: chain.length,
     jiEventsWritten: writeJiEvents ? jiEvents.length : 0,
     sandboxRunsCreated: sandboxRunIds.length,
+    reviewProposals: reviewProposals.length,
     previousHash: latestState.latestHash,
     latestHash,
     intervalRecommendationMs: 3_600_000,
@@ -372,6 +380,7 @@ export async function runNetworkCrystallizationCycle({
     writeFile(path.join(runDir, "candidates.jsonl"), jsonl(candidates)),
     writeFile(path.join(runDir, "chain.jsonl"), jsonl(chain)),
     writeFile(path.join(runDir, "ji-events.jsonl"), jsonl(jiEvents)),
+    writeFile(path.join(runDir, "proposals.jsonl"), jsonl(reviewProposals)),
     writeFile(path.join(runDir, "sandbox-runs.jsonl"), jsonl(sandboxRunIds.map((id) => ({ id })))),
     writeFile(path.join(runDir, "errors.jsonl"), jsonl(errors.map((message) => ({ message })))),
     writeFile(path.join(runDir, "report.md"), reportMarkdown),
@@ -421,6 +430,7 @@ export async function runNetworkCrystallizationCycle({
     candidates,
     chain,
     jiEvents,
+    reviewProposals,
     sandboxRunIds,
     reportMarkdown,
     errors,
@@ -453,11 +463,19 @@ export async function getLatestNetworkCrystallizationSummary({
     if (!runId) return undefined;
 
     const runDir = path.join(networkRunsDir, runId);
-    const [manifestText, candidatesText, chainText, sandboxRunsText, reportMarkdown] =
+    const [
+      manifestText,
+      candidatesText,
+      chainText,
+      proposalsText,
+      sandboxRunsText,
+      reportMarkdown,
+    ] =
       await Promise.all([
         safeReadText(path.join(runDir, "manifest.json")),
         safeReadText(path.join(runDir, "candidates.jsonl")),
         safeReadText(path.join(runDir, "chain.jsonl")),
+        safeReadText(path.join(runDir, "proposals.jsonl")),
         safeReadText(path.join(runDir, "sandbox-runs.jsonl")),
         safeReadText(path.join(runDir, "report.md")),
       ]);
@@ -478,6 +496,9 @@ export async function getLatestNetworkCrystallizationSummary({
         ? parseJsonl<NetworkSignalCandidate>(candidatesText)
         : [],
       chain: chainText ? parseJsonl<NetworkCrystallizationChainEntry>(chainText) : [],
+      reviewProposals: proposalsText
+        ? parseJsonl<NetworkReviewProposal>(proposalsText)
+        : [],
       sandboxRunIds,
       reportMarkdown,
     };

@@ -46,6 +46,9 @@ transition.
 - PhilosophyAestheticsLane: the `PHILOSOPHY_AESTHETICS` crystallization domain
   for hopepunk ethics, humanistic governance, soulful data, reliability ethics,
   worldline narrative, and operational interface aesthetics.
+- NetworkReviewProposal: typed observe-and-propose artifact that routes
+  crystallization candidates toward observation review, ethical invariant,
+  aesthetic surface, RFC draft, essay note, or engineering task review.
 - CodingRepositoryScan: read-only shallow clone of allowlisted GitHub repos
   into local gitignored cache. It may inspect file trees, README/docs metadata,
   package manifests, and licenses, but it must not execute repo code, install

@@ -502,6 +502,7 @@ export async function getMeaningFlowSnapshot({
         : "/ecosystem";
     const domain = jiBodyField(event.body, "Domain");
     const candidateKind = jiBodyField(event.body, "Candidate kind");
+    const proposalKind = jiBodyField(event.body, "Proposal kind");
     const repository = jiBodyField(event.body, "Repository");
     const candidateCluster =
       domain === "CODING_AUTOMATION"
@@ -515,6 +516,7 @@ export async function getMeaningFlowSnapshot({
       `ecosystem:${event.sourceProject}`,
       domain ? `domain:${domain}` : undefined,
       candidateCluster,
+      proposalKind ? `proposal:${proposalKind}` : undefined,
       repository ? `repo:${repository}` : undefined,
     ].filter((item): item is string => Boolean(item));
     return {
@@ -528,7 +530,7 @@ export async function getMeaningFlowSnapshot({
           : domain === "PHILOSOPHY_AESTHETICS"
             ? `philosophy · ${event.title}`
           : `${event.sourceProject} · ${event.title}`,
-      detail: `${event.kind} / ${event.status}${candidateKind ? ` / ${candidateKind}` : ""}: ${event.body}`,
+      detail: `${event.kind} / ${event.status}${candidateKind ? ` / ${candidateKind}` : ""}${proposalKind ? ` / ${proposalKind}` : ""}: ${event.body}`,
       intensity: normalizeFlowIntensity(
         12 + (event.ha ?? 2) * 7 + (event.status === "pending" ? 8 : 0),
       ),
@@ -600,7 +602,7 @@ export async function getMeaningFlowSnapshot({
               : "intake",
           at: observation.generatedAt,
           title: "coding · intelligence lane",
-          detail: `CODING_AUTOMATION latest=${observation.codingSkill.latestRunId} candidates=${observation.codingSkill.candidates} repoScans=${observation.codingSkill.repoScans} autoSandboxes=${observation.codingSkill.sandboxRunsCreated}`,
+          detail: `CODING_AUTOMATION latest=${observation.codingSkill.latestRunId} candidates=${observation.codingSkill.candidates} repoScans=${observation.codingSkill.repoScans} autoSandboxes=${observation.codingSkill.sandboxRunsCreated} typedProposals=${observation.codingSkill.reviewProposals}`,
           intensity: normalizeFlowIntensity(
             22 +
               observation.codingSkill.candidates * 5 +
@@ -623,14 +625,18 @@ export async function getMeaningFlowSnapshot({
               : "intake",
           at: observation.generatedAt,
           title: "philosophy · aesthetics lane",
-          detail: `PHILOSOPHY_AESTHETICS latest=${observation.philosophySkill.latestRunId} candidates=${observation.philosophySkill.candidates} JiEvents=${observation.philosophySkill.jiEventsWritten} autoSandboxes=${observation.philosophySkill.sandboxRunsCreated}`,
+          detail: `PHILOSOPHY_AESTHETICS latest=${observation.philosophySkill.latestRunId} candidates=${observation.philosophySkill.candidates} JiEvents=${observation.philosophySkill.jiEventsWritten} autoSandboxes=${observation.philosophySkill.sandboxRunsCreated} typedProposals=${observation.philosophySkill.reviewProposals} proposalKinds=ETHICAL_INVARIANT_PROPOSAL,AESTHETIC_SURFACE_PROPOSAL,RFC_DRAFT_PROPOSAL,ESSAY_NOTE_PROPOSAL`,
           intensity: normalizeFlowIntensity(
             22 +
               observation.philosophySkill.candidates * 5 +
               observation.philosophySkill.sandboxRunsCreated * 12,
           ),
           href: "/observe",
-          clusterIds: ["domain:PHILOSOPHY_AESTHETICS", "ecosystem:network"],
+          clusterIds: [
+            "domain:PHILOSOPHY_AESTHETICS",
+            "ecosystem:network",
+            "proposal:typed-review",
+          ],
         },
       ]
     : [];
