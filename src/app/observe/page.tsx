@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Code2,
   Compass,
+  ClipboardCheck,
   Eye,
   GitFork,
   GitCommitHorizontal,
@@ -379,6 +380,69 @@ export default async function ObservePage() {
             npm run philosophy:gap-audit -- --create-sandboxes
           </code>
           <span>observe + propose · no auto promote</span>
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-lg border border-sky-200 bg-sky-50 p-5 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-normal text-sky-700">
+              <ClipboardCheck size={16} aria-hidden />
+              Long Goal Evidence
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold text-sky-950">
+              Long Goal Evidence Bundle
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-sky-900/75">
+              The active philosophy and aesthetics objective is backed by a
+              local evidence bundle: goal audit, constitution, worldline
+              matrix, repair queue, fork compatibility, and screenshot smoke.
+              It is proof for review, not a claim that exploration should stop.
+            </p>
+          </div>
+          <span className={evidenceBundleStatusStyle(snapshot.longGoalEvidence.status)}>
+            {snapshot.longGoalEvidence.status}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <HealthRow label="items" value={snapshot.longGoalEvidence.items} />
+          <HealthRow label="pass" value={snapshot.longGoalEvidence.pass} />
+          <HealthRow label="warn" value={snapshot.longGoalEvidence.warn} />
+          <HealthRow label="fail" value={snapshot.longGoalEvidence.fail} />
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid gap-2 lg:grid-cols-2">
+            {snapshot.longGoalEvidence.topItems.length ? (
+              snapshot.longGoalEvidence.topItems.map((item) => (
+                <article
+                  key={item.id}
+                  className="rounded-md border border-sky-100 bg-white/80 p-3 text-sm text-sky-950"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold">
+                      {item.id} · {item.title}
+                    </p>
+                    <span className="rounded bg-sky-100 px-2 py-1 text-xs font-semibold text-sky-950">
+                      {item.status}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-sky-900/75">
+                    {item.command}
+                  </p>
+                </article>
+              ))
+            ) : (
+              <div className="rounded-md border border-sky-100 bg-white/80 p-3 text-sm text-sky-950">
+                No long-goal evidence bundle run yet.
+              </div>
+            )}
+          </div>
+          <div className="rounded-md bg-white/80 p-3 text-xs leading-5 text-sky-950">
+            <p>{snapshot.longGoalEvidence.latestRunId ?? "No evidence bundle yet"}</p>
+            <p>npm run long-goal:evidence</p>
+            <p>data/ecosystem/long-goal-evidence</p>
+            <p className="text-sky-700">evidence only · goal remains active</p>
+          </div>
         </div>
       </section>
 
@@ -1310,6 +1374,13 @@ function worldlineCoverageStatusStyle(status: string) {
 }
 
 function forkCompatibilityStatusStyle(status: string) {
+  const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
+  if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
+  if (status === "fail") return `${base} bg-rose-100 text-rose-950`;
+  return `${base} bg-amber-100 text-amber-950`;
+}
+
+function evidenceBundleStatusStyle(status: string) {
   const base = "inline-flex h-9 w-fit items-center rounded-md px-3 text-sm font-semibold";
   if (status === "pass") return `${base} bg-lime-100 text-lime-950`;
   if (status === "fail") return `${base} bg-rose-100 text-rose-950`;

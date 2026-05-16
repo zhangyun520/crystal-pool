@@ -14,6 +14,7 @@ import { getPhilosophyAestheticsGoalAudit } from "./philosophyAestheticsGoal";
 import { getLatestRepairQueueSummary } from "./repairQueue";
 import { getLatestWorldlineCoverageSummary } from "./worldlineCoverage";
 import { getLatestForkCompatibilitySummary } from "./forkCompatibility";
+import { getLatestLongGoalEvidenceSummary } from "./longGoalEvidence";
 import { defaultPoolIds } from "@/lib/pools";
 import { sandboxModes } from "@/lib/sandbox";
 import { phases, type EdgeRelation, type Phase } from "@/lib/domain";
@@ -259,6 +260,7 @@ export async function getObservationPoolSnapshot() {
     repairQueue,
     worldlineCoverage,
     forkCompatibility,
+    longGoalEvidence,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -317,6 +319,7 @@ export async function getObservationPoolSnapshot() {
     getLatestRepairQueueSummary(),
     getLatestWorldlineCoverageSummary(),
     getLatestForkCompatibilitySummary(),
+    getLatestLongGoalEvidenceSummary(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -491,6 +494,16 @@ export async function getObservationPoolSnapshot() {
       fail: forkCompatibility?.manifest.fail ?? 0,
       criteria: forkCompatibility?.result.criteria.slice(0, 6) ?? [],
       hasReport: Boolean(forkCompatibility?.reportMarkdown),
+    },
+    longGoalEvidence: {
+      latestRunId: longGoalEvidence?.manifest.runId,
+      status: longGoalEvidence?.manifest.status ?? "missing",
+      items: longGoalEvidence?.manifest.items ?? 0,
+      pass: longGoalEvidence?.manifest.pass ?? 0,
+      warn: longGoalEvidence?.manifest.warn ?? 0,
+      fail: longGoalEvidence?.manifest.fail ?? 0,
+      topItems: longGoalEvidence?.bundle.items.slice(0, 6) ?? [],
+      hasReport: Boolean(longGoalEvidence?.reportMarkdown),
     },
     ethics: constitution,
     signals,

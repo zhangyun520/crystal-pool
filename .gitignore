@@ -35,6 +35,7 @@
 /data/ecosystem/repair-queue
 /data/ecosystem/worldline-coverage
 /data/ecosystem/fork-compatibility
+/data/ecosystem/long-goal-evidence
 /data/ecosystem/network-sources.json
 /data/ecosystem/repo-cache
 /data/ecosystem/repo-scans
