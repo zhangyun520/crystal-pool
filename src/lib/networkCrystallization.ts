@@ -1,5 +1,9 @@
 import { createHash } from "node:crypto";
-import { type JiEvent } from "./ji";
+import {
+  jiProposalLaneKinds,
+  type JiEvent,
+  type JiProposalLaneKind,
+} from "./ji";
 import { type SandboxMode, type SandboxRunInput } from "./sandbox";
 import { type WorldlineKey } from "./worldline";
 
@@ -34,22 +38,14 @@ export const networkCandidateKinds = [
   "worldline_narrative_signal",
 ] as const;
 
-export const networkReviewProposalKinds = [
-  "OBSERVATION_REVIEW",
-  "ETHICAL_INVARIANT_PROPOSAL",
-  "AESTHETIC_SURFACE_PROPOSAL",
-  "RFC_DRAFT_PROPOSAL",
-  "ESSAY_NOTE_PROPOSAL",
-  "ENGINEERING_TASK_PROPOSAL",
-] as const;
+export const networkReviewProposalKinds = jiProposalLaneKinds;
 
 export type NetworkCrystallizationSourceKind =
   (typeof networkCrystallizationSourceKinds)[number];
 export type NetworkCrystallizationQualityTier =
   (typeof networkCrystallizationQualityTiers)[number];
 export type NetworkCandidateKind = (typeof networkCandidateKinds)[number];
-export type NetworkReviewProposalKind =
-  (typeof networkReviewProposalKinds)[number];
+export type NetworkReviewProposalKind = JiProposalLaneKind;
 
 export type NetworkReviewProposal = {
   id: string;

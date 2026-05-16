@@ -2,6 +2,7 @@ import {
   Activity,
   GitPullRequestArrow,
   Inbox,
+  ListChecks,
   Network,
   ShieldCheck,
   Sparkles,
@@ -11,6 +12,7 @@ import { AppShell } from "@/components/AppShell";
 import { assessJiEventSoulfulData } from "@/lib/ethicalKernel";
 import {
   jiEventKinds,
+  jiBodyField,
   jiKindLabels,
   jiReviewStatuses,
   jiSourceLabels,
@@ -244,6 +246,35 @@ export default async function EcosystemPage() {
         <section className="grid gap-4">
           <div className="flex items-center justify-between gap-4">
             <div>
+              <div className="flex items-center gap-2">
+                <ListChecks size={18} aria-hidden className="text-fuchsia-700" />
+                <h2 className="text-xl font-semibold tracking-normal text-stone-950">
+                  Typed Proposal Lanes
+                </h2>
+              </div>
+              <p className="mt-1 text-sm text-stone-500">
+                Network, coding, and philosophy signals are sorted into
+                reviewable artifact paths. They still cannot promote canonical
+                pool state automatically.
+              </p>
+            </div>
+            <Link
+              href="/observe"
+              className="hidden h-10 items-center gap-2 rounded-md border border-stone-200 bg-white px-3 text-sm font-medium text-stone-700 shadow-sm hover:bg-stone-50 sm:inline-flex"
+            >
+              Observe
+            </Link>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {dashboard.proposalLanes.map((lane) => (
+              <ProposalLaneCard key={lane.kind} lane={lane} />
+            ))}
+          </div>
+        </section>
+
+        <section className="grid gap-4">
+          <div className="flex items-center justify-between gap-4">
+            <div>
               <h2 className="text-xl font-semibold tracking-normal text-stone-950">
                 Pending Trigger Points
               </h2>
@@ -378,6 +409,52 @@ function SourceRow({
       </div>
       <p className="mt-2 text-xs leading-5 text-stone-500">{detail.boundary}</p>
     </div>
+  );
+}
+
+function ProposalLaneCard({
+  lane,
+}: {
+  lane: Awaited<ReturnType<typeof getEcosystemDashboard>>["proposalLanes"][number];
+}) {
+  return (
+    <article className="rounded-lg border border-stone-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-stone-950">
+            {lane.label} / {lane.nativeLabel}
+          </p>
+          <p className="mt-1 text-xs leading-5 text-stone-500">
+            {lane.description}
+          </p>
+        </div>
+        <span className="rounded bg-fuchsia-100 px-2 py-1 text-xs font-semibold text-fuchsia-900">
+          {lane.count}
+        </span>
+      </div>
+      <p className="mt-3 rounded-md bg-stone-50 px-3 py-2 text-xs leading-5 text-stone-600">
+        {lane.reviewPath}
+      </p>
+      <div className="mt-3 grid gap-2">
+        {lane.events.length > 0 ? (
+          lane.events.map((event) => (
+            <div key={event.id} className="border-l-2 border-fuchsia-200 pl-3">
+              <p className="line-clamp-2 text-xs font-medium leading-5 text-stone-800">
+                {event.title}
+              </p>
+              <p className="mt-0.5 text-[11px] text-stone-500">
+                {jiBodyField(event.body, "Domain") ?? event.sourceProject} ·{" "}
+                {jiBodyField(event.body, "Candidate kind") ?? event.kind}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="text-xs text-stone-400">
+            No pending signals in this lane.
+          </p>
+        )}
+      </div>
+    </article>
   );
 }
 
@@ -553,11 +630,6 @@ function PendingEventCard({ event }: { event: EcosystemJiEvent }) {
       </div>
     </article>
   );
-}
-
-function jiBodyField(body: string, label: string) {
-  const match = new RegExp(`^${label}:\\s*(.+)$`, "m").exec(body);
-  return match?.[1]?.trim();
 }
 
 function soulfulScore(value: number) {

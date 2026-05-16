@@ -67,6 +67,80 @@ export const jiEventSchema = z.object({
 
 export type JiEvent = z.infer<typeof jiEventSchema>;
 
+export const jiProposalLaneKinds = [
+  "ETHICAL_INVARIANT_PROPOSAL",
+  "AESTHETIC_SURFACE_PROPOSAL",
+  "RFC_DRAFT_PROPOSAL",
+  "ESSAY_NOTE_PROPOSAL",
+  "ENGINEERING_TASK_PROPOSAL",
+  "OBSERVATION_REVIEW",
+] as const;
+
+export type JiProposalLaneKind = (typeof jiProposalLaneKinds)[number];
+
+export const jiProposalLaneDetails: Record<
+  JiProposalLaneKind,
+  {
+    label: string;
+    nativeLabel: string;
+    description: string;
+    reviewPath: string;
+  }
+> = {
+  ETHICAL_INVARIANT_PROPOSAL: {
+    label: "Ethical Invariant",
+    nativeLabel: "伦理不变量",
+    description:
+      "Turns a signal into a checkable boundary for AI non-sovereignty, soulful data, proof locality, or repair.",
+    reviewPath: "Review as constitution check, invariant patch, or guardrail test.",
+  },
+  AESTHETIC_SURFACE_PROPOSAL: {
+    label: "Aesthetic Surface",
+    nativeLabel: "审美操作面",
+    description:
+      "Routes interface beauty, legibility, atmosphere, and operational cockpit ideas into design work.",
+    reviewPath: "Review as UI surface, visual language note, or route-level design task.",
+  },
+  RFC_DRAFT_PROPOSAL: {
+    label: "RFC Draft",
+    nativeLabel: "机制 RFC",
+    description:
+      "Converts governance, architecture, protocol, or responsibility tensions into a formal local RFC draft.",
+    reviewPath: "Review as RFC draft before sandbox, implementation, or rejection.",
+  },
+  ESSAY_NOTE_PROPOSAL: {
+    label: "Essay Note",
+    nativeLabel: "文章结晶",
+    description:
+      "Keeps philosophical language alive as a discussion note rather than frozen doctrine.",
+    reviewPath: "Review as booklet/article material with engineering boundary notes.",
+  },
+  ENGINEERING_TASK_PROPOSAL: {
+    label: "Engineering Task",
+    nativeLabel: "工程任务",
+    description:
+      "Converts coding, modularity, repo architecture, and testing signals into executable implementation tasks.",
+    reviewPath: "Review as issue-sized task with tests and rollback notes.",
+  },
+  OBSERVATION_REVIEW: {
+    label: "Observation Review",
+    nativeLabel: "观察复核",
+    description:
+      "Keeps lower-specificity network signals in the review queue until a stronger artifact path is chosen.",
+    reviewPath: "Review as observation; promote only after a human selects a concrete artifact path.",
+  },
+};
+
+export type JiProposalLaneSummary<T extends Pick<JiEvent, "id" | "body"> = JiEvent> = {
+  kind: JiProposalLaneKind;
+  label: string;
+  nativeLabel: string;
+  description: string;
+  reviewPath: string;
+  count: number;
+  events: T[];
+};
+
 export type JiImportDiagnostic = {
   file?: string;
   line?: number;
@@ -197,6 +271,38 @@ export const jiKindLabels: Record<
 
 export function validateJiEvent(input: unknown): JiEvent {
   return jiEventSchema.parse(input);
+}
+
+export function jiBodyField(body: string, label: string) {
+  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = new RegExp(`^${escaped}:\\s*(.+)$`, "m").exec(body);
+  return match?.[1]?.trim();
+}
+
+export function jiEventProposalLane(
+  event: Pick<JiEvent, "body">,
+): JiProposalLaneKind | null {
+  const raw = jiBodyField(event.body, "Proposal kind");
+  if (!raw) return null;
+  return jiProposalLaneKinds.includes(raw as JiProposalLaneKind)
+    ? (raw as JiProposalLaneKind)
+    : null;
+}
+
+export function buildJiProposalLanes<T extends Pick<JiEvent, "id" | "body">>(
+  events: T[],
+  options: { sampleSize?: number } = {},
+): JiProposalLaneSummary<T>[] {
+  const sampleSize = options.sampleSize ?? 3;
+  return jiProposalLaneKinds.map((kind) => {
+    const matching = events.filter((event) => jiEventProposalLane(event) === kind);
+    return {
+      kind,
+      ...jiProposalLaneDetails[kind],
+      count: matching.length,
+      events: matching.slice(0, sampleSize),
+    };
+  });
 }
 
 export function parseJiEventJsonl(

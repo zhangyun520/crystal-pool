@@ -6,6 +6,8 @@ import {
   dedupeJiEventLines,
   jiEventDefaultPhase,
   jiEventKinds,
+  jiProposalLaneDetails,
+  jiProposalLaneKinds,
   jiEventReviewTitle,
   jiEventToSandboxInput,
   jiKindLabels,
@@ -19,6 +21,7 @@ import {
   type JiEventRef,
   type JiImportDiagnostic,
   type JiImportResult,
+  type JiProposalLaneSummary,
   type JiReviewStatus,
   type JiSourceProject,
 } from "@/lib/ji";
@@ -67,6 +70,7 @@ export type EcosystemDashboard = {
   byStatus: Record<JiReviewStatus, number>;
   bySource: Record<JiSourceProject, number>;
   byKind: Record<JiEventKind, number>;
+  proposalLanes: JiProposalLaneSummary<EcosystemJiEvent>[];
   pending: EcosystemJiEvent[];
   recent: EcosystemJiEvent[];
 };
@@ -280,6 +284,8 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
     pending,
     pendingCodingCoverage,
     pendingPhilosophyCoverage,
+    proposalLaneCounts,
+    proposalLaneSamples,
     recent,
     statusGroups,
     sourceGroups,
@@ -308,6 +314,28 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
       orderBy: [{ createdAt: "desc" }, { occurredAt: "desc" }],
       take: 6,
     }),
+    Promise.all(
+      jiProposalLaneKinds.map((kind) =>
+        prisma.jiEventRecord.count({
+          where: {
+            status: "pending",
+            body: { contains: `Proposal kind: ${kind}` },
+          },
+        }),
+      ),
+    ),
+    Promise.all(
+      jiProposalLaneKinds.map((kind) =>
+        prisma.jiEventRecord.findMany({
+          where: {
+            status: "pending",
+            body: { contains: `Proposal kind: ${kind}` },
+          },
+          orderBy: [{ createdAt: "desc" }, { occurredAt: "desc" }],
+          take: 3,
+        }),
+      ),
+    ),
     prisma.jiEventRecord.findMany({
       orderBy: [{ createdAt: "desc" }],
       take: 12,
@@ -344,6 +372,12 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
       kindGroups.find((group) => group.kind === kind)?._count.kind ?? 0,
     ]),
   ) as Record<JiEventKind, number>;
+  const proposalLanes = jiProposalLaneKinds.map((kind, index) => ({
+    kind,
+    ...jiProposalLaneDetails[kind],
+    count: proposalLaneCounts[index] ?? 0,
+    events: (proposalLaneSamples[index] ?? []).map(recordToJiEvent),
+  })) satisfies JiProposalLaneSummary<EcosystemJiEvent>[];
 
   return {
     generatedAt: new Date().toISOString(),
@@ -359,6 +393,7 @@ export async function getEcosystemDashboard(): Promise<EcosystemDashboard> {
     byStatus,
     bySource,
     byKind,
+    proposalLanes,
     pending: Array.from(
       new Map(
         [...pendingPhilosophyCoverage, ...pendingCodingCoverage, ...pending].map(

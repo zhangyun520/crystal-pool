@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildJiProposalLanes,
   buildJiRfcDraft,
   dedupeJiEventLines,
+  jiBodyField,
+  jiEventProposalLane,
+  jiProposalLaneKinds,
   jiEventToSandboxInput,
   jiSourceProjects,
   parseJiEventJsonl,
@@ -85,5 +89,52 @@ describe("JiEvent protocol", () => {
     expect(buildJiRfcDraft(baseEvent)).toContain(
       "This RFC draft is not canonical until reviewed inside Crystal Pool.",
     );
+  });
+
+  it("extracts typed proposal lanes from JiEvent bodies", () => {
+    const ethicsEvent: JiEvent = {
+      ...baseEvent,
+      id: "ji-proposal-ethics",
+      body: [
+        "Domain: PHILOSOPHY_AESTHETICS",
+        "Candidate kind: soulful_data_signal",
+        "Proposal kind: ETHICAL_INVARIANT_PROPOSAL",
+        "Review path: Review as constitution check.",
+      ].join("\n"),
+    };
+    const aestheticEvent: JiEvent = {
+      ...baseEvent,
+      id: "ji-proposal-aesthetic",
+      body: [
+        "Domain: PHILOSOPHY_AESTHETICS",
+        "Candidate kind: aesthetic_interface_signal",
+        "Proposal kind: AESTHETIC_SURFACE_PROPOSAL",
+      ].join("\n"),
+    };
+
+    expect(jiProposalLaneKinds).toContain("ENGINEERING_TASK_PROPOSAL");
+    expect(jiBodyField(ethicsEvent.body, "Proposal kind")).toBe(
+      "ETHICAL_INVARIANT_PROPOSAL",
+    );
+    expect(jiEventProposalLane(ethicsEvent)).toBe("ETHICAL_INVARIANT_PROPOSAL");
+
+    const lanes = buildJiProposalLanes([ethicsEvent, aestheticEvent], {
+      sampleSize: 1,
+    });
+    expect(
+      lanes.find((lane) => lane.kind === "ETHICAL_INVARIANT_PROPOSAL"),
+    ).toMatchObject({
+      count: 1,
+      events: [expect.objectContaining({ id: "ji-proposal-ethics" })],
+    });
+    expect(
+      lanes.find((lane) => lane.kind === "AESTHETIC_SURFACE_PROPOSAL"),
+    ).toMatchObject({
+      count: 1,
+      events: [expect.objectContaining({ id: "ji-proposal-aesthetic" })],
+    });
+    expect(
+      lanes.find((lane) => lane.kind === "OBSERVATION_REVIEW")?.events,
+    ).toEqual([]);
   });
 });
