@@ -30,6 +30,7 @@
 /data/ecosystem/runs
 /data/ecosystem/network-runs
 /data/ecosystem/network-chain
+/data/ecosystem/philosophy-goal-audits
 /data/ecosystem/network-sources.json
 /data/ecosystem/repo-cache
 /data/ecosystem/repo-scans

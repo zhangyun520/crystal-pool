@@ -249,6 +249,7 @@ test("hardening guardrail flow", async ({ page, request }) => {
   await expect(page.getByRole("heading", { name: "Pool Health" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Market Watcher" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Anchor Bundles" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Long Goal Compass" })).toBeVisible();
 
   await page.goto("/backup");
   await expect(page.getByRole("link", { name: "Export JSON" })).toBeVisible();

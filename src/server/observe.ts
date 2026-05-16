@@ -9,6 +9,7 @@ import {
   getResponsibilityMaturitySnapshot,
 } from "./ecosystemDaemon";
 import { getLatestNetworkCrystallizationSummary } from "./networkCrystallization";
+import { getPhilosophyAestheticsGoalAudit } from "./philosophyAestheticsGoal";
 import { defaultPoolIds } from "@/lib/pools";
 import { sandboxModes } from "@/lib/sandbox";
 import { phases, type EdgeRelation, type Phase } from "@/lib/domain";
@@ -249,6 +250,7 @@ export async function getObservationPoolSnapshot() {
     latestPhilosophyCrystallizationRun,
     responsibilityMaturity,
     constitution,
+    philosophyGoal,
   ] = await Promise.all([
     getInboxSnapshot(),
     countProcessedFiles(),
@@ -302,6 +304,7 @@ export async function getObservationPoolSnapshot() {
     getLatestNetworkCrystallizationSummary({ domain: "PHILOSOPHY_AESTHETICS" }),
     getResponsibilityMaturitySnapshot(),
     getConstitutionSnapshot(),
+    getPhilosophyAestheticsGoalAudit(),
   ]);
   const runSummary = summarizeObservedRuns(runs);
   const signals = createObservationSignals({
@@ -427,6 +430,7 @@ export async function getObservationPoolSnapshot() {
       sandboxRunIds: latestPhilosophyCrystallizationRun?.sandboxRunIds ?? [],
       hasReport: Boolean(latestPhilosophyCrystallizationRun?.reportMarkdown),
     },
+    philosophyGoal: philosophyGoal.audit,
     ethics: constitution,
     signals,
   };

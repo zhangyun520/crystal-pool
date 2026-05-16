@@ -28,6 +28,7 @@
     "crystallize:network:watch": "tsx scripts/network-crystallize-watch.ts",
     "skill:crystallize:once": "tsx scripts/network-crystallize-once.ts",
     "skill:crystallize:watch": "tsx scripts/network-crystallize-watch.ts",
+    "philosophy:gap-audit": "tsx scripts/philosophy-gap-audit.ts",
     "coding:repo-scan": "tsx scripts/coding-repo-scan.ts",
     "coding:sandbox:once": "tsx scripts/coding-sandbox-once.ts",
     "constitution:check": "tsx scripts/constitution-check.ts",

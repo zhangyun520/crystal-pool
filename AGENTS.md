@@ -49,6 +49,12 @@ Do not treat the project as a generic notes app.
 - SoulfulDataAssessment: review-only signal for provenance, lived context,
   consent boundary, traceability, repairability, non-extractive use, and human
   responsibility. It must not auto-promote canonical state.
+- PhilosophyAestheticsGoalAudit: internal observe-and-propose audit for what
+  Crystal Pool still lacks to realize its hopepunk, humanist, AI
+  non-sovereignty, soulful-data, reliability, fork, worldline, and artistic
+  interface commitments. It may write local audit artifacts, JiEvent review
+  signals, RFC/design/task drafts, and sandbox-only rehearsals, but it must not
+  promote canonical state.
 
 ## Engineering principles
 

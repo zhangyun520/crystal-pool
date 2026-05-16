@@ -5,6 +5,7 @@ import {
   Anchor,
   CheckCircle2,
   Code2,
+  Compass,
   Eye,
   GitCommitHorizontal,
   Hash,
@@ -305,6 +306,76 @@ export default async function ObservePage() {
               latestHash: {snapshot.philosophySkill.latestHash ?? "none"}
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-lg border border-fuchsia-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-normal text-fuchsia-700">
+              <Compass size={16} aria-hidden />
+              Philosophy / Aesthetics Gap Audit
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold text-stone-950">
+              Long Goal Compass
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-stone-600">
+              The pool audits its own hopepunk, humanist, AI non-sovereignty,
+              soulful data, reliability, fork, worldline, and aesthetic
+              ambitions. Findings become reviewable tasks, RFCs, essay notes,
+              design proposals, JiEvents, or sandbox rehearsals; never canonical
+              mutations.
+            </p>
+          </div>
+          <div className="grid min-w-56 grid-cols-2 gap-2 text-sm">
+            <HealthRow
+              label="coverage"
+              value={`${snapshot.philosophyGoal.coverageScore}/100`}
+            />
+            <HealthRow label="open" value={snapshot.philosophyGoal.openItems.length} />
+          </div>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <ProofStat label="covered" value={snapshot.philosophyGoal.covered} />
+          <ProofStat label="partial" value={snapshot.philosophyGoal.partial} />
+          <ProofStat label="gaps" value={snapshot.philosophyGoal.gaps} />
+          <ProofStat
+            label="critical open"
+            value={snapshot.philosophyGoal.criticalOpen}
+          />
+        </div>
+        <div className="mt-4 grid gap-3 lg:grid-cols-2">
+          {snapshot.philosophyGoal.topItems.map((item) => (
+            <article
+              key={item.id}
+              className="rounded-md border border-fuchsia-100 bg-fuchsia-50 p-4 text-sm text-fuchsia-950"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold">
+                    {item.id} · {item.title}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-fuchsia-900/75">
+                    {item.pillar} · {item.category} · {item.proposalKind}
+                  </p>
+                </div>
+                <GapStatusPill status={item.status} />
+              </div>
+              <p className="mt-3 leading-6">{item.missingIfAbsent}</p>
+              <p className="mt-3 rounded bg-white/80 p-2 text-xs leading-5 text-fuchsia-900">
+                {item.acceptanceCheck}
+              </p>
+            </article>
+          ))}
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-stone-500">
+          <code className="rounded bg-stone-100 px-2 py-1">
+            npm run philosophy:gap-audit
+          </code>
+          <code className="rounded bg-stone-100 px-2 py-1">
+            npm run philosophy:gap-audit -- --create-sandboxes
+          </code>
+          <span>observe + propose · no auto promote</span>
         </div>
       </section>
 
@@ -947,6 +1018,19 @@ function constitutionPillStyle(status: "pass" | "warn" | "fail") {
   if (status === "fail") return `${base} bg-rose-300 text-rose-950`;
   if (status === "warn") return `${base} bg-amber-300 text-amber-950`;
   return `${base} bg-lime-300 text-lime-950`;
+}
+
+function GapStatusPill({ status }: { status: "covered" | "partial" | "gap" }) {
+  const styles = {
+    covered: "bg-lime-100 text-lime-900",
+    partial: "bg-amber-100 text-amber-900",
+    gap: "bg-rose-100 text-rose-900",
+  };
+  return (
+    <span className={`rounded px-2 py-1 text-xs font-semibold ${styles[status]}`}>
+      {status}
+    </span>
+  );
 }
 
 function formatDate(value: string) {

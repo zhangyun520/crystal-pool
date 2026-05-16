@@ -242,6 +242,8 @@ npm run skill:crystallize:once -- --domain coding --repo-scan-limit 4
 npm run skill:crystallize:watch -- --domain coding --interval-ms 3600000 --max-cycles 24
 npm run skill:crystallize:once -- --domain philosophy --max-sandbox-runs 4
 npm run skill:crystallize:watch -- --domain philosophy --interval-ms 3600000 --max-cycles 24
+npm run philosophy:gap-audit
+npm run philosophy:gap-audit -- --create-sandboxes --max-runs 4
 npm run coding:repo-scan -- --repo openai/codex
 npm run coding:sandbox:once -- --max-runs 4
 ```
@@ -265,6 +267,19 @@ git-ignored `data/ecosystem/network-sources.json` file shaped as
 `report.md` under `data/ecosystem/network-runs/<run-id>/`, plus
 domain-specific local chain cursors under `data/ecosystem/network-chain/`.
 These artifacts are a reviewable memory chain, not canonical truth.
+
+`npm run philosophy:gap-audit` is the internal companion to the public-source
+philosophy lane. It asks what Crystal Pool still lacks to fully realize its
+hopepunk, humanist, AI-non-sovereign, soulful-data, reliability, fork,
+worldline, and artistic-interface commitments. Each run writes
+`manifest.json`, `gap-audit.json`, `evidence.json`, `ji-events.jsonl`,
+`sandbox-inputs.jsonl`, `rfc-drafts.md`, `design-proposals.md`,
+`engineering-tasks.md`, and `report.md` under
+`data/ecosystem/philosophy-goal-audits/<run-id>/`. By default it writes
+reviewable JiEvents into the local inbox; use `--dry-run` to skip inbox writes,
+or `--create-sandboxes` to create sandbox-only rehearsals. It never creates
+canonical nodes, unlocks AI mainline, uploads anchors, or changes governance by
+itself.
 
 `npm run coding:sandbox:once` deliberately reuses known coding candidates when
 needed, so sandbox rehearsals can be regenerated after a local database reset
